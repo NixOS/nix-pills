@@ -1,0 +1,53 @@
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      version="5.0"
+      xml:id="book-nix-pills">
+
+  <info>
+    <title>Nix Pills</title>
+    <subtitle>Version <xi:include href="version" parse="text" /></subtitle>
+  </info>
+
+  <preface>
+    <title>Preface</title>
+
+    <para>This manual describes how to install, use and extend NixOS,
+    a Linux distribution based on the purely functional package
+    management system Nix.</para>
+
+    <para>If you encounter problems, please report them on the
+    <literal
+    xlink:href="https://groups.google.com/forum/#!forum/nix-devel">nix-devel</literal>
+    mailing list or on the <link
+    xlink:href="irc://irc.freenode.net/#nixos">
+    <literal>#nixos</literal> channel on Freenode</link>.  Bugs should
+    be reported in <link
+    xlink:href="https://github.com/NixOS/nixpkgs/issues">NixOS’ GitHub
+    issue tracker</link>.</para>
+
+    <note><para>Commands prefixed with <literal>#</literal> have to be run as
+    root, either requiring to login as root user or temporarily switching
+    to it using <literal>sudo</literal> for example.</para></note>
+  </preface>
+
+  <xi:include href="pills/01-why-you-should-give-it-try.xml" />
+  <xi:include href="pills/02-install-on-your-running.xml" />
+  <xi:include href="pills/03-enter-environment.xml" />
+  <xi:include href="pills/04-basics-of-language.xml" />
+  <xi:include href="pills/05-functions-and-imports.xml" />
+  <xi:include href="pills/06-our-first-derivation.xml" />
+  <xi:include href="pills/07-working-derivation.xml" />
+  <xi:include href="pills/08-generic-builders.xml" />
+  <xi:include href="pills/09-automatic-runtime.xml" />
+  <xi:include href="pills/10-developing-with-nix-shell.xml" />
+  <xi:include href="pills/11-garbage-collector.xml" />
+  <xi:include href="pills/12-inputs-design-pattern.xml" />
+  <xi:include href="pills/13-callpackage-design-pattern.xml" />
+  <xi:include href="pills/14-override-design-pattern.xml" />
+  <xi:include href="pills/15-nix-search-paths.xml" />
+  <xi:include href="pills/16-nixpkgs-parameters.xml" />
+  <xi:include href="pills/17-nixpkgs-overriding-packages.xml" />
+  <xi:include href="pills/18-nix-store-paths.xml" />
+  <xi:include href="pills/19-fundamentals-of-stdenv.xml" />
+</book>
