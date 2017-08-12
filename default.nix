@@ -32,7 +32,7 @@ let
     "--param xref.with.number.and.title 1"
     "--param toc.section.depth 3"
     "--stringparam admon.style ''"
-    "--stringparam callout.graphics.extension .gif"
+    "--stringparam callout.graphics.extension .svg"
     "--stringparam current.docid manual"
     "--param chunk.section.depth 0"
     "--param chunk.first.sections 1"
@@ -51,7 +51,7 @@ in pkgs.stdenv.mkDerivation {
     jing ${pkgs.docbook5}/xml/rng/docbook/docbook.rng $combined
 
     # Generate the HTML manual.
-    dst=$out/share/doc/nixos
+    dst=$out/share/doc/nix-pills
     mkdir -p $dst
     xsltproc \
       ${manualXsltprocOptions} \
