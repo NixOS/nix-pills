@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 let
   lib = pkgs.lib;
-  sources = lib.sourceFilesBySuffices ./. [ ".xml" ];
+  sources = lib.sourceFilesBySuffices ./. [ ".xml" ".txt" ];
 
   combined = pkgs.runCommand "nix-pills-combined"
     {
