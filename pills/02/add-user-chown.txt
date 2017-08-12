@@ -1,0 +1,2 @@
+# adduser nix
+# mkdir -m 0755 /nix && chown nix /nix

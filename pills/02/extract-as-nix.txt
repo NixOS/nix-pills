@@ -1,0 +1,4 @@
+# su - nix
+$ tar -xf nix-1.7-x86_64-linux.tar.bz2
+$ cd nix-1.7-x86_64-linux
+$ ./install
