@@ -1,8 +1,8 @@
-<part xmlns="http://docbook.org/ns/docbook"
+<chapter xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       version="5.0"
-      xml:id="part-developing-with-nix-shell">
+      xml:id="developing-with-nix-shell">
 
-<title>placeholder</title>
-</part>
+<title>developing-with-nix-shell</title>
+</chapter>

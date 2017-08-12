@@ -1,8 +1,8 @@
-<part xmlns="http://docbook.org/ns/docbook"
+<chapter xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       version="5.0"
-      xml:id="part-why-you-should-give-it-try">
+      xml:id="why-you-should-give-it-try">
 
-<title>placeholder</title>
-</part>
+<title>why-you-should-give-it-try</title>
+</chapter>

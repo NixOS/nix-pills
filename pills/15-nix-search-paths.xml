@@ -1,8 +1,8 @@
-<part xmlns="http://docbook.org/ns/docbook"
+<chapter xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       version="5.0"
-      xml:id="part-nix-search-paths">
+      xml:id="nix-search-paths">
 
-<title>placeholder</title>
-</part>
+<title>nix-search-paths</title>
+</chapter>
