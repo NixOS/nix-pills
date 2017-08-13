@@ -1,0 +1,4 @@
+nix-repl> a = 3
+nix-repl> b = 4
+nix-repl> if a > b then "yes" else "no"
+"no"

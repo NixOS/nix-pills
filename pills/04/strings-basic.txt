@@ -1,0 +1,4 @@
+nix-repl> "foo"
+"foo"
+nix-repl> ''foo''
+"foo"

@@ -1,0 +1,2 @@
+nix-repl> [ 2 "foo" true (2+3) ]
+[ 2 "foo" true 5 ]
