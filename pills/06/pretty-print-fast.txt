@@ -1,0 +1,1 @@
+$ nix-env -iA strategoPackages018.strategoxt -f '<nixpkgs>'

@@ -1,0 +1,4 @@
+nix-repl> "${d}"
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+nix-repl> "${coreutils}"
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"

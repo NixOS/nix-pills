@@ -3,13 +3,11 @@ xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
 xml:id="functions-and-imports">
 
-      <title>functions and imports</title>
+<title>functions and imports</title>
 
-<section>
-      <title>Functions</title>
       <para>
             Welcome to the fifth Nix pill. In the previous <link
-            linkend="basics-of-the-language">fourth pill</link> we touched the
+            linkend="basics-of-language">fourth pill</link> we touched the
             Nix language for a moment. We introduced basic types and values of
             the Nix language, and basic expressions such as
             <code>if</code>, <code>with</code> and
@@ -30,8 +28,6 @@ xml:id="functions-and-imports">
             I remind you how to enter the Nix environment: <code>source
             ~/.nix-profile/etc/profile.d/nix.sh</code>
       </para>
-
-</section>
 
 <section>
       <title>Nameless and single parameter</title>

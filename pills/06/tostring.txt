@@ -1,0 +1,4 @@
+nix-repl> builtins.toString { outPath = "foo"; }
+"foo"
+nix-repl> builtins.toString { a = "b"; }
+error: cannot coerce a set to a string, at (string):1:1
