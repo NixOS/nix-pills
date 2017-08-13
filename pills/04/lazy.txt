@@ -1,0 +1,2 @@
+nix-repl> let a = builtins.div 4 0; b = 6; in b
+6

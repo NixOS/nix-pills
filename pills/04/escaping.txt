@@ -1,0 +1,4 @@
+nix-repl> "\${foo}"
+"${foo}"
+nix-repl> ''test ''${foo} test''
+"test ${foo} test"

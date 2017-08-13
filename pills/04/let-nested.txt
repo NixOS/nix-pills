@@ -1,0 +1,2 @@
+nix-repl> let a = 3; in let b = 4; in a + b
+7

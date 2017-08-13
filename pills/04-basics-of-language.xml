@@ -4,5 +4,362 @@
       version="5.0"
       xml:id="basics-of-language">
 
-<title>basics of language</title>
+  <title>The basics of language</title>
+
+  <para>
+    Welcome to the fourth Nix pill. In the previous
+    <link linkend="enter-environment">third pill</link> we entered the Nix
+    environment. We installed software as user, managed the profile, switched
+    between generations, and queried the nix store. That's the very basics of
+    nix administration somehow.
+  </para>
+
+  <para>
+    The
+    <link xlink:href="http://nixos.org/nix/manual/#chap-writing-nix-expressions">Nix language</link>
+    is used to write derivations. The
+    <link xlink:href="http://nixos.org/nix/manual/#sec-nix-build">nix-build</link>
+    tool is used to build derivations. Even as a system administrator that
+    wants to customize the installation, it's necessary to master Nix. Using
+    Nix for your jobs means you get the features we saw in the previous pills
+    for free.
+  </para>
+
+  <para>
+    The syntax is very uncommon thus looking at existing examples may lead to
+    thinking that there's a lot of magic behind. In reality, it's only about
+    writing utility functions for making things convenient.
+  </para>
+
+  <para>
+    On the other hand, this same syntax is great for describing packages.
+  </para>
+
+  <para>
+    <emphasis role="underline">Important</emphasis>: in Nix, everything is an
+    expression, there are no statements. This is common to many functional
+    languages.
+  </para>
+
+  <para>
+    <emphasis role="underline">Important</emphasis>: values in Nix are
+    immutable.
+  </para>
+
+  <section>
+    <title>Value types</title>
+
+    <para>
+      We've installed nix-repl in the previous pill. If you didn't,
+      <literal>nix-env -i nix-repl</literal>. The nix-repl syntax is slightly
+      different than nix syntax when it comes to assigning variables, but no
+      worries.  I prefer playing with nix-repl with you before cluttering your
+      mind with more complex expressions.
+    </para>
+
+    <para>
+      Launch nix-repl. First of all, nix supports basic arithmetic operations:
+      +, -, and *. The integer division can be done with builtins.div.
+    </para>
+
+    <screen><xi:include href="./04/basics.txt" parse="text" /></screen>
+
+    <para>
+      Really, why doesn't nix have basic operations such as division? Because
+      it's not needed for creating packages. Nix is not a general purpose
+      language, it's a domain-specific language for writing packages.
+    </para>
+
+    <para>
+      Just think that builtins.div is not being used in the whole of our
+      nixpkgs repository: it's useless.
+    </para>
+
+    <para>
+      Other operators are ||, &amp;&amp; and ! for booleans, and relational
+      operators such as !=, ==, &lt;, >, &lt;=, >=. In Nix, &lt;, >, &lt;= and
+      >= are not much used. There are also other operators we will see in the
+      course of this series.
+    </para>
+
+    <para>
+      Nix has integer (not floating point), string, path, boolean and null
+      <link xlink:href="http://nixos.org/nix/manual/#ssec-values">simple</link>
+      types. Then there are lists, sets and functions. These types are enough
+      to build an operating system.
+    </para>
+
+    <para>
+      Nix is strongly typed, but it's not statically typed. That is, you
+      cannot mix strings and integers, you must first do the conversion.
+    </para>
+
+    <para>
+      Try to use <literal>/</literal> between two numbers:
+    </para>
+
+    <screen><xi:include href="./04/relative-path.txt" parse="text" /></screen>
+
+    <para>
+      Nix parsed 2/3 as a relative path to the current directory. Paths are
+      parsed as long as there's a slash. Therefore to specify the current
+      directory, use <literal>./.</literal> In addition, Nix also parses urls.
+    </para>
+
+    <para>
+      Not all urls or paths can be parsed this way. If a syntax error occurs,
+      it's still possible to fallback to plain strings. Parsing urls and paths
+      are convenient for additional safety.
+    </para>
+  </section>
+
+  <section>
+    <title>Identifier</title>
+
+    <para>
+      Not much to say, except that dash (-) is allowed in identifiers. That's
+      convenient since many packages use dash in its name. In fact:
+    </para>
+
+    <screen><xi:include href="./04/dash.txt" parse="text" /></screen>
+
+    <para>
+      As you can see, <literal>a-b</literal> is parsed as identifier, not as
+      operation between a and b.
+    </para>
+  </section>
+
+  <section>
+    <title>Strings</title>
+
+    <para>
+      It's important to understand the syntax for strings. When reading Nix
+      expressions at the beginning, you may find dollars ($) ambiguous in their
+      usage. Strings are enclosed by double quotes ("), or two single quotes
+      ('').
+    </para>
+
+    <screen><xi:include href="./04/strings-basic.txt" parse="text" /></screen>
+
+    <para>
+      In python you can use also single quotes for strings like 'foo', but not
+      in Nix.
+    </para>
+
+    <para>
+      It's possible to
+      <link xlink:href="http://nixos.org/nix/manual/#ssec-values">interpolate</link>
+      whole Nix expressions inside strings with ${...} and only with ${...},
+      not $foo or {$foo} or anything else.
+    </para>
+
+    <screen><xi:include href="./04/interpolate.txt" parse="text" /></screen>
+
+    <para>
+      Note: ignore the foo = "strval" assignment, it's nix-repl special syntax.
+    </para>
+
+    <para>
+      As said previously, you cannot mix integers and strings. You explicitly
+      need conversion. We'll see this later: function calls are another story.
+    </para>
+
+    <para>
+      Using the syntax with two single quotes, it's useful for writing double
+      quotes inside strings instead of escaping:
+    </para>
+
+    <screen><xi:include href="./04/double-quotes.txt" parse="text" /></screen>
+
+    <para>
+      Escaping ${...} within double quoted strings is done with the backslash.
+      Within two single quotes, it's done with '':
+    </para>
+
+    <screen><xi:include href="./04/escaping.txt" parse="text" /></screen>
+
+    <para>
+      No other magic about strings for now.
+    </para>
+  </section>
+
+  <section>
+    <title>Lists</title>
+
+    <para>
+      Lists are a sequence of expressions delimited by space (not comma):
+    </para>
+
+    <screen><xi:include href="./04/lists.txt" parse="text" /></screen>
+
+    <para>
+      Lists, like anything else in Nix, are immutable. Adding or removing
+      elements from a list is possible, but will return a new list.
+    </para>
+  </section>
+
+  <section>
+    <title>Sets</title>
+
+    <para>
+      Sets are an association between a string key and a Nix expression. Keys
+      can only be strings. When writing sets you can also use identifiers as
+      keys.
+    </para>
+
+    <screen><xi:include href="./04/set-basics.txt" parse="text" /></screen>
+
+    <para>
+      Note: here the string representation from nix is wrong, you can't write
+      { 123 = "num"; } because 123 is not an identifier. You need semicomma
+      (;) after every key-value assignment.
+    </para>
+
+    <para>
+      For those reading Nix expressions from nixpkgs: do not confuse sets with
+      argument sets used in functions.
+    </para>
+
+    <para>
+      To access elements in the set:
+    </para>
+
+    <screen><xi:include href="./04/set-access.txt" parse="text" /></screen>
+
+    <para>
+      Yes, you can use strings for non-identifiers to address keys in the set.
+    </para>
+
+    <para>
+      You cannot refer inside a set to elements of the same set:
+    </para>
+
+    <screen><xi:include href="./04/set-failed.txt" parse="text" /></screen>
+
+    <para>
+      To do so, use
+      <link xlink:href="http://nixos.org/nix/manual/#idm47361539166560">recursive sets</link>:
+    </para>
+
+    <screen><xi:include href="./04/set-recursive.txt" parse="text" /></screen>
+
+    <para>
+      This will be very convenient when defining packages.
+    </para>
+  </section>
+
+  <section>
+    <title>If expression</title>
+
+    <para>
+      Expressions, not statements.
+    </para>
+
+    <screen><xi:include href="./04/if.txt" parse="text" /></screen>
+
+    <para>
+      You can't have only the "then" branch, you must specify also the "else"
+      branch, because an expression must have a value in all cases.
+    </para>
+  </section>
+
+  <section>
+    <title>Let expression</title>
+
+    <para>
+      This kind of expression is used to define local variables to inner
+      expressions.
+    </para>
+
+    <screen><xi:include href="./04/let-basic.txt" parse="text" /></screen>
+
+    <para>
+      The syntax is: first assign variables, then "in" expression. The overall
+      result will be the final expression after "in".
+    </para>
+
+    <screen><xi:include href="./04/let-multiple.txt" parse="text" /></screen>
+
+    <para>
+      Let's write two let expressions, one inside the other:
+    </para>
+
+    <screen><xi:include href="./04/let-nested.txt" parse="text" /></screen>
+
+    <para>
+      With let you cannot assign twice to the same variable. You can however
+      shadow outer variables:
+    </para>
+
+    <screen><xi:include href="./04/let-multiple-assign.txt" parse="text" /></screen>
+
+    <para>
+      You cannot refer to variables in a let expression outside of it:
+    </para>
+
+    <screen><xi:include href="./04/let-scope.txt" parse="text" /></screen>
+
+    <para>
+      You can refer to variables in the let expression when assigning variables
+      like with recursive sets:
+    </para>
+
+    <screen><xi:include href="./04/let-reference.txt" parse="text" /></screen>
+
+    <para>
+      So beware when you want to refer to a variable from the outer scope, but
+      it's being defined in the current let expression. Same applies to
+      recursive sets.
+    </para>
+  </section>
+
+  <section>
+    <title>With expression</title>
+
+    <para>
+      This kind of expression is something you hardly see in other languages.
+      Think of it like a more granular "using" of C++, or "from module import
+      *" from Python. You decide per-expression when to include symbols into
+      the scope.
+    </para>
+
+    <screen><xi:include href="./04/with-basic.txt" parse="text" /></screen>
+
+    <para>
+      That's it, it takes a set and includes symbols in the scope of the inner
+      expression. Of course, only valid identifiers from the set keys will be
+      included. If a symbol exists in the outer scope and also in the "with"
+      scope, it will <emphasis role="bold">not</emphasis> be shadowed.
+      You can however still refer to the set:
+    </para>
+
+    <screen><xi:include href="./04/with-scope.txt" parse="text" /></screen>
+  </section>
+
+  <section>
+    <title>Laziness</title>
+
+    <para>
+      Nix evaluates expression only when needed. This is a great feature when
+      working with packages.
+    </para>
+
+    <screen><xi:include href="./04/lazy.txt" parse="text" /></screen>
+
+    <para>
+      Since "a" is not needed, there's no error about division by zero, because
+      the expression is not in need to be evaluated. That's why we can have all
+      the packages defined here, yet access to specific packages very fast.
+    </para>
+  </section>
+
+  <section>
+    <title>Next pill</title>
+
+    <para>
+      ...we will talk about functions and imports. In this pill I've tried to
+      avoid function calls as much as possible, otherwise the post would have
+      been too long.
+    </para>
+  </section>
 </chapter>

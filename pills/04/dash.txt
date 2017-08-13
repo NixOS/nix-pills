@@ -1,0 +1,4 @@
+nix-repl> a-b
+error: undefined variable `a-b' at (string):1:1
+nix-repl> a - b
+error: undefined variable `a' at (string):1:1

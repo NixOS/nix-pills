@@ -1,0 +1,3 @@
+nix-repl> s = { foo = "bar"; a-b = "baz"; "123" = "num"; }
+nix-repl> s
+{ 123 = "num"; a-b = "baz"; foo = "bar"; }
