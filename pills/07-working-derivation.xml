@@ -4,5 +4,324 @@
       version="5.0"
       xml:id="working-derivation">
 
-<title>working derivation</title>
+  <title>working derivation</title>
+
+  <section>
+    <title>Introduction</title>
+    <para>
+      Welcome to the seventh nix pill. In the previous
+      <link linkend="our-first-derivation">sixth pill</link> we introduced the
+      notion of derivation in the Nix language — how to define a raw derivation
+      and how to (try to) build it.
+    </para>
+    <para>
+      In this post we continue along the path, by creating a derivation that
+      actually builds something. Then, we try to package a real program: we
+      compile a simple C file and create a derivation out of it, given a blessed
+      toolchain.
+    </para>
+
+    <para>
+      I remind you how to enter the Nix environment:
+      <command>source ~/.nix-profile/etc/profile.d/nix.sh</command>
+    </para>
+  </section>
+
+  <section>
+    <title>Using a script as a builder</title>
+
+    <para>
+      What's the easiest way to run a sequence of commands for building
+      something? A bash script. We write a custom bash script, and we want it to
+      be our builder. Given a <filename>builder.sh</filename>, we want the
+      derivation to run <command>bash builder.sh</command>.
+    </para>
+
+    <para>
+      We don't use hash bangs in <filename>builder.sh</filename>, because at the
+      time we are writing it we do not know the path to
+      <application>bash</application> in the nix store. Yes, even bash is in the
+      nix store, everything is there.
+    </para>
+
+    <para>
+      We don't even use <application>/usr/bin/env</application>, because then we
+      lose the cool stateless property of Nix. Not to mention that
+      <envar>PATH</envar> gets cleared when building, so it wouldn't find
+      <application>bash</application> anyway.
+    </para>
+
+    <para>
+      In summary, we want the builder to be <application>bash</application>, and
+      pass it an argument, <literal>builder.sh</literal>. Turns out the
+      <function>derivation</function> function accepts an optional
+      <parameter>args</parameter> attribute which is used to pass arguments to
+      the builder executable.
+    </para>
+
+    <para>
+      First of all, let's write our <filename>builder.sh</filename> in the
+      current directory:
+
+      <programlisting><xi:include href="./07/builder.sh.txt" parse="text" /></programlisting>
+
+      As we covered in the previous pill, Nix computes the output path of the
+      derivation. The resulting <literal>.drv</literal> file contains a list of
+      environment variables passed to the builder. One of these is
+      <varname>$out</varname>.
+    </para>
+    <para>
+      What we have to do is create something in the path
+      <varname>$out</varname>, be it a file or a directory. In this case we are
+      creating a file.
+    </para>
+
+    <para>
+      In addition, we print out the environment variables during the build
+      process. We cannot use <application>env</application> for this, because
+      <application>env</application> is part of
+      <application>coreutils</application> and we don't have a dependency to it
+      yet. We only have <application>bash</application> for now.
+    </para>
+
+    <para>
+      Like for coreutils in the previous pill, we get a blessed bash for free
+      from our magic nixpkgs stuff:
+
+      <xi:include href="./07/bash.xml" />
+
+      So with the usual trick, we can refer to
+      <application>bin/bash</application> and create our derivation:
+
+      <xi:include href="./07/simple-derivation.xml" />
+
+      We did it! The contents of
+      <filename>/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></filename>
+      is really foo. We've built our first derivation.
+    </para>
+    <para>
+      Note that we used <code>./builder.sh</code> and not
+      <code>"./builder.sh"</code>. This way, it is parsed as a path, and Nix
+      performs some magic which we will cover later. Try using the string
+      version and you will find that it cannot find
+      <filename>builder.sh</filename>. This is because it tries to find it
+      relative to the temporary build directory.
+    </para>
+  </section>
+
+  <section>
+    <title>The builder environment</title>
+    <para>
+      Let's inspect those environment variables printed during the build process.
+      <itemizedlist>
+        <listitem><para>
+          <envar>$HOME</envar> is not your home directory, and
+          <filename>/homeless-shelter</filename> doesn't exist at all. We force
+          packages not to depend on <envar>$HOME</envar> during the build
+          process.
+        </para></listitem>
+        <listitem><para>
+          <envar>$PATH</envar> plays the same game as <envar>$HOME</envar>
+        </para></listitem>
+        <listitem><para>
+          <envar>$NIX_BUILD_CORES</envar> and <envar>$NIX_STORE</envar> are
+          <link xlink:href="http://nixos.org/nix/manual/#sec-conf-file">nix
+          configuration options</link>
+        </para></listitem>
+        <listitem><para>
+          <envar>$PWD</envar> and <envar>$TMP</envar> clearly show that nix
+          created a temporary build directory
+        </para></listitem>
+        <listitem><para>
+          Then <envar>$builder</envar>, <envar>$name</envar>,
+          <envar>$out</envar>, and <envar>$system</envar> are variables set due
+          to the .drv file's contents.
+        </para></listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      And that's how we were able to use <envar>$out</envar> in our derivation
+      and put stuff in it. It's like Nix reserved a slot in the nix store for
+      us, and we must fill it.
+    </para>
+    <para>
+      <!-- Not really sure what this paragraph is meant to mean, particularly
+      wrt the insistence that this is not make's DESTDIR. I've left it as is but
+      it should probably be written more clearly. -->
+      In terms of autotools, <envar>$out</envar> will be the
+      <option>--prefix</option> path. Yes, not the make
+      <option>DESTDIR</option>, but the <option>--prefix</option>. That's the
+      essence of stateless packaging. You don't install the package in a global
+      common path under <filename>/</filename>, you install it in a local
+      isolated path under your nix store slot.
+    </para>
+  </section>
+  <section>
+    <title>The .drv contents</title>
+    <para>
+      We added something else to the derivation this time: the args attribute.
+      Let's see how this changed the .drv compared to the previous pill:
+      <!-- pp-aterm is no longer in nixpkgs, see nixos/nixpkgs#25371. This bit should be changed to reflect this. -->
+      <xi:include href="./07/foo.drv.xml" />
+
+      Much like the usual .drv, except that there's a list of arguments in there
+      passed to the builder (<application>bash</application>) with
+      <filename>builder.sh</filename>… In the nix store..? Nix automatically
+      copies files or directories needed for the build into the store to ensure
+      that they are not changed during the build process and that the deployment
+      is stateless and independent of the building machine.
+      <filename>builder.sh</filename> is not only in the arguments passed to the
+      builder, it's also in the input derivations.
+    </para>
+    <para>
+      Given that <filename>builder.sh</filename> is a plain file, it has no .drv
+      associated with it. The store path is computed based on the filename and
+      on the hash of its contents. Store paths are covered in detail in <link
+        linkend="nix-store-paths">a later pill</link>.
+    </para>
+  </section>
+  <section>
+    <title>Packaging a simple C program</title>
+    <para>
+      Start off by writing a simple C program:
+
+      <programlisting><xi:include href="./07/simple.c.txt" parse="text" /></programlisting>
+
+      And its <filename>simple_builder.sh</filename>:
+
+      <programlisting><xi:include href="./07/simple_builder.sh.txt" parse="text" /></programlisting>
+
+      Don't worry too much about where those variables come from yet; let's
+      write the derivation and build it:
+
+      <xi:include href="./07/c-program-derivation.xml" />
+
+      Now you can run
+      <filename>/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple</filename>
+      in your shell.
+    </para>
+  </section>
+  <section>
+    <title>Explanation</title>
+    <para>
+      We added two new attributes to the derivation call, <varname>gcc</varname>
+      and <varname>coreutils</varname>. In <code>gcc = gcc;</code>, the name on
+      the left is the name in the derivation set, and the name on the right
+      refers to the gcc derivation from nixpkgs. The same applies for coreutils.
+    </para>
+    <para>
+      We also added the <varname>src</varname> attribute, nothing magical — it's
+      just a name, to which the path <filename>./simple.c</filename> is
+      assigned. Like <filename>simple-builder.sh</filename>,
+      <filename>simple.c</filename> will be added to the store.
+    </para>
+    <para>
+      The trick: every attribute in the set passed to
+      <function>derivation</function> will be converted to a string and passed
+      to the builder as an environment variable. This is how the builder gains
+      access to <application>coreutils</application> and
+      <application>gcc</application>: when converted to strings, the derivations
+      evaluate to their output paths, and appending <literal>/bin</literal> to
+      these leads us to their binaries.
+    </para>
+    <para>
+      The same goes for the <varname>src</varname> variable. <envar>$src</envar>
+      is the path to <filename>simple.c</filename> in the nix store. As an
+      exercise, pretty print the .drv file. You'll see
+      <filename>simple_builder.sh</filename> and <filename>simple.c</filename>
+      listed in the input derivations, along with
+      <application>bash</application>, <application>gcc</application> and
+      <application>coreutils</application> .drv files. The newly added
+      environment variables described above will also appear.
+    </para>
+    <para>
+      In <filename>simple_builder.sh</filename> we set the <envar>PATH</envar>
+      for <application>gcc</application> and
+      <application>coreutils</application> binaries, so that our build script
+      can find the necessary utilities like <application>mkdir</application> and
+      <application>gcc</application>.
+    </para>
+    <para>
+      We then create <envar>$out</envar> as a directory and place the binary
+      inside it. Note that <application>gcc</application> is found via the
+      <envar>PATH</envar> environment variable, but it could equivalently be
+      referenced explicitly using <code>$gcc/bin/gcc</code>.
+    </para>
+  </section>
+  <section>
+    <title>Enough of nix-repl</title>
+    <para>
+      Drop out of <application>nix-repl</application> and write a file
+      <filename>simple.nix</filename>:
+
+      <programlisting><xi:include href="./07/simple.txt" parse="text" /></programlisting>
+
+      Now you can build it with <command>nix-build simple.nix</command>. This
+      will create a symlink <filename>result</filename> in the current
+      directory, pointing to the out path of the derivation.
+    </para>
+    <para>
+      <application>nix-build</application> does two jobs:
+      <itemizedlist>
+        <listitem><para>
+          <link xlink:href="http://nixos.org/nix/manual/#sec-nix-instantiate">
+            <application>nix-instantiate</application>
+          </link>: parse and evaluate <filename>simple.nix</filename> and return
+          the .drv file corresponding to the parsed derivation set
+        </para></listitem>
+        <listitem><para>
+            <link xlink:href="http://nixos.org/nix/manual/#rsec-nix-store-realise">
+              <command>nix-store -r</command>
+            </link>: realise the .drv file, which actually builds it.
+        </para></listitem>
+      </itemizedlist>
+      Finally, it creates the symlink.
+    </para>
+    <para>
+      In the first line of <filename>simple.nix</filename>, we have an
+      <function>import</function> function call nested in a <code>with</code>
+      statement. Recall that <function>import</function> accepts one argument, a
+      nix file to load. In this case, the contents of the file evaluated to a
+      function.
+    </para>
+    <para>
+      Afterwards, we call the function with the empty set. We saw this already
+      in <link linkend="functions-and-imports">the fifth pill</link>. To
+      reiterate: <code>import &lt;nixpkgs> {}</code> is calling two functions,
+      not one. Reading it as <code>(import &lt;nixpkgs> {}</code> makes this
+      clearer.
+    </para>
+    <para>
+      The value returned by the nixpkgs function is a set. More specifically,
+      it's a set of derivations. Using the <code>with</code> expression we bring
+      them into scope. This is the same as what <command>:l</command> does in
+      <application>nix-repl</application>, so we can easily access derivations
+      such as <varname>bash</varname>, <varname>gcc</varname>, and
+      <varname>coreutils</varname>.
+    </para>
+    <para>
+      Then we meet the 
+      <link xlink:href="https://nixos.org/nix/manual/#idm140737318075200"><code>inherit</code> keyword</link>.
+      <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>;
+      <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
+    </para>
+    <para>
+      This syntax only makes sense inside sets. There's no magic involved, it's
+      simply a convenience to avoid repeating the same name for both the
+      attribute name and the value in scope.
+    </para>
+  </section>
+  <section>
+    <title>Next pill</title>
+    <para>
+      We will generalize the builder. You may have noticed that we wrote two
+      separate <filename>builder.sh</filename> scripts in this post. We would
+      like to have a generic builder script instead, especially since each build
+      script goes in the nix store: a bit of a waste.
+    </para>
+    <para>
+      <emphasis>Is it really that hard to package stuff in Nix? No</emphasis>,
+      here we're studying the fundamentals of Nix.
+    </para>
+  </section>
 </chapter>

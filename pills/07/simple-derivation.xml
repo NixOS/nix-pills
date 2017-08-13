@@ -1,0 +1,10 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }</userinput>
+<prompt>nix-repl> </prompt><userinput>:b d</userinput>
+<computeroutput>these derivations will be built:
+  /nix/store/ybnysdh5k6cjznhg4afjgbhr6czbwb4s-<emphasis>foo.drv</emphasis>
+building path(s) `/nix/store/72v14vk4li47n8sx3z2ibd802ihpqyvx-<emphasis>foo</emphasis>'
+these derivations will be built:
+  /nix/store/ibwr68l3rjlx02kgz61dkkkrlpgljfxd-simple.drv
+[...]<!-- Not sure if this should be marked up somehow -->
+this derivation produced the following outputs:
+  out -> /nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></computeroutput></screen>

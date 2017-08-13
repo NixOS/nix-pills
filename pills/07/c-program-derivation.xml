@@ -1,0 +1,7 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>:l &lt;nixpkgs></userinput>
+<prompt>nix-repl> </prompt><userinput>simple = derivation { name = "simple"; builder = "${bash}/bin/bash"; args = [ ./simple_builder.sh ]; gcc = gcc; coreutils = coreutils; src = ./simple.c; system = builtins.currentSystem;</userinput>
+<prompt>nix-repl> </prompt><userinput>:b simple</userinput>
+<computeroutput>this derivation produced the following outputs:
+
+  out -> /nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple
+</computeroutput></screen>
