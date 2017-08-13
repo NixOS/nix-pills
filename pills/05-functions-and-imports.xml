@@ -6,7 +6,7 @@ xml:id="functions-and-imports">
       <title>functions and imports</title>
 
 <section>
-
+      <title>Functions</title>
       <para>
             Welcome to the fifth Nix pill. In the previous <link
             linkend="basics-of-the-language">fourth pill</link> we touched the
@@ -95,7 +95,7 @@ xml:id="functions-and-imports">
       <para>
             We defined a function that takes the parameter <literal>a</literal>,
             the body returns another function. This other function takes a
-            parameter <literal>b<literal> and returns <literal>a*b</literal>.
+            parameter <literal>b</literal> and returns <literal>a*b</literal>.
             Therefore, calling <literal>mul 3</literal> returns this kind of
             function: <literal>b: 3*b</literal>. In turn, we call the returned
             function with <literal>4</literal>, and get the expected result.
