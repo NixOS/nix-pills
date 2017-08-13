@@ -1,0 +1,2 @@
+nix-repl> x: x*2
+«lambda»

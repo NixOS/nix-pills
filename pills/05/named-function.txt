@@ -1,0 +1,5 @@
+nix-repl> double = x: x*2
+nix-repl> double
+«lambda»
+nix-repl> double 3
+6

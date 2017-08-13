@@ -1,0 +1,3 @@
+nix-repl> mul = s@{ a, b, ... }: a*b*s.c
+nix-repl> mul { a = 3; b = 4; c = 2; }
+24

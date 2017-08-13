@@ -1,0 +1,6 @@
+nix-repl> mul = s: s.a*s.b
+nix-repl> mul { a = 3; b = 4; }
+12
+nix-repl> mul = { a, b }: a*b
+nix-repl> mul { a = 3; b = 4; }
+12
