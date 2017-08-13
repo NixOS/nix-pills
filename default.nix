@@ -27,6 +27,7 @@ let
     '';
 
   manualXsltprocOptions = toString [
+    "--param section.autolabel 1"
     "--param section.label.includes.component.label 1"
     "--stringparam html.stylesheet style.css"
     "--param xref.with.number.and.title 1"
