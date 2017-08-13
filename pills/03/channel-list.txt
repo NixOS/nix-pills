@@ -1,0 +1,2 @@
+$ nix-channel --list
+nixpkgs http://nixos.org/channels/nixpkgs-unstable

@@ -1,0 +1,3 @@
+$ nix-env -q
+nix-1.7
+nix-repl-1.7-1734e8a

@@ -1,0 +1,6 @@
+$ nix-store -q --references `which nix-repl`
+/nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19
+/nix/store/8jm0wksask7cpf85miyakihyfch1y21q-gcc-4.8.3
+/nix/store/25lg5iqy68k25hdv17yac72kcnwlh4lm-boehm-gc-7.2d
+/nix/store/g21di262aql6xskx15z3qiw3zh3wmjlb-nix-1.7
+/nix/store/jxs2k83npdin18ysnd104xm4sy29m8xp-readline-6.2
