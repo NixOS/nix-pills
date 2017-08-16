@@ -80,7 +80,7 @@
     <para>
       So we ran the <literal>configurePhase</literal> function and <literal>buildPhase</literal> function and they worked. These bash functions should be self-explanatory, you can read the code in the <filename>setup</filename> file.
     </para>
-    
+
   </section>
   <section>
     <title>How is the setup file built</title>
@@ -108,7 +108,7 @@
     </para>
 
     <screen><xi:include href="./19/stdenv-hello-build.txt" parse="text" /></screen>
-    
+
   </section>
   <section>
     <title>The stdenv.mkDerivation builder</title>
@@ -145,7 +145,7 @@
     <para>
       Last bit, the <literal>unpackPhase</literal> in the setup is used to unpack the sources and enter the directory, again like we did in our old builder.
     </para>
-    
+
   </section>
 
   <section>
@@ -172,7 +172,7 @@
     <para>
       Really, take your time to read that file. Don't forget that juicy docs are also available in the <link xlink:href="http://nixos.org/nixpkgs/manual/#chap-stdenv">nixpkgs manual</link>.
     </para>
-    
+
   </section>
   <section>
     <title>Next pill...</title>
@@ -180,6 +180,6 @@
     <para>
       ...we will talk about how to add dependencies to our packages, <literal>buildInputs</literal>, <literal>propagatedBuildInputs</literal> and <literal>setup</literal> hooks. These three concepts are at the base of the current <literal>nixpkgs</literal> packages composition.
     </para>
-    
+
   </section>
 </chapter>

@@ -1,0 +1,4 @@
+$ pp-aterm -i /nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv
+Derive(
+  [("out", "/nix/store/a00d5f71k0vp5a6klkls0mvr1f7sx6ch-bar", "sha256", "f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb")]
+...

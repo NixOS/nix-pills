@@ -1,0 +1,3 @@
+$ echo -n "output:out:sha256:423e6fdef56d53251c5939359c375bf21ea07aaa8d89ca5798fb374dbcfd7639:/nix/store:bar" > myfile.str
+$ nix-hash --type sha256 --truncate --base32 --flat myfile.str
+a00d5f71k0vp5a6klkls0mvr1f7sx6ch
