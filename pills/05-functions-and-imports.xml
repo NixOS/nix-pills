@@ -1,344 +1,336 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
-      xml:id="functions-and-imports">
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
+xml:id="functions-and-imports">
 
 <title>functions and imports</title>
 
-      <para>
-            Welcome to the fifth Nix pill. In the previous <link
-            linkend="basics-of-language">fourth pill</link> we touched the
-            Nix language for a moment. We introduced basic types and values of
-            the Nix language, and basic expressions such as
-            <code>if</code>, <code>with</code> and
-            <code>let</code>. I invite you to re-read about these
-            expressions and play with them in the repl.
-      </para>
+  <para>
+    Welcome to the fifth Nix pill. In the previous <link
+    linkend="basics-of-language">fourth pill</link> we touched the Nix language
+    for a moment. We introduced basic types and values of the Nix language, and
+    basic expressions such as
+    <code>if</code>, <code>with</code> and
+    <code>let</code>. I invite you to re-read about these expressions and play
+    with them in the repl.
+  </para>
 
-      <para>
-            Functions help to build reusable components in a big repository like
-            <link xlink:href="https://github.com/NixOS/nixpkgs/">nixpkgs</link>.
-            The Nix manual has a <link
-            xlink:href="https://nixos.org/nix/manual/#ss-functions">great
-            explanation of functions</link>. Let's go: pill on one hand, Nix
-            manual on the other hand.
-      </para>
+  <para>
+    Functions help to build reusable components in a big repository like
+    <link xlink:href="https://github.com/NixOS/nixpkgs/">nixpkgs</link>. The Nix
+    manual has a <link
+    xlink:href="https://nixos.org/nix/manual/#ss-functions">great explanation of
+    functions</link>. Let's go: pill on one hand, Nix manual on the other hand.
+  </para>
 
-      <para>
-            I remind you how to enter the Nix environment: <code>source
-            ~/.nix-profile/etc/profile.d/nix.sh</code>
-      </para>
+  <para>
+    I remind you how to enter the Nix environment: <code>source
+    ~/.nix-profile/etc/profile.d/nix.sh</code>
+  </para>
 
 <section>
-      <title>Nameless and single parameter</title>
+  <title>Nameless and single parameter</title>
 
-      <para>
-            Functions are anonymous (lambdas), and only have a single parameter.
-            The syntax is extremely simple. Type the parameter name, then
-            "<code>:</code>", then the body of the function.
-      </para>
+  <para>
+    Functions are anonymous (lambdas), and only have a single parameter. The
+    syntax is extremely simple. Type the parameter name, then "<code>:</code>",
+    then the body of the function.
+  </para>
 
-      <screen><xi:include href="./05/anon-function.txt" parse="text" /></screen>
+  <screen><xi:include href="./05/anon-function.txt" parse="text" /></screen>
 
-      <para>
-            So here we defined a function that takes a parameter
-            <code>x</code>, and returns <code>x*2</code>. The
-            problem is that we cannot use it in any way, because it's unnamed...
-            joke!
-      </para>
+  <para>
+    So here we defined a function that takes a parameter
+    <code>x</code>, and returns <code>x*2</code>. The problem is that we cannot
+    use it in any way, because it's unnamed... joke!
+  </para>
 
-      <para>
-            We can store functions in variables.
-      </para>
+  <para>
+    We can store functions in variables.
+  </para>
 
-      <screen><xi:include href="./05/named-function.txt" parse="text"
-      /></screen>
+  <screen><xi:include href="./05/named-function.txt" parse="text" /></screen>
 
-      <para>
-            As usual, please ignore the special syntax for assignments inside
-            nix-repl. So, we defined a function <code>x: x*2</code> that
-            takes one parameter <code>x</code>, and returns
-            <code>x*2</code>. This function is then assigned to the
-            variable <code>double</code>. Finally we did our first
-            function call: <code>double 3</code>.
-      </para>
+  <para>
+    As usual, please ignore the special syntax for assignments inside nix-repl.
+    So, we defined a function <code>x: x*2</code> that takes one parameter
+    <code>x</code>, and returns
+    <code>x*2</code>. This function is then assigned to the variable
+    <code>double</code>. Finally we did our first function call: <code>double
+    3</code>.
+  </para>
 
-      <para>
-            <emphasis role="underline">Big note:</emphasis> it's not like many
-            other programming languages where you write
-            <code>double(3)</code>. It really is <code>double
-            3</code>.
-      </para>
+  <para>
+    <emphasis role="underline">Big note:</emphasis> it's not like many other
+    programming languages where you write
+    <code>double(3)</code>. It really is <code>double 3</code>.
+  </para>
 
-      <para>
-            In summary: to call a function, name the variable, then space, then
-            the argument. Nothing else to say, it's as easy as that.
-      </para>
+  <para>
+    In summary: to call a function, name the variable, then space, then the
+    argument. Nothing else to say, it's as easy as that.
+  </para>
 </section>
 
 <section>
-      <title>More than one parameter</title>
+  <title>More than one parameter</title>
 
-      <para>
-            How do we create a function that accepts more than one parameter?
-            For people not used to functional programming, this may take a while
-            to grasp. Let's do it step by step.
-      </para>
+  <para>
+    How do we create a function that accepts more than one parameter? For people
+    not used to functional programming, this may take a while to grasp. Let's do
+    it step by step.
+  </para>
 
-      <screen><xi:include href="./05/multi-argument-function.txt" parse="text"
-      /></screen>
+  <screen><xi:include href="./05/multi-argument-function.txt" parse="text"
+  /></screen>
 
-      <para>
-            We defined a function that takes the parameter <code>a</code>,
-            the body returns another function. This other function takes a
-            parameter <code>b</code> and returns <code>a*b</code>.
-            Therefore, calling <code>mul 3</code> returns this kind of
-            function: <code>b: 3*b</code>. In turn, we call the returned
-            function with <code>4</code>, and get the expected result.
-      </para>
+  <para>
+    We defined a function that takes the parameter <code>a</code>, the body
+    returns another function. This other function takes a parameter
+    <code>b</code> and returns <code>a*b</code>. Therefore, calling <code>mul
+    3</code> returns this kind of function: <code>b: 3*b</code>. In turn, we
+    call the returned function with <code>4</code>, and get the expected result.
+  </para>
 
-      <para>
-            You don't have to use parenthesis at all, Nix has sane priorities
-            when parsing the code:
-      </para>
+  <para>
+    You don't have to use parenthesis at all, Nix has sane priorities when
+    parsing the code:
+  </para>
 
-      <screen><xi:include href="./05/no-parenthesis.txt" parse="text"
-      /></screen>
+  <screen><xi:include href="./05/no-parenthesis.txt" parse="text" /></screen>
 
-      <para>
-            Much more readable, you don't even notice that functions only
-            receive one argument. Since the argument is separated by a space, to
-            pass more complex expressions you need parenthesis. In other common
-            languages you would write <code>mul(6+7, 8+9)</code>.
-      </para>
+  <para>
+    Much more readable, you don't even notice that functions only receive one
+    argument. Since the argument is separated by a space, to pass more complex
+    expressions you need parenthesis. In other common languages you would write
+    <code>mul(6+7, 8+9)</code>.
+  </para>
 
-      <para>
-            Given that functions have only one parameter, it is straightforward
-            to use <emphasis role="strong">partial application</emphasis>:
-      </para>
+  <para>
+    Given that functions have only one parameter, it is straightforward to use
+    <emphasis role="strong">partial application</emphasis>:
+  </para>
 
-      <screen><xi:include href="./05/partial-application.txt" parse="text"
-      /></screen>
+  <screen><xi:include href="./05/partial-application.txt" parse="text"
+  /></screen>
 
-      <para>
-            We stored the function returned by <code>mul 3</code> into a
-            variable foo, then reused it.
-      </para>
+  <para>
+    We stored the function returned by <code>mul 3</code> into a variable foo,
+    then reused it.
+  </para>
 </section>
 
 <section>
-      <title>Arguments set</title>
+  <title>Arguments set</title>
 
-      <para>
-            Now this is a very cool feature of Nix. It is possible to pattern
-            match over a set in the parameter. We write an alternative version
-            of <code>mul = a: b: a*b</code> first by using a set as
-            argument, then using pattern matching.
-      </para>
+  <para>
+    Now this is a very cool feature of Nix. It is possible to pattern match over
+    a set in the parameter. We write an alternative version of <code>mul = a: b:
+    a*b</code> first by using a set as argument, then using pattern matching.
+  </para>
 
-      <screen><xi:include href="./05/set-argument.txt" parse="text" /></screen>
+  <screen><xi:include href="./05/set-argument.txt" parse="text" /></screen>
 
-      <para>
-            In the first case we defined a function that accepts a single
-            parameter. We then access attributes <code>a</code> and
-            <code>b</code> from the given set. Note how the
-            parenthesis-less syntax for function calls is very elegant in this
-            case, instead of doing <code>mul({ a=3; b=4; })</code> in
-            other languages.
-      </para>
+  <para>
+    In the first case we defined a function that accepts a single parameter. We
+    then access attributes <code>a</code> and
+    <code>b</code> from the given set. Note how the parenthesis-less syntax for
+    function calls is very elegant in this case, instead of doing <code>mul({
+    a=3; b=4; })</code> in other languages.
+  </para>
 
-      <para>
-            In the second case we defined an arguments set. It's like defining a
-            set, except without values. We require that the passed set contains
-            the keys <code>a</code> and <code>b</code>. Then we can
-            use those <code>a</code> and <code>b</code> in the
-            function body directly.
-      </para>
+  <para>
+    In the second case we defined an arguments set. It's like defining a set,
+    except without values. We require that the passed set contains the keys
+    <code>a</code> and <code>b</code>. Then we can use those <code>a</code> and
+    <code>b</code> in the function body directly.
+  </para>
 
-      <screen><xi:include href="./05/argument-set-error.txt" parse="text"
-      /></screen>
+  <screen><xi:include href="./05/argument-set-error.txt" parse="text"
+  /></screen>
 
-      <para>
-            Only a set with exactly the attributes required by the function is
-            accepted, nothing more, nothing less.
-      </para>
+  <para>
+    Only a set with exactly the attributes required by the function is accepted,
+    nothing more, nothing less.
+  </para>
 </section>
 
 <section>
-      <title>Default and variadic attributes</title>
+  <title>Default and variadic attributes</title>
 
+  <para>
+    It is possible to specify <emphasis role="strong">default values</emphasis>
+    of attributes in the arguments set:
+  </para>
+
+  <screen><xi:include href="./05/default-values.txt" parse="text" /></screen>
+
+  <para>
+    Also you can allow passing more attributes (<emphasis
+    role="strong">variadic</emphasis>) than the expected ones:
+  </para>
+
+  <screen><xi:include href="./05/variadic-arguments.txt" parse="text"
+  /></screen>
+
+  <para>
+    However, in the function body you cannot access the "c" attribute. The
+    solution is to give a name to the given set with the <emphasis
+    role="strong">@-pattern</emphasis>:
+  </para>
+
+  <screen><xi:include href="./05/named-set-argument.txt" parse="text"
+  /></screen>
+
+  <para>
+    That's it, you give a name to the whole parameter with name@ before the set
+    pattern.
+  </para>
+
+  <para>
+    Advantages of using argument sets:
+  </para>
+
+  <itemizedlist mark='bullet'>
+    <listitem>
       <para>
-            It is possible to specify <emphasis role="strong">default
-            values</emphasis> of attributes in the arguments set:
+        Named unordered arguments: you don't have to remember the order of the
+        arguments.
       </para>
-
-      <screen><xi:include href="./05/default-values.txt" parse="text"
-      /></screen>
-
+    </listitem>
+    <listitem>
       <para>
-            Also you can allow passing more attributes (<emphasis
-            role="strong">variadic</emphasis>) than the expected ones:
+        You can pass sets, that adds a whole new layer of flexibility and
+        convenience. 
       </para>
+    </listitem>
+  </itemizedlist>
 
-      <screen><xi:include href="./05/variadic-arguments.txt" parse="text"
-      /></screen>
+  <para>
+    Disadvantages:
+  </para>
 
+  <itemizedlist mark='bullet'>
+    <listitem>
       <para>
-            However, in the function body you cannot access the "c" attribute.
-            The solution is to give a name to the given set with the <emphasis
-            role="strong">@-pattern</emphasis>:
+        Partial application does not work with argument sets. You have to
+        specify the whole attribute set, not part of it.
       </para>
+    </listitem>
+  </itemizedlist>
 
-      <screen><xi:include href="./05/named-set-argument.txt" parse="text"
-      /></screen>
-
-      <para>
-            That's it, you give a name to the whole parameter with name@ before
-            the set pattern.
-      </para>
-
-      <para>
-            Advantages of using argument sets:
-      </para>
-
-      <itemizedlist mark='bullet'>
-            <listitem>
-                  <para>
-                        Named unordered arguments: you don't have to remember
-                        the order of the arguments.
-                  </para>
-            </listitem>
-            <listitem>
-                  <para>
-                        You can pass sets, that adds a whole new layer of
-                        flexibility and convenience. 
-                  </para>
-            </listitem>
-      </itemizedlist>
-
-      <para>
-            Disadvantages:
-      </para>
-
-      <itemizedlist mark='bullet'>
-            <listitem>
-                  <para>
-                        Partial application does not work with argument sets.
-                        You have to specify the whole attribute set, not part of
-                        it.
-                  </para>
-            </listitem>
-      </itemizedlist>
-
-      <para>
-            You may find similarities with <link
-            xlink:href="https://docs.python.org/2/faq/programming.html#how-can-i-pass-optional-or-keyword-parameters-from-one-function-to-another">Python
-            **kwargs</link>.
-      </para>
+  <para>
+    You may find similarities with <link
+    xlink:href="https://docs.python.org/2/faq/programming.html#how-can-i-pass-optional-or-keyword-parameters-from-one-function-to-another">Python
+    **kwargs</link>.
+  </para>
 </section>
 
 <section>
-      <title>Imports</title>
+  <title>Imports</title>
 
+  <para>
+    The <code>import</code> function is built-in and provides a way to parse a
+    <filename>.nix</filename> file. The natural approach is to define each
+    component in a <filename>.nix</filename> file, then compose by importing
+    these files.
+  </para>
+
+  <para>
+    Let's start with the bare metal.
+  </para>
+
+  <para>
+    <filename>a.nix</filename>:
+  </para>
+
+  <programlisting><xi:include href="./05/a-nix.txt" parse="text"
+  /></programlisting>
+
+  <para>
+    <filename>b.nix</filename>:
+  </para>
+
+  <programlisting><xi:include href="./05/b-nix.txt" parse="text"
+  /></programlisting>
+
+  <para>
+    <filename>mul.nix</filename>:
+  </para>
+
+  <programlisting><xi:include href="./05/mul-nix.txt" parse="text"
+  /></programlisting>
+
+  <screen><xi:include href="./05/import.txt" parse="text" /></screen>
+
+  <para>
+    Yes it's really that straight. You import a file, and it gets parsed as
+    expression. Note that the scope of the imported file does not inherit the
+    scope of the importer.
+  </para>
+
+  <para>
+    <filename>test.nix</filename>:
+  </para>
+
+  <programlisting><xi:include href="./05/test-nix.txt" parse="text"
+  /></programlisting>
+
+  <screen><xi:include href="./05/test-import.txt" parse="text" /></screen>
+
+  <para>
+    So how do we pass information to the module? Use functions, like we did with
+    <filename>mul.nix</filename>. A more complex example:
+  </para>
+
+  <para>
+    <filename>test.nix</filename>:
+  </para>
+
+  <screen><xi:include href="./05/test-nix-2.txt" parse="text" /></screen>
+
+
+  <para>
+    Explaining:
+  </para>
+
+  <itemizedlist mark='bullet'>
+    <listitem>
       <para>
-            The <code>import</code> function is built-in and provides a
-            way to parse a <filename>.nix</filename> file. The natural approach
-            is to define each component in a <filename>.nix</filename> file,
-            then compose by importing these files.
+        In <filename>test.nix</filename> we return a function. It accepts a set,
+        with default attributes
+        <code>b</code>, <code>trueMsg</code> and
+        <code>falseMsg</code>.
       </para>
-
+    </listitem>
+    <listitem>
       <para>
-            Let's start with the bare metal.
+        <code>builtins.trace</code> is a <link
+        xlink:href="https://nixos.org/nix/manual/#ssec-builtins">built-in
+        function</link> that takes two arguments. The first is the message to
+        display, the second is the value to return. It's usually used for
+        debugging purposes.
       </para>
-
+    </listitem>
+    <listitem>
       <para>
-            <filename>a.nix</filename>:
+        Then we import <filename>test.nix</filename>, and call the function with
+        that set.
       </para>
+    </listitem>
+  </itemizedlist>
 
-      <programlisting><xi:include href="./05/a-nix.txt" parse="text" /></programlisting>
-
-      <para>
-            <filename>b.nix</filename>:
-      </para>
-
-      <programlisting><xi:include href="./05/b-nix.txt" parse="text" /></programlisting>
-
-      <para>
-            <filename>mul.nix</filename>:
-      </para>
-
-      <programlisting><xi:include href="./05/mul-nix.txt" parse="text" /></programlisting>
-
-      <screen><xi:include href="./05/import.txt" parse="text" /></screen>
-
-      <para>
-            Yes it's really that straight. You import a file, and it gets parsed
-            as expression. Note that the scope of the imported file does not
-            inherit the scope of the importer.
-      </para>
-
-      <para>
-            <filename>test.nix</filename>:
-      </para>
-
-      <programlisting><xi:include href="./05/test-nix.txt" parse="text" /></programlisting>
-
-      <screen><xi:include href="./05/test-import.txt" parse="text" /></screen>
-
-      <para>
-            So how do we pass information to the module? Use functions, like we
-            did with <filename>mul.nix</filename>. A more complex example:
-      </para>
-
-      <para>
-            <filename>test.nix</filename>:
-      </para>
-
-      <screen><xi:include href="./05/test-nix-2.txt" parse="text" /></screen>
-
-
-      <para>
-            Explaining:
-      </para>
-
-      <itemizedlist mark='bullet'>
-            <listitem>
-                  <para>
-                        In <filename>test.nix</filename> we return a function.
-                        It accepts a set, with default attributes
-                        <code>b</code>, <code>trueMsg</code> and
-                        <code>falseMsg</code>.
-                  </para>
-            </listitem>
-            <listitem>
-                  <para>
-                        <code>builtins.trace</code> is a <link
-                        xlink:href="https://nixos.org/nix/manual/#ssec-builtins">built-in
-                        function</link> that takes two arguments. The first is
-                        the message to display, the second is the value to
-                        return. It's usually used for debugging purposes.
-                  </para>
-            </listitem>
-            <listitem>
-                  <para>
-                        Then we import <filename>test.nix</filename>, and call
-                        the function with that set.
-                  </para>
-            </listitem>
-      </itemizedlist>
-
-      <para>
-            So when is the message shown? Only when it's in need to be
-            evaluated.
-      </para>
+  <para>
+    So when is the message shown? Only when it's in need to be evaluated.
+  </para>
 </section>
 
 <section>
-      <title>Next pill</title>
+  <title>Next pill</title>
 
-      <para>
-            ...we will finally write our first derivation.
-      </para>
+  <para>
+    ...we will finally write our first derivation.
+  </para>
 </section>
 
 </chapter>
