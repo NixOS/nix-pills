@@ -1,0 +1,2 @@
+nix-repl> let x = 5; in import ./test.nix
+error: undefined variable `x' at /home/lethal/test.nix:1:1
