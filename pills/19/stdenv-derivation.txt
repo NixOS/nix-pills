@@ -1,0 +1,8 @@
+$ nix-build '<nixpkgs>' -A stdenv
+/nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv
+$ ls -R result/
+result/:
+nix-support/  setup
+
+result/nix-support:
+propagated-user-env-packages

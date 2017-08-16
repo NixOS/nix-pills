@@ -1,0 +1,6 @@
+./myfile./myfileterm -i /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv
+Derive(
+  [("out", "/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo", "", "")]
+, []
+, ["/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile"]
+, "x86_64-linux"
