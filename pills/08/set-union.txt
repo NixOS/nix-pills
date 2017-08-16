@@ -1,0 +1,4 @@
+nix-repl> { a = "b"; } // { c = "d"; }
+{ a = "b"; c = "d"; }
+nix-repl> { a = "b"; } // { a = "c"; }
+{ a = "c"; }
