@@ -10,6 +10,4 @@ in rec {
         ];
       meta.description = "All build outputs";
     };
-  };
-
 }
