@@ -34,7 +34,7 @@ let
     "--param toc.section.depth 3"
     "--stringparam admon.style ''"
     "--stringparam callout.graphics.extension .svg"
-    "--stringparam current.docid manual"
+    "--stringparam current.docid nix-pills"
     "--param chunk.section.depth 0"
     "--param chunk.first.sections 1"
     "--param use.id.as.filename 1"
@@ -57,7 +57,7 @@ in pkgs.stdenv.mkDerivation {
     xsltproc \
       ${manualXsltprocOptions} \
       --nonet --output $dst/ \
-      ${pkgs.docbook5_xsl}/xml/xsl/docbook/xhtml/chunktoc.xsl \
+      ${pkgs.docbook5_xsl}/xml/xsl/docbook/xhtml/chunk.xsl \
       ${combined}
 
     mkdir -p $dst/images
