@@ -4,5 +4,185 @@
       version="5.0"
       xml:id="developing-with-nix-shell">
 
-<title>developing with nix shell</title>
+  <title>Developing with nix shell</title>
+
+  <para>
+    Welcome to the 10th Nix pill. In the previous
+    <link linkend="automatic-runtime-dependencies">9th pill</link> we have seen
+    one of the powerful features of nix, automatic discovery of runtime
+    dependencies and finalized the GNU hello world package.
+  </para>
+
+  <para>
+    In return from vacation, we want to hack a little the GNU hello world
+    program. The nix-build tool creates an isolated environment for building
+    the derivation, we want to do the same in order to modify some source
+    files of the project.
+  </para>
+
+  <section>
+    <title>What's nix-shell</title>
+
+    <para>
+      The <link
+      xlink:href="https://nixos.org/nix/manual/#sec-nix-shell">nix-shell</link>
+      tool drops us in a shell by setting up the necessary environment
+      variables to hack a derivation. It does not build the derivation, it
+      only serves as a preparation so that we can run the build steps manually.
+    </para>
+
+    <para>
+      I remind you, in a nix environment you don't have access to libraries and
+      programs unless you install them with nix-env. However installing
+      libraries with nix-env is not good practice. We prefer to have isolated
+      environments for development.
+    </para>
+
+    <screen><xi:include href="./10/nix-shell-hello.txt" parse="text" /></screen>
+
+    <para>
+      First thing to notice, we call <command>nix-shell</command> on a nix
+      expression which returns a derivation. We then enter a new bash shell,
+      but it's really useless. We expected to have the GNU hello world build
+      inputs available in PATH, including GNU make, but it's not the case.
+    </para>
+
+    <para>
+      But, we have the environment variables that we set in the derivation,
+      like <code>$baseInputs</code>, <code>$buildInputs</code>,
+      <code>$src</code> and so on.
+    </para>
+
+    <para>
+      That means we can source our <filename>builder.sh</filename>, and it will
+      build the derivation. You may get an error in the installation phase,
+      because the user may not have the permission to write to
+      <filename>/nix/store</filename>:
+    </para>
+
+    <screen><xi:include href="./10/source-builder.txt" parse="text" /></screen>
+
+    <para>
+      It didn't install, but it built. Things to notice:
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          We sourced builder.sh, therefore it ran all the steps including
+          setting up the PATH for us.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The working directory is no more a temp directory created by nix-build, but the current directory. Therefore, hello-2.9 has been unpacked there.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      We're able to <command>cd</command> into hello-2.9 and type
+      <command>make</command>, because now it's available.
+    </para>
+
+    <para>
+      In other words, <command>nix-shell</command> drops us in a shell with the
+      same (or almost) environment used to run the builder!
+    </para>
+  </section>
+
+  <section>
+    <title>A builder for nix-shell</title>
+
+    <para>
+      The previous steps are a bit annoying of course, but we can improve our
+      builder to be more nix-shell friendly.
+    </para>
+
+    <para>
+      First of all, we were able to source <filename>builder.sh</filename>
+      because it was in our current directory, but that's not nice. We want the
+      <filename>builder.sh</filename> that is stored in the nix store, the one
+      that would be used by <command>nix-build</command>. To do so, the right
+      way is to pass the usual environment variable through the derivation.
+    </para>
+
+    <para>
+      <emphasis role="underlined">Note</emphasis>: <code>$builder</code> is
+      already defined, but it's the bash executable, not our
+      <filename>builder.sh</filename>. Our <filename>builder.sh</filename> is
+      an argument to bash.
+    </para>
+
+    <para>
+      Second, we don't want to run the whole builder, we only want it to setup
+      the necessary environment for manually building the project. So we'll
+      write two files, one for setting up the environment, and the real
+      <filename>builder.sh</filename> that runs with
+      <command>nix-build</command>.
+    </para>
+
+    <para>
+      Additionally, we'll wrap the phases in functions, it may be useful, and
+      move the <code>set -e</code> to the builder instead of the setup. The
+      <code>set -e</code> is annoying in <command>nix-shell</command>.
+    </para>
+
+    <para>
+      The codebase is becoming a little long. You can find all the files in this
+      <link xlink:href="https://gist.github.com/lethalman/97fae227329b442267bc">nixpill10 gist</link>.
+      Noteworthy is the <code>setup = ./setup.sh;</code> attribute in the
+      derivation, which adds <filename>setup.sh</filename> to the nix store and
+      as usual, adds a <code>$setup</code> environment variable in the builder.
+      Thanks to that, we can split <filename>builder.sh</filename> into
+      <filename>setup.sh</filename> and <filename>builder.sh</filename>. What
+      <filename>builder.sh</filename> does is sourcing <code>$setup</code> and
+      calling the <code>genericBuild</code> function. Everything else is just
+      some bash changes.
+    </para>
+
+    <para>
+      Now back to nix-shell:
+    </para>
+
+    <screen><xi:include href="./10/nix-shell-source.txt" parse="text" /></screen>
+
+    <para>
+      Now you can run, for example, <code>unpackPhase</code> which unpacks
+      <code>$src</code> and enters the directory. And you can run commands
+      like <command>./configure</command>, <command>make</command> etc.
+      manually, or run phases with their respective functions.
+    </para>
+
+    <para>
+      It's all that straight, <command>nix-shell</command> builds the .drv file
+      and its input dependencies, then drops into a shell by setting up the
+      environment variables necessary to build the .drv, in particular those
+      passed to the derivation function.
+    </para>
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>
+      With <command>nix-shell</command> we're able to drop into an isolated
+      environment for developing a project, with the necessary dependencies
+      just like <command>nix-build</command> does, except we can build and
+      debug the project manually, step by step like you would do in any other
+      operating system. Note that we did never install <command>gcc</command>,
+      <command>make</command>, etc. system-wide. These tools and libraries are
+      available per-build.
+    </para>
+  </section>
+
+  <section>
+    <title>Next pill</title>
+
+    <para>
+      ...we will clean up the nix store. We wrote and built derivations, added
+      stuff to nix store, but until now we never worried about cleaning up the
+      used space in the store. It's time to collect some garbage.
+    </para>
+  </section>
 </chapter>
