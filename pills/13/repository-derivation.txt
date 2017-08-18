@@ -1,0 +1,4 @@
+rec {
+  lib1 = import package1.nix { inherit input1 input2 ...; };
+  program2 = import package1.nix { inherit inputX inputY lib1 ...; };
+}
