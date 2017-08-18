@@ -1,0 +1,3 @@
+$ nix-shell hello.nix
+[nix-shell]$ source $setup
+[nix-shell]$
