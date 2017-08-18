@@ -1,0 +1,4 @@
+$ nix-build default.nix -A hello
+[...]
+$ result/bin/hello
+Hello, world!
