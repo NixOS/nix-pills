@@ -4,5 +4,300 @@
       version="5.0"
       xml:id="garbage-collector">
 
-<title>garbage collector</title>
+  <title>Garbage collector</title>
+
+  <para>
+    Welcome to the 11th Nix pill. In the previous
+    <link linkend="developing-with-nix-shell">10th pill</link> we managed to
+    obtain a self-contained environment for developing a project. The concept
+    is that whereas <command>nix-build</command> is able to build a derivation
+    in isolation, <command>nix-shell</command> is able to drop us in a shell
+    with (almost) the same environment used by <command>nix-build</command>.
+    This allows us to debug, modify and manually build software.
+  </para>
+
+  <para>
+    Today we stop packaging and look at a mandatory nix component, the garbage
+    collector. When using nix tools, often derivations are built. This include
+    both .drv files and out paths. These artifacts go in the nix store, and we
+    never cared about deleting them until now.
+  </para>
+
+
+  <section>
+    <title>How does it work</title>
+
+    <para>
+      Other package managers, like <command>dpkg</command>, have somehow a way
+      to remove unused software. However, nix is much more precise compared to
+      other systems.
+    </para>
+
+    <para>
+      I bet with <command>dpkg</command>, <command>rpm</command> or anything
+      else, you end up with having some unnecessary package installed or
+      dangling files. With nix this does not happen.
+    </para>
+
+
+    <para>
+      How do we determine whether a store path is still needed? The same way
+      programming languages with a garbage collector decide whether an object
+      is still alive.
+    </para>
+
+    <para>
+      Programming languages with a garbage collector have an important concept
+      in order to keep track of live objects: GC roots. A GC root is an object
+      that is always alive (unless explicitly removed as GC root). All objects
+      recursively referred to by a GC root are live.
+    </para>
+
+    <para>
+      Therefore, the garbage collection process starts from GC roots, and
+      recursively mark referenced objects as live. All other objects can be
+      collected and deleted.
+    </para>
+
+    <para>
+      In Nix there's this same concept. Instead of being objects, of course,
+      <link xlink:href="http://nixos.org/nix/manual/#ssec-gc-roots">GC roots are store paths</link>.
+      The implementation is very simple and transparent to the user. GC roots
+      are stored under <filename>/nix/var/nix/gcroots</filename>. If there's a
+      symlink to a store path, then that store path is a GC root.
+    </para>
+
+    <para>
+      Nix allows this directory to have subdirectories: it will simply recurse
+      directories in search of symlinks to store paths.
+    </para>
+
+    <para>
+      So we have a list of GC roots. At this point, deleting dead store paths
+      is as easy as you can imagine. We have the list of all live store paths,
+      hence the rest of the store paths are dead.
+    </para>
+
+    <para>
+      In particular, Nix first moves dead store paths to
+      <filename>/nix/store/trash</filename> which is an atomic operation.
+      Afterwards, the trash is emptied.
+    </para>
+  </section>
+
+  <section>
+    <title>Playing with the GC</title>
+
+    <para>
+      Before playing with the GC, first run the
+      <link xlink:href="http://nixos.org/nix/manual/#sec-nix-collect-garbage">nix garbage collector</link>
+      once, so that we have a cleaned up playground for our experiments:
+    </para>
+
+    <screen><xi:include href="./11/nix-collect-garbage.txt" parse="text" /></screen>
+
+    <para>
+      Perfect, if you run it again it won't find anything new to delete, as
+      expected.
+    </para>
+
+    <para>
+      What's left in the nix store is everything being referenced from the GC
+      roots.
+    </para>
+
+    <para>
+      Let's install for a moment bsd-games:
+    </para>
+
+    <screen><xi:include href="./11/install-bsd-games.txt" parse="text" /></screen>
+
+    <para>
+      The nix-store command can be used to query the GC roots that refer to a
+      given derivation. In this case, our current user environment does refer
+      to bsd-games.
+    </para>
+
+    <para>
+      Now remove it, collect garbage and note that bsd-games is still in the nix
+      store:
+    </para>
+
+    <screen><xi:include href="./11/remove-bsd-games.txt" parse="text" /></screen>
+
+    <para>
+      That's because the old generation is still in the nix store because it's a GC root. As we'll see below, all profiles and their generations are GC roots.
+    </para>
+
+    <para>
+      Removing a GC root is simple. Let's try deleting the generation that
+      refers to bsd-games, collect garbage, and note that now bsd-games is no
+      longer in the nix store:
+    </para>
+
+    <screen><xi:include href="./11/remove-gen-9.txt" parse="text" /></screen>
+
+    <para>
+      <emphasis role="underline">Note</emphasis>:
+      <command>nix-env --list-generations</command> does not rely on any
+      particular metadata. It is able to list generations based solely on the
+      file names under the profiles directory.
+    </para>
+
+    <para>
+      However we removed the link from
+      <filename>/nix/var/nix/profiles</filename>, not from
+      <filename>/nix/var/nix/gcroots</filename>. Turns out, that
+      <filename>/nix/var/nix/gcroots/profiles</filename> is a symlink to
+      <filename>/nix/var/nix/profiles</filename>. That is very handy. It means
+      any profile and its generations are GC roots.
+    </para>
+
+    <para>
+      It's as simple as that, anything under
+      <filename>/nix/var/nix/gcroots</filename> is a GC root. And anything not
+      being garbage collected is because it's referred from one of the GC roots.
+    </para>
+  </section>
+
+  <section>
+    <title>Indirect roots</title>
+
+    <para>
+      I remind you that building the GNU hello world package with
+      <command>nix-build</command> produces a <filename>result</filename>
+      symlink in the current directory. Despite the collected garbage done
+      above, the <command>hello</command> program is still working: therefore
+      it has not been garbage collected. Clearly, since there's no other
+      derivation that depends upon the GNU hello world package, it must be a
+      GC root.
+    </para>
+
+    <para>
+      In fact, <command>nix-build</command> automatically adds the result
+      symlink as a GC root. Yes, not the built derivation, but the symlink.
+      These GC roots are added under
+      <filename>/nix/var/nix/gcroots/auto</filename>.
+    </para>
+
+    <screen><xi:include href="./11/ls-gcroots-auto.txt" parse="text" /></screen>
+
+    <para>
+      Don't care about the name of the symlink. What's important is that a
+      symlink exists that point to <filename>/home/nix/result</filename>. This
+      is called an <emphasis role="bold">indirect GC root</emphasis>. That is,
+      the GC root is effectively specified outside of
+      <filename>/nix/var/nix/gcroots</filename>. Whatever
+      <filename>result</filename> points to, it will not be garbage collected.
+    </para>
+
+    <para>
+      How do we remove the derivation then? There are two possibilities:
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          Remove the indirect GC root from
+          <filename>/nix/var/nix/gcroots/auto</filename>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Remove the <filename>result</filename> symlink.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      In the first case, the derivation will be deleted from the nix store, and
+      <filename>result</filename> becomes a dangling symlink. In the second
+      case, the derivation is removed as well as the indirect root in
+      <filename>/nix/var/nix/gcroots/auto</filename>.
+    </para>
+
+    <para>
+      Running <command>nix-collect-garbage</command> after deleting the GC root
+      or the indirect GC root, will remove the derivation from the store.
+    </para>
+  </section>
+
+  <section>
+    <title>Cleanup everything</title>
+
+    <para>
+      What's the main source of software duplication in the nix store? Clearly,
+      GC roots due to <command>nix-build</command> and profile generations.
+      Doing a <command>nix-build</command> results in a GC root for a build
+      that somehow will refer to a specific version of <package>glibc</package>,
+      and other libraries. After an upgrade, if that build is not deleted by
+      the user, it will not be garbage collected. Thus the old dependencies
+      referred to by the build will not be deleted either.
+    </para>
+
+    <para>
+      Same goes for profiles. Manipulating the <command>nix-env</command>
+      profile will create further generations. Old generations refer to old
+      software, thus increasing duplication in the nix store after an upgrade.
+    </para>
+
+    <para>
+      What are the basic steps for upgrading and removing everything old,
+      including old generations? In other words, do an upgrade similar to other
+      systems, where they forget everything about the older state:
+    </para>
+
+    <screen><xi:include href="./11/channel-update.txt" parse="text" /></screen>
+
+    <para>
+      First, we download a new version of the nixpkgs channel, which holds the
+      description of all the software. Then we upgrade our installed packages
+      with <command>nix-env -u</command>. That will bring us into a fresh new
+      generation with all updated software.
+    </para>
+
+    <para>
+      Then we remove all the indirect roots generated by
+      <command>nix-build</command>: beware, this will result in dangling
+      symlinks. You may be smarter and also remove the target of those symlinks.
+    </para>
+
+    <para>
+      Finally, the <command>-d</command> option of
+      <command>nix-collect-garbage</command> is used to delete old generations
+      of all profiles, then collect garbage. After this, you lose the ability
+      to rollback to any previous generation. So make sure the new generation
+      is working well before running the command.
+    </para>
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>
+      Garbage collection in Nix is a powerful mechanism to cleanup your system.
+      The nix-store commands allows us to know why a certain derivation is in
+      the nix store.
+    </para>
+
+    <para>
+      Cleaning up everything down to the oldest bit of software after an
+      upgrade seems a bit contrived, but that's the price of having multiple
+      generations, multiple profiles, multiple versions of software, thus
+      rollbacks etc.. The price of having many possibilities.
+    </para>
+  </section>
+
+  <section>
+    <title>Next pill</title>
+
+    <para>
+      ...we will package another project and introduce what I call the "inputs"
+      design pattern. We only played with a single derivation until now,
+      however we'd like to start organizing a small repository of software. The
+      "inputs" pattern is widely used in nixpkgs; it allows us to decouple
+      derivations from the repository itself and increase customization
+      opportunities.
+    </para>
+  </section>
 </chapter>
