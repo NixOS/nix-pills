@@ -1,0 +1,4 @@
+{
+  lib1 = callPackage package1.nix { };
+  program2 = callPackage package2.nix { someoverride = overriddenDerivation; };
+}

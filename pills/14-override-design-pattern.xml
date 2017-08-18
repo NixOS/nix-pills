@@ -1,8 +1,144 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      version="5.0"
-      xml:id="override-design-pattern">
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  version="5.0"
+  xml:id="override-design-pattern">
 
-<title>override design pattern</title>
+  <title>override design pattern</title>
+  <para>
+    Welcome to the 14th Nix pill. In the previous <link linkend="callpackage-design-pattern">13th</link> pill we have introduced the <literal>callPackage</literal> pattern, used to simplify the composition of software in a repository.
+  </para>
+  <para>
+    The next design pattern is less necessary but useful in many cases and it's a good exercise to learn more about Nix.
+  </para>
+  <section>
+    <title>About composability</title>
+    <para>
+      Functional languages are known for being able to compose functions. In particular, you gain a lot from functions that are able to manipulate the original value into a new value having the same structure. So that in the end we're able to call multiple functions to have the desired modifications.
+    </para>
+    <para>
+      In Nix we mostly talk about <emphasis role="bold">functions</emphasis> that accept inputs in order to return <emphasis role="bold">derivations</emphasis>. In our world we want nice utility functions that are able to manipulate those structures. These utilities add some useful properties to the original value, and we must be able to apply more utilities on top of it.
+    </para>
+    <para>
+      For example let's say we have an initial derivation drv and we want it to be a drv with debugging information and also to apply some custom patches:
+    </para>
+    <screen>debugVersion (applyPatches [ ./patch1.patch ./patch2.patch ] drv)</screen>
+    <para>
+      The final result will be still the original derivation plus some changes. That's both interesting and very different from other packaging approaches, which is a consequence of using a functional language to describe packages.
+    </para>
+    <para>
+      Designing such utilities is not trivial in a functional language that is not statically typed, because understanding what can or cannot be composed is difficult. But we try to do the best.
+    </para>
+  </section>
+  <section>
+    <title>The override pattern</title>
+    <para>
+      In the <link linkend="inputs-design-pattern">pill 12</link> we introduced the inputs design pattern. We do not return a derivation picking dependencies directly from the repository, rather we declare the inputs and let the callers pass the necessary arguments.
+    </para>
+    <para>
+      In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let's take for example the <package>graphviz</package> attribute:
+    </para>
+    <screen>graphviz = import ./graphviz.nix { inherit mkDerivation gd fontconfig libjpeg bzip2; };</screen>
+    <para>
+      If we wanted to produce a derivation of <package>graphviz</package> with a customized <package>gd</package> version, we would have to repeat most of the above plus specifying an alternative <package>gd</package>:
+    </para>
+    <screen><xi:include href="./14/mygraphviz.txt" parse="text" /></screen>
+    <para>
+      That's hard to maintain. Using callPackage it would be easier:
+    </para>
+    <screen>mygraphviz = callPackage ./graphviz.nix { gd = customgd; };</screen>
+    <para>
+      But we may still be diverging from the original <package>graphviz</package> in the repository.
+    </para>
+    <para>
+      We would like to avoid specifying the nix expression again, instead reuse the original <package>graphviz</package> attribute in the repository and add our overrides like this:
+    </para>
+    <screen>mygraphviz = graphviz.override { gd = customgd; };</screen>
+    <para>
+      The difference is obvious, as well as the advantages of this approach.
+    </para>
+    <para>
+      <emphasis role="underline">Note:</emphasis> that <literal>.override</literal> is not a "method" in the OO sense as you may think. Nix is a functional language. That <literal>.override</literal> is simply an attribute of a set.
+    </para>
+  </section>
+  <section>
+    <title>The override implementation</title>
+    <para>
+      I remind you, the <package>graphviz</package> attribute in the repository is the derivation returned by the function imported from <filename>graphviz.nix</filename>. We would like to add a further attribute named "<literal>override</literal>" to the returned set.
+    </para>
+    <para>
+      Let's start simple by first creating a function "<literal>makeOverridable</literal>" that takes a function and a set of original arguments to be passed to the function.
+    </para>
+    <para>
+      <emphasis role="underline">Contract:</emphasis> the wrapped function must return a set.
+    </para>
+    <para>
+      Let's write a lib.nix:
+    </para>
+    <screen><xi:include href="./14/make-overridable-lib.txt" parse="text" /></screen>
+    <para>
+      So <literal>makeOverridable</literal> takes a function and a set of original arguments. It returns the original returned set, plus a new <literal>override</literal> attribute.
+    </para>
+    <para>
+      This <literal>override</literal> attribute is a function taking a set of new arguments, and returns the result of the original function called with the original arguments unified with the new arguments. What a mess.
+    </para>
+    <para>
+      Let's try it with nix-repl:
+    </para>
+    <screen><xi:include href="./14/nix-repl-make-overridable-test.txt" parse="text" /></screen>
+    <para>
+      Note that the function <literal>f</literal> does not return the plain sum but a set, because of the contract. You didn't forget already, did you? :-)
+    </para>
+    <para>
+      The variable <literal>res</literal> is the result of the function call without any override. It's easy to see in the definition of <literal>makeOverridable</literal>. In addition you can see the new <literal>override</literal> attribute being a function.
+    </para>
+    <para>
+      Calling that <literal>.override</literal> with a set will invoke the original function with the overrides, as expected.
+    </para>
+    <para>
+      But: we can't override again! Because the returned set with result 15 does not have an <literal>override</literal> attribute!
+    </para>
+    <para>
+      That's bad, it breaks further compositions.
+    </para>
+    <para>
+      The solution is simple, the <literal>.override</literal> function should make the result overridable again:
+    </para>
+    <screen><xi:include href="./14/nix-repl-make-overridable-test.txt" parse="text" /></screen>
+    <para>
+      Please note the <literal>rec</literal> keyword. It's necessary so that we can refer to <literal>makeOverridable</literal> from <literal>makeOverridable</literal> itself.
+    </para>
+    <para>
+      Now let's try overriding twice:
+    </para>
+    <screen><xi:include href="./14/nix-repl-make-overridable-twice.txt" parse="text" /></screen>
+    <para>
+      Success! The result is 30, as expected because a is overridden to 10 in the first override, and b to 20.
+    </para>
+    <para>
+      Now it would be nice if <literal>callPackage</literal> made our derivations overridable. That was the goal of this pill after all. This is an exercise for the reader.
+    </para>
+  </section>
+  <section>
+    <title>Conclusion</title>
+    <para>
+      The "<literal>override</literal>" pattern simplifies the way we customize packages starting from an existing set of packages. This opens a world of possibilities about using a central repository like <literal>nixpkgs</literal>, and defining overrides on our local machine without even modifying the original package.
+    </para>
+    <para>
+      Dream of a custom isolated <command>nix-shell</command> environment for testing <package>graphviz</package> with a custom <package>gd</package>:
+    </para>
+    <screen>debugVersion (graphviz.override { gd = customgd; })</screen>
+    <para>
+      Once a new version of the overridden package comes out in the repository, the customized package will make use of it automatically.
+    </para>
+    <para>
+      The key in Nix is to find powerful yet simple abstractions in order to let the user customize his environment with highest consistency and lowest maintenance time, by using predefined composable components.
+    </para>
+  </section>
+  <section>
+    <title>Next pill</title>
+    <para>
+      ...we will talk about Nix search paths. By search path I mean a place in the file system where Nix looks for expressions. You may have wondered, where does that holy <literal>&lt;nixpkgs&gt;</literal> come from?
+    </para>
+  </section>
 </chapter>
