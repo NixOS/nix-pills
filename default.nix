@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, revCount, shortRev }:
 let
   lib = pkgs.lib;
   sources = lib.sourceFilesBySuffices ./. [ ".xml" ".txt" ];
@@ -7,6 +7,7 @@ let
     {
       buildInputs = [ pkgs.libxml2 ];
       meta.description = "Nix Pills with as a single docbook file";
+      inherit revCount shortRev;
     }
     ''
       cp -r ${sources} ./sources
@@ -14,7 +15,7 @@ let
 
       cd sources
 
-      printf "%s" "1" > version
+      printf "%s-%s" "$revCount" "$shortRev" > version
       xmllint --xinclude --output $out ./book.xml
     '';
 
