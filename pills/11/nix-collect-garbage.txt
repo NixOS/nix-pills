@@ -1,0 +1,6 @@
+$ nix-collect-garbage
+finding garbage collector roots...
+[...]
+deleting unused links...
+note: currently hard linking saves -0.00 MiB
+1169 store paths deleted, 228.43 MiB freed
