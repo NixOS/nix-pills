@@ -300,7 +300,7 @@
       <varname>coreutils</varname>.
     </para>
     <para>
-      Then we meet the 
+      Then we meet the
       <link xlink:href="https://nixos.org/nix/manual/#idm140737318075200"><code>inherit</code> keyword</link>.
       <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>;
       <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
