@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="nixpkgs-overriding-packages">
 
-  <title>nixpkgs overriding packages</title>
+  <title>Nixpkgs Overriding Packages</title>
   <para>
     Welcome to the 17th Nix pill. In the previous <link linkend="nixpkgs-parameters">16th</link> pill we have started to dive into the <link xlink:href="http://github.com/NixOS/nixpkgs">nixpkgs repository</link>. <literal>Nixpkgs</literal> is a function, and we've looked at some parameters like <literal>system</literal> and <literal>config</literal>.
   </para>
@@ -136,6 +136,6 @@
     <para>
       ...we will stop diving <literal>nixpkgs</literal> for a moment and talk about store paths. How does Nix compute the path in the store where to place the result of builds? How to add files to the store for which we have an integrity hash?
     </para>
-    
+
   </section>
 </chapter>

@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="nixpkgs-parameters">
 
-  <title>nixpkgs parameters</title>
+  <title>Nixpkgs Parameters</title>
   <para>
     Welcome to the 16th Nix pill. In the previous <link linkend="nix-search-paths">15th</link> pill we've realized how nix finds expressions with the angular brackets syntax, so that we finally know where is <literal>&lt;nixpkgs&gt;</literal> located on our system.
   </para>

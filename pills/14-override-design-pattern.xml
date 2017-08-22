@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="override-design-pattern">
 
-  <title>override design pattern</title>
+  <title>Override Design Pattern</title>
   <para>
     Welcome to the 14th Nix pill. In the previous <link linkend="callpackage-design-pattern">13th</link> pill we have introduced the <literal>callPackage</literal> pattern, used to simplify the composition of software in a repository.
   </para>

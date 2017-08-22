@@ -3,7 +3,7 @@ xmlns:xlink="http://www.w3.org/1999/xlink"
 xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
 xml:id="functions-and-imports">
 
-<title>functions and imports</title>
+<title>Functions and Imports</title>
 
   <para>
     Welcome to the fifth Nix pill. In the previous <link
@@ -201,7 +201,7 @@ xml:id="functions-and-imports">
     <listitem>
       <para>
         You can pass sets, that adds a whole new layer of flexibility and
-        convenience. 
+        convenience.
       </para>
     </listitem>
   </itemizedlist>

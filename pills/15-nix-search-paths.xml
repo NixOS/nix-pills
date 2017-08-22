@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="nix-search-paths">
 
-  <title>nix search paths</title>
+  <title>Nix Search Paths</title>
   <para>
     Welcome to the 15th Nix pill. In the previous <link linkend="override-design-pattern">14th</link> pill we have introduced the "override" pattern, useful for writing variants of derivations by passing different inputs.
   </para>
@@ -65,7 +65,7 @@
       The <varname>NIX_PATH</varname> variable is exported by <filename>nix.sh</filename>, and that's the reason why I always asked you to <link xlink:href="http://nixos.org/nix/manual/#idm47361539530016">source nix.s</link> at the beginning of my posts.
     </para>
     <para>
-      You may wonder: then I can also specify a different <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link> path to, e.g., a <command>git checkout</command> of <literal>nixpkgs</literal>? Yes, you can and I encourage doing that. We'll talk about this in the next pill. 
+      You may wonder: then I can also specify a different <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link> path to, e.g., a <command>git checkout</command> of <literal>nixpkgs</literal>? Yes, you can and I encourage doing that. We'll talk about this in the next pill.
     </para>
     <para>
       Let's define a path for our repository, then! Let's say all the <filename>default.nix</filename>, <filename>graphviz.nix</filename> etc. are under <filename>/home/nix/mypkgs</filename>:
@@ -141,6 +141,6 @@
     <para>
       ...we will finally dive into <literal>nixpkgs</literal>. Most of the techniques we have developed in this series are already in <literal>nixpkgs</literal>, like <literal>mkDerivation</literal>, <literal>callPackage</literal>, <literal>override</literal>, etc., but of course better. With time, those base utilities get enhanced by the community with more features in order to handle more and more use cases and in a more general way.
     </para>
-    
+
   </section>
 </chapter>

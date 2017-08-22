@@ -1,10 +1,10 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  version="5.0"
-  xml:id="inputs-design-pattern">
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         version="5.0"
+         xml:id="inputs-design-pattern">
 
-  <title>inputs design pattern</title>
+  <title>Inputs Design Pattern</title>
   <para>
     Welcome to the 12th Nix pill. In the previous <link linkend="garbage-collector">11th pill</link> we stopped packaging and cleaned up the system with the garbage collector.
   </para>
@@ -193,7 +193,7 @@
       I recall that "<literal>{...}: ...</literal>" is the syntax for defining functions accepting an attribute set as argument.
     </para>
     <para>
-      We made <package>gd</package> and its dependencies optional. If <literal>gdSupport</literal> is true (by default), we will fill <literal>buildInputs</literal> and thus <package>graphviz</package> will be built with <package>gd</package> support, otherwise it won't. 
+      We made <package>gd</package> and its dependencies optional. If <literal>gdSupport</literal> is true (by default), we will fill <literal>buildInputs</literal> and thus <package>graphviz</package> will be built with <package>gd</package> support, otherwise it won't.
     </para>
     <para>
       Now back to default.nix:

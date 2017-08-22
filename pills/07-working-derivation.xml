@@ -1,10 +1,10 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      version="5.0"
-      xml:id="working-derivation">
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         version="5.0"
+         xml:id="working-derivation">
 
-  <title>working derivation</title>
+  <title>Working Derivation</title>
 
   <section>
     <title>Introduction</title>

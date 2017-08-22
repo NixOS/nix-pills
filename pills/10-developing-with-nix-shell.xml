@@ -4,7 +4,7 @@
       version="5.0"
       xml:id="developing-with-nix-shell">
 
-  <title>Developing with nix shell</title>
+  <title>Developing with <command>nix-shell</command></title>
 
   <para>
     Welcome to the 10th Nix pill. In the previous

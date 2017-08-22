@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="fundamentals-of-stdenv">
 
-  <title>fundamentals of stdenv</title>
+  <title>Fundamentals of Stdenv</title>
 
   <para>
     Welcome to the 19th Nix pill. In the previous <link linkend="nix-store-paths">18th</link> pill we did dive into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.

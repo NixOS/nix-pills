@@ -1,10 +1,10 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  version="5.0"
-  xml:id="callpackage-design-pattern">
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         version="5.0"
+         xml:id="callpackage-design-pattern">
 
-  <title>callpackage design pattern</title>
+  <title>Callpackage Design Pattern</title>
   <para>
     Welcome to the 13th Nix pill. In the previous <link linkend="inputs-design-pattern">12th pill</link> we have introduced the first basic design pattern for organizing a repository of software. In addition we packaged <package>graphviz</package> to have at least another package for our little repository.
   </para>
@@ -14,7 +14,7 @@
   <section>
     <title>The callPackage convenience</title>
     <para>
-      In the previous pill, we underlined the fact that the inputs pattern is great to decouple packages from the repository, in that we can pass manually the inputs to the derivation. The derivation declares its inputs, and the caller passes the arguments. 
+      In the previous pill, we underlined the fact that the inputs pattern is great to decouple packages from the repository, in that we can pass manually the inputs to the derivation. The derivation declares its inputs, and the caller passes the arguments.
     </para>
     <para>
       However as with usual programming languages, we declare parameter names, and then we have to pass arguments. We do the job twice. With package management, we often see common patterns. In the case of <literal>nixpkgs</literal> it's the following.

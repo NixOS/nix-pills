@@ -1,9 +1,9 @@
 <chapter xmlns="http://docbook.org/ns/docbook"
-xmlns:xlink="http://www.w3.org/1999/xlink"
-xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
-xml:id="our-first-derivation">
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0"
+         xml:id="our-first-derivation">
 
-<title>our first derivation</title>
+<title>Our First Derivation</title>
 
   <para>
     Welcome to the sixth Nix pill. In the previous <link
@@ -148,7 +148,7 @@ xml:id="our-first-derivation">
   <para>
     Ok we can see there's an out path, but it does not exist yet. We never told
     Nix to build it, but we know beforehand where the build output will be. Why?
-  </para>  
+  </para>
 
   <para>
     Think, if Nix ever built the derivation just because we accessed it in Nix,
@@ -304,7 +304,7 @@ xml:id="our-first-derivation">
     derivation, but not that much. To let you understand, you can create
     yourself a set with that type, it's a simple set:
   </para>
-  
+
   <screen><xi:include href="./06/type-derivation.txt" parse="text" /></screen>
 
   <para>
@@ -397,19 +397,19 @@ xml:id="our-first-derivation">
     did not create the out path of course, it just exited with 0.
   </para>
 
-  
+
   <para>
     <emphasis role="underline">Obvious note</emphasis>: everytime we change the
     derivation, a new hash is created.
   </para>
-  
+
   <para>
     Let's examine the new <filename>.drv</filename> now that we referred to
     another derivation:
   </para>
 
   <screen><xi:include href="./06/examine-build.txt" parse="text" /></screen>
-  
+
   <para>
     Aha! Nix added a dependency to our myname.drv, it's the coreutils.drv.
     Before doing our build, Nix should build the coreutils.drv. But since

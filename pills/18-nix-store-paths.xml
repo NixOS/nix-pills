@@ -4,7 +4,7 @@
   version="5.0"
   xml:id="nix-store-paths">
 
-  <title>nix store paths</title>
+  <title>Nix Store Paths</title>
   <para>
     Welcome to the 18th Nix pill. In the previous <link linkend="nixpkgs-overriding-packages">17th</link> pill we have scratched the surface of the <literal>nixpkgs</literal> repository structure. It is a set of packages, and it's possible to override such packages so that all other packages will use the overrides.
   </para>
@@ -87,7 +87,7 @@
       In case the .drv has input derivations, that is it references other .drv, then such .drv paths are replaced by this same algorithm which returns an hash.
     </para>
     <para>
-      In other words, you get a final .drv where every other .drv path is replaced by its hash. 
+      In other words, you get a final .drv where every other .drv path is replaced by its hash.
     </para>
   </section>
   <section>
