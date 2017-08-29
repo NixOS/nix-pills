@@ -104,7 +104,7 @@
     <para>
       The solution is simple, the <literal>.override</literal> function should make the result overridable again:
     </para>
-    <screen><xi:include href="./14/nix-repl-make-overridable-test.txt" parse="text" /></screen>
+    <screen><xi:include href="./14/rec-make-overridable.txt" parse="text" /></screen>
     <para>
       Please note the <literal>rec</literal> keyword. It's necessary so that we can refer to <literal>makeOverridable</literal> from <literal>makeOverridable</literal> itself.
     </para>
