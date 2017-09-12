@@ -9,7 +9,7 @@ things as I go, in order to not get bogged down.
 
 How I've built and tested:
 
-`nix-build && firefox result/share/doc/nix-pills/index.html`
+`nix-build release.nix && firefox result/share/doc/nix-pills/index.html`
 
 Emacs config for a nice docbook experience:
 
