@@ -36,7 +36,7 @@
       papers</link>, <link
       xlink:href="http://www.infoq.com/articles/configuration-management-with-nix">articles</link>
       and wiki are excellent in explaining how Nix/NixOS works, how
-      you can use it and the amount of cools thing being done with it,
+      you can use it and the amount of cool things being done with it,
       however sometimes you may feel some magic happening behind the
       scenes hard to grasp in the beginning.
     </para>
@@ -47,7 +47,7 @@
     </para>
 
     <para>
-      Follows a description of Nix. Just as pills, I'll try to be as
+      The following is a description of Nix. Just as pills, I'll try to be as
       short as possible.
     </para>
    </section>
@@ -73,11 +73,12 @@
      <para>
         Debian for example partially solves the problem with the
         <link
-            xlink:href="https://wiki.debian.org/DebianAlternatives">alternatives</link>.
+          xlink:href="https://wiki.debian.org/DebianAlternatives">alternatives</link>
+         system.
      </para>
 
      <para>
-      So in theory it's possible with the current systems to install
+      So while in theory it's possible with the current systems to install
       multiple versions of the same package, in practice it's very
       painful.
      </para>
@@ -92,14 +93,14 @@
       mysqlclient libraries do not collide.
      </para>
      <para>
-       This is not impossible but very inconvenient. If you want to
-       install two whole stack of software like GNOME 3.10 and GNOME
+       This is not impossible but it is very inconvenient. If you want to
+       install two whole stacks of software like GNOME 3.10 and GNOME
        3.12, you can imagine the amount of work.
      </para>
      <para>
        From an administrator view point: containers to the rescue. The
        solution nowadays is to create a container per service,
-       especially when different versions are needed. That somehow
+       especially when different versions are needed. That somewhat
        solves the problem, but at a different level and with other
        drawbacks. Needing orchestration tools, setting up a shared
        cache of packages, and new wild machines to monitor rather than
@@ -108,10 +109,10 @@
      <para>
        From a developer view point: virtualenv for python or jhbuild
        for gnome or whatelse. But then, how do you mix the two stacks?
-       How do you avoid recompiling the same thing when it could be
-       instead be shared? Also you need to setup your development
+       How do you avoid recompiling the same thing when it could
+       instead be shared? Also you need to set up your development
        tools to point to the different directories where libraries are
-       installed. Not only, there's the risk that some of the software
+       installed. Not only that, there's the risk that some of the software
        incorrectly uses system libraries.
      </para>
      <para>
@@ -124,11 +125,11 @@
      <title> Being pure functional</title>
 
      <para>
-       Nix does no assumption about the global state of the system.
+       Nix makes no assumptions about the global state of the system.
        This has many advantages, but also some drawbacks of course.
        The core of a Nix based system is the Nix store, usually
        installed under /nix/store, and some tools to manipulate the
-       store. In Nix there's the notion of derivation rather than
+       store. In Nix there's the notion of a derivation rather than a
        package. The difference might be subtle at the beginning, so I
        will often mix both of the words, ignore that.
      </para>
@@ -140,7 +141,7 @@
        the derivation.
      </para>
      <para>
-       Let's take the bash derivation as example:
+       Let's take the bash derivation as an example:
        <literal>/nix/store/s4zia7hhqkin1di0f187b79sa2srhv6k-bash-4.2-p45/</literal>.
        It is a directory that contains <literal>bin/bash</literal>.
      </para>
@@ -203,16 +204,16 @@
      <para>
        While being immutable with Nix, upgrading a library like glibc
        means recompiling all applications, because the glibc path to
-       the nix store is being hardcoded.
+       the nix store has been hardcoded.
      </para>
      <para>
        So how do we deal with security updates? In Nix we have some
-       tricks (yet pure) to solve this problem, but that's another
+       tricks (still pure) to solve this problem, but that's another
        story.
      </para>
      <para>
        Another problem is that unless software has in mind a pure
-       functional model, or it can be adapted to, it's hard to compose
+       functional model, or can be adapted to it, it's hard to compose
        applications at runtime.
      </para>
      <para>
@@ -224,13 +225,13 @@
        therefore must know explicitly about the path to flash. We wrap
        the firefox binary to setup the necessary environment to make
        it find flash in the nix store. That will produce a new firefox
-       derivation: be aware it takes a few seconds, but it made
+       derivation: be aware that it takes a few seconds, and it makes
        composition harder at runtime.
      </para>
      <para>
        No upgrade/downgrade scripts for your data. It doesn't make
        sense with this approach, because there's no real derivation to
-       be upgraded. With nix you switch to using another software with
+       be upgraded. With nix you switch to using other software with
        its own stack of dependencies, but there's no formal notion of
        upgrade or downgrade when doing so.
      </para>
@@ -243,7 +244,7 @@
      <para>
        Nix lets you compose software at build time with maximum
        flexibility and with builds being as reproducible as possible.
-       Not only, due to its nature deploying systems in the cloud is
+       Not only that, due to its nature deploying systems in the cloud is
        so easy, consistent and reliable that in the Nix world all
        existing self-containment and orchestration tools are
        deprecated by <link
@@ -251,7 +252,7 @@
        about this, no comparison with other tools is fair, Nix rocks.
      </para>
      <para>
-       It however <emphasis>currently</emphasis> falls off when
+       It however <emphasis>currently</emphasis> falls short when
        speaking about dynamic composition at runtime or replacing low
        level libraries due to massive rebuilds.
      </para>
@@ -259,7 +260,7 @@
        That may sound scary, however after running NixOS on both a
        server and a laptop desktop, I'm very satisfied so far. Some of
        the architectural problems just need some man power, other
-       design problems are to be solved as a community yet.
+       design problems still need to be solved as a community.
      </para>
      <para>
        Considering <link
@@ -268,7 +269,7 @@
        link</link>) is a completely new repository of all the existing
        software, with a completely fresh concept, and with few core
        developers but overall year-over-year increasing contributions,
-       the current state is way more than acceptable and beyond the
+       the current state is more than acceptable and beyond the
        experimental stage. In other words, it's worth your investment.
      </para>
    </section>
