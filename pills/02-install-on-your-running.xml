@@ -29,35 +29,17 @@
     <title>Download</title>
 
     <para>
-      You can grab the last stable tarball (nix 1.7 during this
-      writing) or the package for your distro here: <link
-      xlink:href="https://hydra.nixos.org/release/nix/nix-1.7">https://hydra.nixos.org/release/nix/nix-1.7</link>.
+      You can grab the nix installation script (nix 1.11.5 during this
+      writing) here: <link
+      xlink:href="https://nixos.org/nix/install">https://nixos.org/nix/install</link>.
     </para>
 
     <para>
-      At the time you are reading, there may be nix 1.8. You can see a
-      list of releases here: <link
-      xlink:href="https://hydra.nixos.org/project/nix#tabs-releases">https://hydra.nixos.org/project/nix#tabs-releases</link>.
-    </para>
-
-    <para>
-      I prefer using the precompiled binaries, because it's a nice
-      self-contained environment, just works and it's a little less
-      invasive (in that it does not install anything under
-      <literal>/etc</literal> or <literal>/usr</literal>). So in this
-      series I will use the nix bootstrap distribution.
-    </para>
-
-    <para>
-      In the download page above you can find binaries for linux i686,
-      x86_64 and darwin.
-    </para>
-
-    <para>
-      <emphasis>Note:</emphasis> if you are using a rolling
-      distribution however, I suggest not to install the package (for
-      example on Debian sid) because you will experience broken perl
-      dependencies when running nix tools.
+      One way to install is simply to run <command>curl https://nixos.org/nix/install | sh</command> as a non-root user. You may prefer
+      to download the installation script and verify its integrity
+      using GPG signatures, instructions for doing that can be found
+      here: <link
+            xlink:href="https://nixos.org/nix/download.html">https://nixos.org/nix/download.html</link>.
     </para>
   </section>
 
