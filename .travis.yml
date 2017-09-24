@@ -1,0 +1,4 @@
+language: nix
+sudo: false
+
+script: nix-build ./release.nix
