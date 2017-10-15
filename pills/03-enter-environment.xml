@@ -260,7 +260,7 @@
 
     <para>
       Same applies to environments of course. As an exercise run
-      <literal>nix-store -qR --tree ~/.nix-profile</literal>, see that the
+      <literal>nix-store -q --tree ~/.nix-profile</literal>, see that the
       first children are direct dependencies of the user environment:
       the installed derivations, and the manifest.nix.
     </para>
