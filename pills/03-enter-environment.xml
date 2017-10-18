@@ -172,8 +172,9 @@
 
     <para>
       You can of course also <link
-      xlink:href="http://nixos.org/nix/manual/#idm47361539520832">
-      delete and upgrade packages</link>.
+        xlink:href="https://nixos.org/nix/manual/#operation-uninstall">
+      uninstall</link> and <link
+      xlink:href="https://nixos.org/nix/manual/#operation-upgrade">upgrade</link> packages.
     </para>
   </section>
 
