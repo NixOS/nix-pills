@@ -47,11 +47,11 @@
     </para>
 
     <para>
-      One way to install is simply to run <command>curl https://nixos.org/nix/install | sh</command> as a non-root user. You may prefer
-      to download the installation script and verify its integrity
-      using GPG signatures, instructions for doing that can be found
-      here: <link
-            xlink:href="https://nixos.org/nix/download.html">https://nixos.org/nix/download.html</link>.
+      To install Nix, run <command>curl https://nixos.org/nix/install | sh</command>
+      as a non-root user and follow the instructions. Alternatively, you may
+      prefer to download the installation script and verify its integrity using
+      GPG signatures. Instructions for doing so can be found here: <link
+      xlink:href="https://nixos.org/nix/download.html">https://nixos.org/nix/download.html</link>.
     </para>
 
     <para>
