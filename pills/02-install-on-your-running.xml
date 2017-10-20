@@ -26,7 +26,7 @@
   </para>
 
   <section>
-    <title>Download and Installation</title>
+    <title>Installation</title>
 
     <para>
       To install Nix, run <command>curl https://nixos.org/nix/install | sh</command>
