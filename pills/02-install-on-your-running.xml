@@ -47,12 +47,6 @@
     </para>
 
     <para>
-      You can grab the nix installation script (nix 1.11.5 during this
-      writing) here: <link
-      xlink:href="https://nixos.org/nix/install">https://nixos.org/nix/install</link>.
-    </para>
-
-    <para>
       One way to install is simply to run <command>curl https://nixos.org/nix/install | sh</command> as a non-root user. You may prefer
       to download the installation script and verify its integrity
       using GPG signatures, instructions for doing that can be found
