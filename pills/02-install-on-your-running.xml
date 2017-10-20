@@ -26,7 +26,25 @@
   </para>
 
   <section>
-    <title>Download</title>
+    <title>Download and Installation</title>
+
+    <para>
+      To ensure we don't mess with the system, we can create a
+      custom user, called <literal>nix</literal>, to let him own the Nix store.
+      It is possible to follow the pills without creating this user, but we
+      recommend doing so.
+    </para>
+
+    <para>
+      As root:
+    </para>
+
+    <screen><xi:include href="./02/add-user-chown.txt" parse="text" /></screen>
+
+    <para>
+      From now on, all the operations we do on the shell are done from
+      this nix user.
+    </para>
 
     <para>
       You can grab the nix installation script (nix 1.11.5 during this
@@ -41,29 +59,6 @@
       here: <link
             xlink:href="https://nixos.org/nix/download.html">https://nixos.org/nix/download.html</link>.
     </para>
-  </section>
-
-  <section>
-    <title>Installation</title>
-
-    <para>
-      To ensure we don't mess with the system, you could create a
-      custom user to let him own the Nix store, let's call it
-      <literal>nix</literal>.
-    </para>
-
-    <para>
-      As root:
-    </para>
-
-    <screen><xi:include href="./02/add-user-chown.txt" parse="text" /></screen>
-
-    <para>
-      From now on, all the operations we do on the shell are done from
-      this nix user:
-    </para>
-
-    <screen><xi:include href="./02/extract-as-nix.txt" parse="text" /></screen>
 
     <para>
       My pills are not a simple tutorial, there's are several articles
