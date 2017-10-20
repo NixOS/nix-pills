@@ -78,9 +78,11 @@
     </para>
 
     <para>
-      Quick note: in a normal installation, the store is owned by root
-      and multiple users can install and build software through a nix
-      daemon.
+      Quick note: in a multi-user installation, such as the one used in NixOS,
+      the store is owned by root and multiple users can install and build
+      software through a nix daemon. You can read more about multi-user
+      installations here: <link
+      xlink:href="https://nixos.org/nix/manual/#ssec-multi-user">https://nixos.org/nix/manual/#ssec-multi-user</link>.
     </para>
   </section>
 
