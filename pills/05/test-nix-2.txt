@@ -2,6 +2,3 @@
 if a > b
   then builtins.trace trueMsg true
   else builtins.trace falseMsg false
-nix-repl> import ./test.nix { a = 5; trueMsg = "ok"; }
-trace: ok
-true
