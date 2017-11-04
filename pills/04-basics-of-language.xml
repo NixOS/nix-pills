@@ -211,7 +211,7 @@
 
     <para>
       Note: here the string representation from nix is wrong, you can't write
-      { 123 = "num"; } because 123 is not an identifier. You need semicomma
+      { 123 = "num"; } because 123 is not an identifier. You need semicolon
       (;) after every key-value assignment.
     </para>
 
