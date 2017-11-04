@@ -287,7 +287,10 @@ xml:id="functions-and-imports">
     <filename>test.nix</filename>:
   </para>
 
-  <screen><xi:include href="./05/test-nix-2.txt" parse="text" /></screen>
+  <programlisting><xi:include href="./05/test-nix-2.txt" parse="text"
+  /></programlisting>
+
+  <screen><xi:include href="./05/test-import-2.txt" parse="text" /></screen>
 
 
   <para>
