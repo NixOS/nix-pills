@@ -100,7 +100,7 @@
     <para>
       So, where did nix-repl really get installed?
       <literal>which nix-repl</literal> is
-      <literal>~/.nix-profile.bin.nix-repl</literal> which points to the store.
+      <literal>~/.nix-profile/bin/nix-repl</literal> which points to the store.
       We can also list the derivation paths with nix-env -q --out-path. So
       that's how those derivation paths are called: the
       <emphasis role="bold">output</emphasis> of a build.
