@@ -288,7 +288,7 @@
       Afterwards, we call the function with the empty set. We saw this already
       in <link linkend="functions-and-imports">the fifth pill</link>. To
       reiterate: <code>import &lt;nixpkgs> {}</code> is calling two functions,
-      not one. Reading it as <code>(import &lt;nixpkgs> {}</code> makes this
+      not one. Reading it as <code>(import &lt;nixpkgs>) {}</code> makes this
       clearer.
     </para>
     <para>
