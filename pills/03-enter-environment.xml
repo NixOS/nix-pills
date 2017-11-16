@@ -128,7 +128,8 @@
 
     <para>
       Now that's interesting. When only nix-1.7 was installed, bin/ was a
-      symlink to nix-1.7. Now it's a real directory, no symlink.
+      symlink to nix-1.7. Now that we've actually installed some things
+      (man, nix-repl), it's a real directory, not a symlink.
     </para>
 
     <screen><xi:include href="./03/ls-profile-bin.txt" parse="text" /></screen>
