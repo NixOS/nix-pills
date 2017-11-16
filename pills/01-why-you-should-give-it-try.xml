@@ -33,7 +33,6 @@
       The <link xlink:href="https://nixos.org/nix/manual/">Nix</link>,
       <link xlink:href="https://nixos.org/nixpkgs/manual/">Nixpkgs</link>, and
       <link xlink:href="https://nixos.org/nixos/manual/">NixOS</link> manuals;
-      <link xlink:href="http://nixos.org/docs/papers.html">related papers</link>;
       <link xlink:href="http://www.infoq.com/articles/configuration-management-with-nix">articles</link>;
       and wiki are excellent resources for explaining how Nix/NixOS works, how
       you can use it, and the number of cool things being done with it.
@@ -152,7 +151,7 @@
        your <varname>PATH</varname> as appropriate.
      </para>
      <para>
-       What we have is basically a store of all packages (with different versions 
+       What we have is basically a store of all packages (with different versions
        occupying different locations), and everything in the Nix store is immutable.
      </para>
      <para>
