@@ -151,9 +151,7 @@
     <para>
       Not only, even after reducing the rpath the hello binary would still
       depend upon gcc. Because of debugging information. For that, the well
-      known
-      <link xlink:href="http://unixhelp.ed.ac.uk/CGI/man-cgi?strip">strip</link>
-      can be used.
+      known <command>strip</command> can be used.
     </para>
   </section>
 
