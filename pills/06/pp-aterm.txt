@@ -1,4 +1,4 @@
-$ pp-aterm -i /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+$ indent < /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
 Derive(
   [("out", "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname", "", "")]
 , []

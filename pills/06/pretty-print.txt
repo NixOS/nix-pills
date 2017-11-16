@@ -1,1 +1,1 @@
-$ nix-env -i strategoxt
+$ nix-env -iA indent
