@@ -112,6 +112,10 @@
       <command>sqlite3 /nix/var/nix/db/db.sqlite</command>
     </para>
 
+    <note><para>If this is the first time you're using Nix after the
+    initial installation, remember you must close and open your
+    terminals first.</para></note>
+
     <para>
       <emphasis>Important rule:</emphasis> never change
       <literal>/nix/store</literal> manually because that wouldn't be
