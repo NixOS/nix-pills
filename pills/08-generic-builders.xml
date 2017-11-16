@@ -38,7 +38,7 @@
     </para>
 
     <para>
-      Let's create a builder script for GNU hello world:
+      Let's create a builder script for GNU hello world, hello_builder.sh:
     </para>
 
     <screen><xi:include href="./08/hello-builder.txt" parse="text" /></screen>
