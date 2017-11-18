@@ -18,11 +18,9 @@
   </para>
 
   <para>
-     <link
-         xlink:href="https://nixos.org/nix/manual/#chap-installation">Nix
-     installation</link> is as easy as installing any other package.
-     It will not revolutionize our system, it will stay in its own
-     place out of our way.
+     <link xlink:href="https://nixos.org/nix/manual/#chap-installation">Installing
+     Nix</link> is as easy as installing any other package.
+     It will not drastically change our system, it will stay out of our way.
   </para>
 
   <section>
@@ -37,114 +35,114 @@
     </para>
 
     <para>
-      My pills are not a simple tutorial, there's are several articles
-      out there to learn the basics of nix and unix. We'll instead
-      walk through the nix system to understand the fundamentals.
+      These articles are not a tutorial on <emphasis>using</emphasis> Nix.
+      Instead, we're going to walk through the Nix system to understand the fundamentals.
     </para>
 
     <para>
-      First thing to note: those stuff in nix store refer to software
-      in nix store itself. It doesn't use libc from our system or
-      whatelse. It's a self-contained nix bootstrap.
+      The first thing to note: derivations in the Nix store refer to other
+      derivations which are themselves in the Nix store. They don't use <literal>libc</literal>
+      from our system or anywhere else. It's a self-contained store of all the software we need to bootstrap up
+      to any particular package.
     </para>
 
-    <para>
-      Quick note: in a multi-user installation, such as the one used in NixOS,
+    <note><para>
+      In a multi-user installation, such as the one used in NixOS,
       the store is owned by root and multiple users can install and build
-      software through a nix daemon. You can read more about multi-user
+      software through a Nix daemon. You can read more about multi-user
       installations here: <link
       xlink:href="https://nixos.org/nix/manual/#ssec-multi-user">https://nixos.org/nix/manual/#ssec-multi-user</link>.
-    </para>
+    </para></note>
   </section>
 
   <section>
-    <title>So small nix store</title>
+    <title>The beginnings of the Nix store</title>
 
     <para>
-      Start inspecting the output of the install command:
+      Start looking at the output of the install command:
     </para>
 
     <screen>copying Nix to /nix/store..........................</screen>
 
     <para>
-      Effectively, that's right the <literal>/nix/store</literal> we
-      were talking in the first pill. The contents is the strictly
+      That's the <filename>/nix/store</filename> we
+      were talking in the first article. We're copying in the 
       necessary software to bootstrap a Nix system. You can see bash,
-      core utils, the toolchain, perl libraries, sqlite and nix itself
+      coreutils, the C compiler toolchain, perl libraries, sqlite and Nix itself
       with its own tools and libnix.
     </para>
 
     <para>
-      You surely noticed that in <literal>/nix/store</literal> not
-      only directories are allowed, but also files, always in the form
+      You may have noticed that <filename>/nix/store</filename> can contain
+      not only directories, but also files, still always in the form
       <replaceable>hash-name</replaceable>.
     </para>
   </section>
 
   <section>
-    <title>The holy database</title>
+    <title>The Nix database</title>
 
     <para>
       Right after copying the store, the installation process
-      initializes the database with the current information:
+      initializes a database:
     </para>
 
     <screen>initialising Nix database...</screen>
 
     <para>
-      Oh Nix also has a database. It's under
-      <literal>/nix/var/nix/db</literal>. It is an sqlite database
+      Yes, Nix also has a database. It's stored under
+      <filename>/nix/var/nix/db</filename>. It is a sqlite database
       that keeps track of the dependencies between derivations.
     </para>
 
     <para>
       The schema is very simple: there's a table of valid paths,
-      mapping from auto increment integer to store path.
+      mapping from an auto increment integer to a store path.
     </para>
 
     <para>
-      Then there's a dependency relation from one path to other paths.
+      Then there's a dependency relation from path to paths upon which they depend.
     </para>
 
     <para>
-      You may inspect it by installing sqlite
-      (<command>nix-env -iA sqlite -f '&lt;nixpkgs&gt;</command>) then running
-      <command>sqlite3 /nix/var/nix/db/db.sqlite</command>
+      You can inspect the database by installing sqlite
+      (<command>nix-env -iA sqlite -f '&lt;nixpkgs&gt;</command>) and then running
+      <command>sqlite3 /nix/var/nix/db/db.sqlite</command>.
     </para>
 
     <note><para>If this is the first time you're using Nix after the
     initial installation, remember you must close and open your
-    terminals first.</para></note>
+    terminals first, so that your shell environment will be updated.</para></note>
 
-    <para>
-      <emphasis>Important rule:</emphasis> never change
-      <literal>/nix/store</literal> manually because that wouldn't be
-      in sync with the sqlite db, unless you know what you are doing.
-    </para>
+    <important><para>
+      Never change <filename>/nix/store</filename> manually. If you do, then it will
+      no longer be in sync with the sqlite db, unless you <emphasis>really</emphasis>
+      know what you are doing.
+    </para></important>
   </section>
 
   <section>
     <title>The first profile</title>
 
     <para>
-      Then we discover the <link
-      xlink:href="https://nixos.org/nix/manual/#sec-profiles">profile</link>
-      concept during the installation:
+      Next in the installation, we encounter the concept of the <link
+      xlink:href="https://nixos.org/nix/manual/#sec-profiles">profile</link>:
     </para>
 
     <xi:include href="./02/user-environment.xml" parse="xml" />
 
     <para>
-      A profile in nix is a general and very convenient concept for
-      realizing rollbacks. Profiles are used to compose more
-      components that are spread among multiple paths, under a new
-      unified path. Not only, profiles are made up of multiple
-      generations: they are versioned. Whenever you change a profile,
+      A profile in Nix is a general and convenient concept for
+      realizing rollbacks. Profiles are used to compose 
+      components that are spread among multiple paths under a new
+      unified path. Not only that, but profiles are made up of multiple
+      "generations": they are versioned. Whenever you change a profile,
       a new generation is created.
     </para>
 
     <para>
-      Generations thus can be switched and rollback-ed atomatically.
+      Generations can be switched and rolled back atomically, which makes
+      them convenient for managing changes to your system.
     </para>
 
     <para>
@@ -153,45 +151,46 @@
 
     <xi:include href="./02/profile.xml" parse="xml" />
     <para>
-     That <package>nix-1.7</package> derivation in the nix store is
-     nix itself, with binaries and libraries. The installation
-     basically reproduced the hierarchy of the
-     <package>nix-1.7</package> derivation in the profile by means of
+     That <package>nix-1.7</package> derivation in the Nix store is
+     Nix itself, with binaries and libraries. The process of "installing" 
+     the derivation in the profile basically reproduces the hierarchy of the
+     <package>nix-1.7</package> store derivation in the profile by means of
      symbolic links.
     </para>
     <para>
       The contents of this profile are special, because only one
       program has been installed in our profile, therefore e.g. the
-      bin directory fully points to the only program being installed.
+      <filename>bin</filename> directory points to the only program
+      which has been installed (Nix itself).
     </para>
     <para>
       But that's only the contents of the latest generation of our
-      profile. In fact, <literal>~/.nix-profile</literal> itself is a
+      profile. In fact, <filename>~/.nix-profile</filename> itself is a
       symbolic link to
-      <literal>/nix/var/nix/profiles/default</literal>.
+      <filename>/nix/var/nix/profiles/default</filename>.
     </para>
 
     <para>
-      In turn, that's a symlink to <literal>default-1-link</literal>
-      in the same directory. Yes, that means it's the generation #1 of
+      In turn, that's a symlink to <filename>default-1-link</filename>
+      in the same directory. Yes, that means it's the first generation of
       the <literal>default</literal> profile.
     </para>
 
     <para>
-      Finally that's a symlink to the nix store "user-environment"
-      derivation that you saw printed during the installation process.
+      Finally, <filename>default-1-link</filename> is a symlink to the nix
+      store "user-environment" derivation that you saw printed during the installation process.
     </para>
 
     <para>
-      The <filename>manifest.nix</filename> will be meat for the next pill.
+      We'll talk about <filename>manifest.nix</filename> more in the next article.
     </para>
   </section>
 
   <section>
-    <title>Meet nixpkgs expressions</title>
+    <title>Nixpkgs expressions</title>
 
     <para>
-      More wild output from the installer:
+      More output from the installer:
     </para>
 
     <screen><xi:include href="./02/nixpkgs-expressions.txt"
@@ -203,7 +202,7 @@
       expressions</link> are used to describe packages and how to
       build them. <link
       xlink:href="https://nixos.org/nixpkgs/">Nixpkgs</link> is the
-      repository containing all these expressions: <link
+      repository containing all of the expressions: <link
       xlink:href="https://github.com/NixOS/nixpkgs">https://github.com/NixOS/nixpkgs</link>.
     </para>
 
@@ -213,35 +212,35 @@
     </para>
 
     <para>
-      The second profile we meet is the channels profile.
+      The second profile we discover is the channels profile.
       <filename>~/.nix-defexpr/channels</filename> points to
       <filename>/nix/var/nix/profiles/per-user/nix/channels</filename>
       which points to <literal>channels-1-link</literal> which points
-      to a nix store directory containing the downloaded nix
+      to a Nix store directory containing the downloaded Nix
       expressions.
     </para>
 
     <para>
       Channels are a set of packages and expressions available for
-      download. Similar to debian stable and unstable, there's a
+      download. Similar to Debian stable and unstable, there's a
       stable and unstable channel. In this installation, we're
-      tracking nixpkgs unstable.
+      tracking <literal>nixpkgs-unstable</literal>.
     </para>
 
     <para>
-      Don't bother yet with nix expressions.
+      Don't worry about Nix expressions yet, we'll get to them later.
     </para>
 
     <para>
-      Finally, for your own convenience, it modified
-      <filename>~/.profile</filename> to automatically enter the nix
+      Finally, for your convenience, the installer modified
+      <filename>~/.profile</filename> to automatically enter the Nix
       environment. What
       <filename>~/.nix-profile/etc/profile.d/nix.sh</filename> really
-      does is simply adding <filename>~/.nix-profile/bin</filename> to
+      does is simply to add <filename>~/.nix-profile/bin</filename> to
       <varname>PATH</varname> and
       <filename>~/.nix-defexpr/channels/nixpkgs</filename> to
-      <varname>NIX_PATH</varname>. We'll discuss about
-      <varname>NIX_PATH</varname> in another pill.
+      <varname>NIX_PATH</varname>. We'll discuss 
+      <varname>NIX_PATH</varname> later.
     </para>
 
     <para>
@@ -254,15 +253,15 @@
     <title>FAQ: Can I change /nix to something else?</title>
 
     <para>
-      You can, but there's a strong reason to keep using
-      <literal>/nix</literal> instead of a different directory. All
-      the derivations depend on other derivations by absolute path. I
-      remind you in pill 1 that bash pointed to a
-      <package>glibc</package> under <filename>/nix/store</filename>.
+      You can, but there's a good reason to keep using
+      <filename>/nix</filename> instead of a different directory. All
+      the derivations depend on other derivations by using absolute paths. We
+      saw in the first article that bash referenced a
+      <package>glibc</package> under a specific absolute path in <filename>/nix/store</filename>.
     </para>
 
     <para>
-      You can see now by yourself, don't worry if you see multiple
+      You can see for yourself, don't worry if you see multiple
       bash derivations:
     </para>
 
@@ -275,43 +274,48 @@
       from debian mirrors) otherwise:
 
       <itemizedlist>
-        <listitem><para><package>glibc</package> would be installed under <filename>/foo/store</filename></para></listitem>
-        <listitem><para>thus bash needs to point to <package>glibc</package> under <filename>/foo/store</filename></para></listitem>
-        <listitem><para>the binary cache won't help, and we'd have to recompile all the stuff by ourselves</para></listitem>
+        <listitem><para>
+          <package>glibc</package> would be installed under <filename>/foo/store</filename>
+        </para></listitem>
+        <listitem><para>
+          Thus bash would need to point to <package>glibc</package> under <filename>/foo/store</filename>,
+          instead of under <filename>/nix/store</filename>
+        </para></listitem>
+        <listitem><para>
+          So the binary cache can't help, because we need a <emphasis>different</emphasis> bash,
+          and so we'd have to recompile everything ourselves.
+        </para></listitem>
       </itemizedlist>
     </para>
 
     <para>
-      After all <filename>/nix</filename> is a cool place.
+      After all <filename>/nix</filename> is a sensible place for the store.
     </para>
   </section>
 
   <section>
     <title>Conclusion</title>
     <para>
-      We've installed nix on our system, fully isolated and owned by
-      the <literal>nix</literal> user as we're still diffident with
+      We've installed Nix on our system, fully isolated and owned by
+      the <literal>nix</literal> user as we're still coming to terms with
       this new system.
     </para>
     <para>
       We learned some new concepts like profiles and channels. In
       particular, with profiles we're able to manage multiple
       generations of a composition of packages, while with channels
-      we're able to download binaries from nixos.org.
+      we're able to download binaries from <literal>nixos.org</literal>.
     </para>
     <para>
       The installation put everything under <filename>/nix</filename>,
-      and some symlinks in the nix user home. That's because every
+      and some symlinks in the Nix user home. That's because every
       user is able to install and use software in her own environment.
     </para>
     <para>
-      I hope I left nothing uncovered in a way that you think there's
-      some kind of magic behind. It's all about putting components in
-      the store and symlinking these components together.
-    </para>
-    <para>
-      Also I hope the commands in this pill were consistent with your
-      fresh nix installation.
+      I hope I left nothing uncovered so that you think there's
+      some kind of magic going on behind the scenes. It's all
+      about putting components in the store and symlinking
+      these components together.
     </para>
   </section>
 
@@ -319,7 +323,7 @@
     <title>Next pill...</title>
 
     <para>
-      ...we will enter the nix environment and learn how to interact
+      ...we will enter the Nix environment and learn how to interact
       with the store.
     </para>
   </section>
