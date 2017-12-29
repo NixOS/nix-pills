@@ -56,7 +56,7 @@
       We have packaged <package>GNU hello worl</package>, I guess you would like to package something else for creating at least a repository of two projects :-) . I chose <package>graphviz</package>, which uses the standard autotools build system, requires no patching and dependencies are optional.
     </para>
     <para>
-      Download <package>graphviz</package> from here. The <filename>graphviz.nix</filename> expression is straightforward:
+      Download <package>graphviz</package> from <link xlink:href="http://pkgs.fedoraproject.org/repo/pkgs/graphviz/graphviz-2.38.0.tar.gz/5b6a829b2ac94efcd5fa3c223ed6d3ae/graphviz-2.38.0.tar.gz">here</link>. The <filename>graphviz.nix</filename> expression is straightforward:
     </para>
     <screen><xi:include href="./12/graphviz-derivation.txt" parse="text" /></screen>
     <para>

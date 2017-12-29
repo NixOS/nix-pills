@@ -1,7 +1,7 @@
 $ nix-instantiate hello.nix
 /nix/store/z77vn965a59irqnrrjvbspiyl2rph0jp-hello.drv
 $ nix-store -q --references /nix/store/z77vn965a59irqnrrjvbspiyl2rph0jp-hello.drv
-/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.9.tar.gz
+/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.10.tar.gz
 /nix/store/1zcs1y4n27lqs0gw4v038i303pb89rw6-coreutils-8.21.drv
 /nix/store/2h4b30hlfw4fhqx10wwi71mpim4wr877-gnused-4.2.2.drv
 /nix/store/39bgdjissw9gyi4y5j9wanf4dbjpbl07-gnutar-1.27.1.drv

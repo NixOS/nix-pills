@@ -108,7 +108,7 @@
 
     <para>
       You may inspect it by installing sqlite
-      (<command>nix-env -iA sqlite -f '&lt;nixpkgs&gt;</command>) then running
+      (<command>nix-env -iA sqlite -f '&lt;nixpkgs&gt;'</command>) then running
       <command>sqlite3 /nix/var/nix/db/db.sqlite</command>
     </para>
 

@@ -2,7 +2,7 @@ $ pp-aterm -i $(nix-instantiate hello.nix)
 Derive(
   [("out", "/nix/store/6flbdbpq6sc1dc79xjx01bz43zwgj3wc-hello", "", "")]
 , [("/nix/store/8z4xw8a0ax1csa0l83zflsm4jw9c94w2-bash-4.3-p39.drv", ["out"]), ("/nix/store/j0905apmxw2qb4ng5j40d4ghpiwa3mi1-stdenv.drv", ["out"])]
-, ["/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.9.tar.gz", "/nix/store/9krlzvny65gdc8s7kpb6lkx8cd02c25b-default-builder.sh"]
+, ["/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.10.tar.gz", "/nix/store/9krlzvny65gdc8s7kpb6lkx8cd02c25b-default-builder.sh"]
 , "x86_64-linux"
 , "/nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39/bin/bash"
 , ["-e", "/nix/store/9krlzvny65gdc8s7kpb6lkx8cd02c25b-default-builder.sh"]
@@ -13,7 +13,7 @@ Derive(
   , ("out", "/nix/store/6flbdbpq6sc1dc79xjx01bz43zwgj3wc-hello")
   , ("propagatedBuildInputs", "")
   , ("propagatedNativeBuildInputs", "")
-  , ("src", "/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.9.tar.gz")
+  , ("src", "/nix/store/0q6pfasdma4as22kyaknk4kwx4h58480-hello-2.10.tar.gz")
   , ("stdenv", "/nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv")
   , ("system", "x86_64-linux")
   ]

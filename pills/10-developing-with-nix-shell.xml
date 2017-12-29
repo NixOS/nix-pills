@@ -75,13 +75,13 @@
       </listitem>
       <listitem>
         <para>
-          The working directory is no more a temp directory created by nix-build, but the current directory. Therefore, hello-2.9 has been unpacked there.
+          The working directory is no more a temp directory created by nix-build, but the current directory. Therefore, hello-2.10 has been unpacked there.
         </para>
       </listitem>
     </itemizedlist>
 
     <para>
-      We're able to <command>cd</command> into hello-2.9 and type
+      We're able to <command>cd</command> into hello-2.10 and type
       <command>make</command>, because now it's available.
     </para>
 
