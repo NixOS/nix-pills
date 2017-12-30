@@ -477,7 +477,7 @@
 
   <para>
     We're walking through the fundamentals of Nix derivations, to understand how
-    they work, how they are represented.Packaging in Nix is certainly easier
+    they work, how they are represented. Packaging in Nix is certainly easier
     than that, but we're not there yet in this post. More Nix pills are needed.
   </para>
 
