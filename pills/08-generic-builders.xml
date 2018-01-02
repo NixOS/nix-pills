@@ -50,6 +50,12 @@
     <screen><xi:include href="./08/hello-nix.txt" parse="text" /></screen>
 
     <para>
+      If you're on Darwin, use the following instead:
+    </para>
+
+    <screen><xi:include href="./08/hello-nix-darwin.txt" parse="text" /></screen>
+
+    <para>
       Now build it with <command>nix-build hello.nix</command> and you can
       launch <filename>result/bin/hello</filename>. Nothing easier, but do we
       have to create a builder.sh for each package? Do we always have to pass
