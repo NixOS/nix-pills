@@ -286,7 +286,7 @@
     <screen><xi:include href="./04/let-nested.txt" parse="text" /></screen>
 
     <para>
-      With <literal>let</literal> you cannot assign twice to the same variable. Howver, you can 
+      With <literal>let</literal> you cannot assign twice to the same variable. However, you can 
       shadow outer variables:
     </para>
 
