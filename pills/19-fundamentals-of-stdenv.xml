@@ -15,7 +15,7 @@
   </para>
 
   <para>
-    The <literal>stdenv</literal> is not a special derivation, but it's very important for the <literal>nixpkgs</literal> repository. It serves as base for packaging software. It is used to pull in dependencies such as the GCC toolchain, GNU make, core utilities, patch and diff utilities, and so on. Basic tools needed to compile a huge pile of software currently present in <literal>nixpkgs</literal>.
+    The <literal>stdenv</literal> is not a special derivation to Nix, but it's very important for the <literal>nixpkgs</literal> repository. It serves as base for packaging software. It is used to pull in dependencies such as the GCC toolchain, GNU make, core utilities, patch and diff utilities, and so on. Basic tools needed to compile a huge pile of software currently present in <literal>nixpkgs</literal>.
   </para>
   <section>
     <title>What is stdenv</title>
@@ -26,7 +26,7 @@
 
     <screen><xi:include href="./19/stdenv-derivation.txt" parse="text" /></screen>
     <para>
-      It has just two files: <filename>/setup</filename> and <filename>/nix-support/propagated-user-env-packages</filename>. Don't care about the latter, it's even empty. The important file is <filename>/setup</filename>.
+      It has just two files: <filename>/setup</filename> and <filename>/nix-support/propagated-user-env-packages</filename>. Don't care about the latter; it's empty, in fact. The important file is <filename>/setup</filename>.
     </para>
 
     <para>
@@ -52,7 +52,7 @@
     </para>
 
     <para>
-      The hardcoded toolchain and utilities are used to initially fill up the environment variables so that it's more pleasant to run common commands, similarly but not equal like we did with our builder with <literal>baseInputs</literal> and <literal>buildInputs</literal>.
+      The hardcoded toolchain and utilities are used to initially fill up the environment variables so that it's more pleasant to run common commands, similar to what we did with our builder with <literal>baseInputs</literal> and <literal>buildInputs</literal>.
     </para>
 
     <para>
@@ -64,7 +64,8 @@
     </para>
 
     <para>
-      Every phase has hooks to run commands before and after the phase has been executed. Phases can be overwritten, reordered, whatever, it's just bash code.
+      Every phase has hooks to run commands before and after the phase has been executed.
+      Phases can be overwritten, reordered, whatever, it's just bash code.
     </para>
 
     <para>
@@ -114,7 +115,7 @@
     <title>The stdenv.mkDerivation builder</title>
 
     <para>
-      Let's take a look at the builder used by <literal>mkDerivation</literal>. You can read the code <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/default.nix#L155">here in nixpkgs</link>:
+      Let's take a look at the builder used by <literal>mkDerivation</literal>. You can read the code <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/make-derivation.nix">here in nixpkgs</link>:
     </para>
 
     <screen><xi:include href="./19/stdenv-mkderivation.txt" parse="text" /></screen>
