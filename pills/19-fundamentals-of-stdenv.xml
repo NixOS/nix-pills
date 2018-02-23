@@ -179,7 +179,8 @@
     <title>Next pill...</title>
 
     <para>
-      ...we will talk about how to add dependencies to our packages, <literal>buildInputs</literal>, <literal>propagatedBuildInputs</literal> and <literal>setup</literal> hooks. These three concepts are at the base of the current <literal>nixpkgs</literal> packages composition.
+      ...we will talk about how to add dependencies to our packages with <literal>buildInputs</literal> and <literal>propagatedBuildInputs</literal>, and influence downstream builds with <firstterm>setup hooks</firstterm> and <firstterm>env hooks</firstterm>.
+      These concepts are crucial to how <literal>nixpkgs</literal> packages are composed.
     </para>
 
   </section>
