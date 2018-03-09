@@ -1,7 +1,20 @@
 { pkgs ? import <nixpkgs> {}, revCount, shortRev }:
 let
   lib = pkgs.lib;
-  sources = lib.sourceFilesBySuffices ./. [ ".xml" ".txt" ];
+
+  sources = let
+
+      # We want nix examples, but not the top level nix to build things
+      noTopLevelNix = path: type: let
+          relPath = lib.removePrefix (toString ./. + "/") (toString path);
+        in builtins.match "[^/]*\.nix" relPath == null;
+
+      extensions = [ ".xml" ".txt" ".nix" ".bash" ];
+
+    in lib.cleanSourceWith {
+      filter = noTopLevelNix;
+      src = lib.sourceFilesBySuffices ./. extensions;
+    };
 
   combined = pkgs.runCommand "nix-pills-combined"
     {
