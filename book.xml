@@ -57,4 +57,5 @@
   <xi:include href="pills/17-nixpkgs-overriding-packages.xml" />
   <xi:include href="pills/18-nix-store-paths.xml" />
   <xi:include href="pills/19-fundamentals-of-stdenv.xml" />
+  <xi:include href="pills/20-basic-dependencies-and-hooks.xml" />
 </book>
