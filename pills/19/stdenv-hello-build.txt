@@ -1,5 +1,5 @@
 $ nix-build hello.nix
 ...
-/nix/store/6flbdbpq6sc1dc79xjx01bz43zwgj3wc-hello
+/nix/store/6y0mzdarm5qxfafvn2zm9nr01d1j0a72-hello
 $ result/bin/hello
 Hello, world!

@@ -1,14 +1,13 @@
-<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>pp-aterm -i /nix/store/g6jj1mjzq68i66rbqyb3gpx3k0x606af-<emphasis>foo.drv</emphasis></userinput>
-<computeroutput>Derive(
-  [("out", "/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-foo", "", "")]
-, [("/nix/store/jdggv3q1sb15140qdx0apvyrps41m4lr-bash-4.2-p45.drv", ["out"])]
-, ["/nix/store/5d1i99yd1fy4wkyx85iz5bvh78j2j96r-builder.sh"]
-, "x86_64-linux"
-, "/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-bash-4.2-p45/bin/bash"
-, ["/nix/store/5d1i99yd1fy4wkyx85iz5bvh78j2j96r-builder.sh"]
-, [ ("builder", "/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-bash-4.2-p45/bin/bash")
-  , ("name", "foo")
-  , ("out", "/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-foo")
-  , ("system", "x86_64-linux")
-  ]
-)</computeroutput></screen>
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>indent < /nix/store/g6jj1mjzq68i66rbqyb3gpx3k0x606af-<emphasis>foo.drv</emphasis></userinput>
+<computeroutput>Derive ([("out", "/nix/store/3ry68pkk8sll57xgx641niynj1w62qsn-foo", "", "")],
+	[("/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv",
+	  ["out"])],
+	["/nix/store/5d1i99yd1fy4wkyx85iz5bvh78j2j96r-builder.sh"],
+	"x86_64-linux",
+	"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+	["/nix/store/5d1i99yd1fy4wkyx85iz5bvh78j2j96r-builder.sh"],
+	[("builder",
+	  "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash"),
+	 ("name", "foo"), ("out",
+			   "/nix/store/3ry68pkk8sll57xgx641niynj1w62qsn-foo"),
+	 ("system", "x86_64-linux")])</computeroutput></screen>

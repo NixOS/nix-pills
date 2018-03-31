@@ -161,7 +161,6 @@
     <para>
       We added something else to the derivation this time: the args attribute.
       Let's see how this changed the .drv compared to the previous pill:
-      <!-- pp-aterm is no longer in nixpkgs, see nixos/nixpkgs#25371. This bit should be changed to reflect this. -->
       <xi:include href="./07/foo.drv.xml" />
 
       Much like the usual .drv, except that there's a list of arguments in there

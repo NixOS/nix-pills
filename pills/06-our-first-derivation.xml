@@ -138,11 +138,11 @@
   <screen><xi:include href="./06/pretty-print-fast.txt" parse="text" /></screen>
 
   <para>
-    The installed <code>pp-aterm</code> program can be used to pretty print
+    The installed <code>indent</code> program can be used to pretty print
     <filename>.drv</filename> files:
   </para>
 
-  <screen><xi:include href="./06/pp-aterm.txt" parse="text" /></screen>
+  <screen><xi:include href="./06/indent.txt" parse="text" /></screen>
 
 
   <para>
