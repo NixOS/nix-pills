@@ -108,7 +108,7 @@
     <para>
       Inspect the .drv and see that it also stored the fact that it's a fixed-output derivation with sha256 algorithm, compared to the previous examples:
     </para>
-    <screen><xi:include href="./18/bar-derivation.txt" parse="text" /></screen>
+    <xi:include href="./18/bar-derivation.xml" />
     <para>
       It doesn't matter which input derivations are being used, the final out path must only depend on the declared hash.
     </para>

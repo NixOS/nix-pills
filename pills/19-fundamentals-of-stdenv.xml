@@ -138,7 +138,7 @@
       To get a clear understanding of the environment variables, look at the .drv of the hello derivation:
     </para>
 
-    <screen><xi:include href="./19/hello-derivation.txt" parse="text" /></screen>
+    <xi:include href="./19/hello-derivation.xml" />
     <para>
       So short I decided to paste it entirely above. The builder is bash, with <literal>-e default-builder.sh</literal> arguments. Then you can see the <literal>src</literal> and <literal>stdenv</literal> environment variables.
     </para>
