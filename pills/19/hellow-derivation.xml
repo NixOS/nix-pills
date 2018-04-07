@@ -1,0 +1,50 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix show-derivation $(nix-instantiate hello.nix)</userinput>
+<computeroutput>warning: you did not specify '--add-root'; the result might be removed by the garbage collector
+{
+  "/nix/store/abwj50lycl0m515yblnrvwyydlhhqvj2-hello.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/6y0mzdarm5qxfafvn2zm9nr01d1j0a72-hello"
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/9krlzvny65gdc8s7kpb6lkx8cd02c25b-default-builder.sh",
+      "/nix/store/svc70mmzrlgq42m9acs0prsmci7ksh6h-hello-2.10.tar.gz"
+    ],
+    "inputDrvs": {
+      "/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv": [
+        "out"
+      ],
+      "/nix/store/sfxh3ybqh97cgl4s59nrpi78kgcc8f3d-stdenv-linux.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+    "args": [
+      "-e",
+      "/nix/store/9krlzvny65gdc8s7kpb6lkx8cd02c25b-default-builder.sh"
+    ],
+    "env": {
+      "buildInputs": "",
+      "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+      "configureFlags": "",
+      "depsBuildBuild": "",
+      "depsBuildBuildPropagated": "",
+      "depsBuildTarget": "",
+      "depsBuildTargetPropagated": "",
+      "depsHostBuild": "",
+      "depsHostBuildPropagated": "",
+      "depsTargetTarget": "",
+      "depsTargetTargetPropagated": "",
+      "name": "hello",
+      "nativeBuildInputs": "",
+      "out": "/nix/store/6y0mzdarm5qxfafvn2zm9nr01d1j0a72-hello",
+      "propagatedBuildInputs": "",
+      "propagatedNativeBuildInputs": "",
+      "src": "/nix/store/svc70mmzrlgq42m9acs0prsmci7ksh6h-hello-2.10.tar.gz",
+      "stdenv": "/nix/store/6kz2vbh98s2r1pfshidkzhiy2s2qdw0a-stdenv-linux",
+      "system": "x86_64-linux"
+    }
+  }
+}</computeroutput></screen>

@@ -2,4 +2,4 @@ nix-repl> :l <nixpkgs>
 nix-repl> d = derivation { name = "myname"; builder = "${coreutils}/bin/true"; system = builtins.currentSystem; }
 nix-repl> :b d
 [...]
-builder for `/nix/store/d4xczdij7xazjfm5kn4nmphx63mpv676-myname.drv' failed to produce output path `/nix/store/fy5lyr5iysn4ayyxvpnsya8r5y5bwjnl-myname'
+builder for `/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv' failed to produce output path `/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname'

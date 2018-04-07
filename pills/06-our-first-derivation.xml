@@ -124,25 +124,10 @@
 
   <para>
     What's in that <filename>.drv</filename> file? You can read it, but it's
-    better to pretty print it.
+    better to pretty print it:
   </para>
 
-  <screen><xi:include href="./06/pretty-print.txt" parse="text" /></screen>
-
-  <para>
-    If you feel the above command being too slow (ignore the meaning of the
-    command below, just do it):
-  </para>
-
-
-  <screen><xi:include href="./06/pretty-print-fast.txt" parse="text" /></screen>
-
-  <para>
-    The installed <code>indent</code> program can be used to pretty print
-    <filename>.drv</filename> files:
-  </para>
-
-  <screen><xi:include href="./06/indent.txt" parse="text" /></screen>
+  <xi:include href="./06/show-derivation.xml" />
 
 
   <para>
@@ -408,7 +393,7 @@
     another derivation:
   </para>
 
-  <screen><xi:include href="./06/examine-build.txt" parse="text" /></screen>
+  <xi:include href="./06/examine-build.xml" />
 
   <para>
     Aha! Nix added a dependency to our myname.drv, it's the coreutils.drv.
