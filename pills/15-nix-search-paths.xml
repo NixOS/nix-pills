@@ -87,7 +87,7 @@
       The <command>nix-env</command> command uses <filename>~/.nix-defexpr</filename>, which is also part of <varname>NIX_PATH</varname> by default, but that's only a coincidence. If you empty <varname>NIX_PATH</varname>, <command>nix-env</command> will still be able to find derivations because of <filename>~/.nix-defexpr</filename>.
     </para>
     <para>
-      So if you run <command>nix-env -i graphvi</command> inside your repository, it will install the nixpkgs one. Same if you set <varname>NIX_PATH</varname> to point to your repository.
+      So if you run <command>nix-env -i graphviz</command> inside your repository, it will install the nixpkgs one. Same if you set <varname>NIX_PATH</varname> to point to your repository.
     </para>
     <para>
       In order to specify an alternative to <filename>~/.nix-defexpr</filename> it's possible to use the <arg>-f</arg> option:
