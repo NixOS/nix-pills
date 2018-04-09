@@ -3,7 +3,10 @@ pkgs: attrs:
   let defaultAttrs = {
     builder = "${bash}/bin/bash";
     args = [ ./builder.sh ];
-    baseInputs = [ gnutar gzip gnumake gcc binutils-unwrapped coreutils gawk gnused gnugrep ];
+    baseInputs = [
+      (if hostPlatform.isDarwin then clang-unwrapped else gcc-unwrapped)
+      gnutar gzip gnumake binutils-unwrapped coreutils gawk gnused gnugrep
+    ];
     buildInputs = [];
     system = builtins.currentSystem;
   };

@@ -3,7 +3,10 @@ derivation {
   name = "hello";
   builder = "${bash}/bin/bash";
   args = [ ./hello_builder.sh ];
-  inherit gnutar gzip gnumake gcc binutils-unwrapped coreutils gawk gnused gnugrep;
+  inherit gnutar gzip gnumake binutils-unwrapped coreutils gawk gnused gnugrep;
+  cc = if hostPlatform.isDarwin
+       then clang-unwrapped
+       else gcc-unwrapped;
   src = ./hello-2.10.tar.gz;
   system = builtins.currentSystem;
 }
