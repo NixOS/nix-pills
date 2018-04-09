@@ -27,7 +27,7 @@
     <para>
       Now inspect the .drv to see where is <filename>./myfile</filename> being stored:
     </para>
-    <screen><xi:include href="./18/derivation-simple-contents.txt" parse="text" /></screen>
+    <xi:include href="./18/derivation-simple-contents.xml" />
     <para>
       Great, how did nix decide to use <literal>xv2iccirbrvklck36f1g7vldn5v58vck</literal> ? Keep looking at the nix comments.
     </para>
