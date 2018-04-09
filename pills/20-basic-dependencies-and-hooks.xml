@@ -36,7 +36,7 @@
       For the simplest dependencies where the current package directly needs another, we use the <varname>buildInputs</varname> attribute.
       This is exactly the pattern in taught with our builder in <link linkend="generic-builders">Pill 8</link>.
       To demo this, lets build GNU Hello, and then another package which provides a shell script that <command>exec</command>s it.
-      <screen><xi:include href="./20/two-hellos.txt" parse="text" /></screen>
+      <screen><xi:include href="./20/two-hellos.nix" parse="text" /></screen>
     </para>
 
     <para>
@@ -63,7 +63,7 @@
       Nix itself handles this just fine, understanding various dependency <firstterm>closures</firstterm> as covered in previous builds.
       But what about the conveniences that <varname>buildInputs</varname> provides, namely accumulating in <envar>pkgs</envar> environment variable and inclusion of <filename><replaceable>pkg</replaceable>/bin</filename> directories on the <envar>PATH</envar>?
       For this, Stdenv provides the <varname>propagatedBuildInputs</varname>:
-      <screen><xi:include href="./20/two-hellos.txt" parse="text" /></screen>
+      <screen><xi:include href="./20/two-hellos.nix" parse="text" /></screen>
       See how the intermediate package has a <varname>propagatedBuildInputs</varname> dependency, but the wrapper only needs a <varname>buildInputs</varname> dependency on the intermediary.
     </para>
 
