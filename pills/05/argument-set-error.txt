@@ -1,3 +1,4 @@
+nix-repl> mul = { a, b }: a*b
 nix-repl> mul { a = 3; b = 4; c = 6; }
 error: anonymous function at (string):1:2 called with unexpected argument `c', at (string):1:1
 nix-repl> mul { a = 3; }
