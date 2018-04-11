@@ -23,7 +23,7 @@ let
     installPhase = ''
       mkdir -p "$out/bin"
       echo "#! ${stdenv.shell}" >> "$out/bin/hello"
-      echo "exec $(which hello)" >> "$out/bin/hello"
+      echo "exec $(command -v hello)" >> "$out/bin/hello"
     '';
   };
 
