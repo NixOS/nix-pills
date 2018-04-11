@@ -85,7 +85,7 @@
     </para>
 
     <para>
-      Nix has integer (not floating point), string, path, boolean and null
+      Nix has integer, floating point, string, path, boolean and null
       <link xlink:href="http://nixos.org/nix/manual/#ssec-values">simple</link>
       types. Then there are also lists, sets and functions. These types are enough
       to build an operating system.
