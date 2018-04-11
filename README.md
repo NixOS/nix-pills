@@ -1,3 +1,8 @@
+# Nix Pills
+
+https://nixos.org/nixos/nix-pills/
+
+## Development
 
  - List of Elements: http://tdg.docbook.org/tdg/5.2/chunk-part-d6252e15351.html
  - Tracking Issue: https://github.com/NixOS/nixpkgs/issues/27908
