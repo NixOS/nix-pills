@@ -1,10 +1,8 @@
 let
 
-  nixpkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/6675f0a52c0962042a1000c7f20e887d0d26ae25.tar.gz";
-  }) {};
+  nixpkgs = import <nixpkgs> {};
 
-  inherit (nixpkgs) stdenv fetchurl;
+  inherit (nixpkgs) stdenv fetchurl which;
 
   actualHello = stdenv.mkDerivation {
     name = "hello-2.3";
@@ -18,7 +16,9 @@ let
   wrappedHello = stdenv.mkDerivation {
     name = "hello-wrapper";
 
-    buildInputs = [ actualHello ];
+    buildInputs = [ actualHello which ];
+
+    unpackPhase = "true";
 
     installPhase = ''
       mkdir -p "$out/bin"

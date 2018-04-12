@@ -21,13 +21,11 @@
     Together, these 4 concepts support almost all build-time package interactions.
   </para>
 
-  <para>
-    This Nix pill is going to teach Nixpkgs a bit differently.
-    The Nix pills before this one have used the most recent version of Nixpkgs when discussing it.
-    But the dependencies and hooks infrastructure has for a few years been increasingly complicated to support cross compilation, with a final boost of complexity in recently in 2017.
-    While the added mechanism shouldn't be too confusing after the core concepts are taught, they just get in the way before, so this Nix Pill will go all the way back to 2009 with commit <link xlink:href="https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25">6675f0a5</link>.
-    This is the last version of stdenv before extra dependency and hook types for cross compilation were created.
-  </para>
+  <note><para>
+    The complexity of the dependencies and hooks infrastructure has increased, over time, to support cross compilation.
+    Once you learn the core concepts, you will be able to understand the extra complexity.
+    As a starting point, you might want to refer to nixpkgs commit <link xlink:href="https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25">6675f0a5</link>, the last version of stdenv without cross-compilation complexity.
+  </para></note>
 
   <section>
     <title>The <varname>buildInputs</varname> Attribute</title>
@@ -40,6 +38,7 @@
     </para>
 
     <para>
+      Notice that the wrappedHello derivation finds the <command>hello</command> binary from the <envar>PATH</envar>.
       This works because stdenv contains something like:
       <screen><xi:include href="./20/build-inputs-0.bash" parse="text" /></screen>
       where <function>findInputs</function> is defined like:
@@ -50,8 +49,10 @@
       <screen><xi:include href="./20/build-inputs-3.bash" parse="text" /></screen>
 
       The <function>addToSearchPath</function> call adds <literal>$1/bin</literal> to <envar>_PATH</envar> if the former exists (code <link xlink:href="https://github.com/NixOS/nixpkgs/blob/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/stdenv/generic/setup.sh#L60-L73">here</link>).
+      Once all the packages in <varname>buildInputs</varname> have been processed, then content of <envar>_PATH</envar> is added to <envar>PATH</envar>, as follows:
+      <screen><xi:include href="./20/build-inputs-4.bash" parse="text" /></screen>
 
-      With the real <command>hello</command> on the path, the <function>installPhase</function> should hopefully make sense.
+      With the real <command>hello</command> on the <envar>PATH</envar>, the <function>installPhase</function> should hopefully make sense.
     </para>
   </section>
 
@@ -147,7 +148,7 @@
       indeed that's just what we do in CC Wrapper.
       <footnote>
         <para>
-          <link xlink:href="https://github.com/NixOS/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/build-support/gcc-wrapper" />. It was called GCC Wrapper in the version of nixpkgs we're using in this pill; Darwin and Clang support hadn't yet motivated the rename.
+          It was called <link xlink:href="https://github.com/NixOS/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/build-support/gcc-wrapper">GCC Wrapper</link> in the version of nixpkgs suggested for following along in this pill; Darwin and Clang support hadn't yet motivated the rename.
         </para>
       </footnote>
       But this pattern comes up fairly often, so somebody decided to add some helper support to reduce boilerplate.
