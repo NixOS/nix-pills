@@ -105,7 +105,7 @@
       This form, other than being more precise, it's also faster because <command>nix-env</command> does not have to parse all the derivations.
     </para>
     <para>
-      For completeness: you may install <literal>graphvizCore</literal> with <arg>-A,</arg> since without the <arg>-A</arg> switch it's ambiguous.
+      For completeness: you must install <literal>graphvizCore</literal> with <arg>-A,</arg> since without the <arg>-A</arg> switch it's ambiguous.
     </para>
     <para>
       In summary, it may happen when playing with nix that <command>nix-env</command> peeks a different derivation than <command>nix-build</command>. In such case you probably specified <varname>NIX_PATH</varname>, but <command>nix-env</command> is instead looking into <filename>~/.nix-defexpr</filename>.
