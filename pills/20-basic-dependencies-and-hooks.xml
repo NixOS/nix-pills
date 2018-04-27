@@ -8,8 +8,8 @@
 
   <para>
     Welcome to the 20th Nix pill.
-    In the previous <link linkend="fundamentals-of-stdenv">19th</link> pill we introduced Nixpkgs' Stdenv, including <filename>setup.sh</filename> script, <filename>default-builder.sh</filename> helper script, and <literal>stdenv.mkDerivation</literal> builder.
-    We focused on how stdenv is put together, and how it's used, an a bit about the phases of <function>genericBuild</function>.
+    In the previous <link linkend="fundamentals-of-stdenv">19th</link> pill we introduced Nixpkgs' stdenv, including <filename>setup.sh</filename> script, <filename>default-builder.sh</filename> helper script, and <literal>stdenv.mkDerivation</literal> builder.
+    We focused on how stdenv is put together, and how it's used, and a bit about the phases of <function>genericBuild</function>.
   </para>
 
   <para>
@@ -21,13 +21,11 @@
     Together, these 4 concepts support almost all build-time package interactions.
   </para>
 
-  <para>
-    This Nix pill is going to teach Nixpkgs a bit differently.
-    The Nix pills before this one have used the most recent version of Nixpkgs when discussing it.
-    But the dependencies and hooks infrastructure has for a few years been increasingly complicated to support cross compilation, with a final boost of complexity in recently in 2017.
-    While the added mechanism shouldn't be too confusing after the core concepts are taught, they just get in the way before, so this Nix Pill will go all the way back to 2009 with commit <link xlink:href="https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25">6675f0a5</link>.
-    This is the last version of Stdenv before extra dependency and hook types for cross compilation were created.
-  </para>
+  <note><para>
+    The complexity of the dependencies and hooks infrastructure has increased, over time, to support cross compilation.
+    Once you learn the core concepts, you will be able to understand the extra complexity.
+    As a starting point, you might want to refer to nixpkgs commit <link xlink:href="https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25">6675f0a5</link>, the last version of stdenv without cross-compilation complexity.
+  </para></note>
 
   <section>
     <title>The <varname>buildInputs</varname> Attribute</title>
@@ -40,6 +38,7 @@
     </para>
 
     <para>
+      Notice that the wrappedHello derivation finds the <command>hello</command> binary from the <envar>PATH</envar>.
       This works because stdenv contains something like:
       <screen><xi:include href="./20/build-inputs-0.bash" parse="text" /></screen>
       where <function>findInputs</function> is defined like:
@@ -50,8 +49,10 @@
       <screen><xi:include href="./20/build-inputs-3.bash" parse="text" /></screen>
 
       The <function>addToSearchPath</function> call adds <literal>$1/bin</literal> to <envar>_PATH</envar> if the former exists (code <link xlink:href="https://github.com/NixOS/nixpkgs/blob/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/stdenv/generic/setup.sh#L60-L73">here</link>).
+      Once all the packages in <varname>buildInputs</varname> have been processed, then content of <envar>_PATH</envar> is added to <envar>PATH</envar>, as follows:
+      <screen><xi:include href="./20/build-inputs-4.bash" parse="text" /></screen>
 
-      With the real <command>hello</command> on the path, the <function>installPhase</function> should hopefully make sense.
+      With the real <command>hello</command> on the <envar>PATH</envar>, the <function>installPhase</function> should hopefully make sense.
     </para>
   </section>
 
@@ -62,15 +63,15 @@
       The <varname>buildInputs</varname> covers direct dependencies, but what about indirect dependencies where one package needs a second package which needs a third?
       Nix itself handles this just fine, understanding various dependency <firstterm>closures</firstterm> as covered in previous builds.
       But what about the conveniences that <varname>buildInputs</varname> provides, namely accumulating in <envar>pkgs</envar> environment variable and inclusion of <filename><replaceable>pkg</replaceable>/bin</filename> directories on the <envar>PATH</envar>?
-      For this, Stdenv provides the <varname>propagatedBuildInputs</varname>:
-      <screen><xi:include href="./20/two-hellos.nix" parse="text" /></screen>
+      For this, stdenv provides the <varname>propagatedBuildInputs</varname>:
+      <screen><xi:include href="./20/three-hellos.nix" parse="text" /></screen>
       See how the intermediate package has a <varname>propagatedBuildInputs</varname> dependency, but the wrapper only needs a <varname>buildInputs</varname> dependency on the intermediary.
     </para>
 
     <para>
       How does this work?
       You might think we do something in Nix, but actually its done not at eval time but at build time in bash.
-      lets look at part of the <function>fixupPhase</function> of Stdenv:
+      lets look at part of the <function>fixupPhase</function> of stdenv:
 
       <screen><xi:include href="./20/propagated-build-inputs-0.bash" parse="text" /></screen>
 
@@ -108,8 +109,8 @@
       <varname>propagatedBuildInputs</varname> can actually be seen as an example of this:
       packages using that are effectively "injecting" those dependencies as extra <varname>buildInputs</varname> in their downstream dependents.
 
-      But in general, a dependency might to affect the packages it depends on in arbitrary ways.
-      <emphasis>arbitrary</emphasis> is the key word here
+      But in general, a dependency might affect the packages it depends on in arbitrary ways.
+      <emphasis>Arbitrary</emphasis> is the key word here.
       We could teach <filename>setup.sh</filename> things about upstream packages like <filename><replaceable>pkg</replaceable>/nix-support/propagated-build-inputs</filename>, but not arbitrary interactions.
     </para>
 
@@ -118,7 +119,7 @@
       In nixpkgs, a "hook" is basically a bash callback, and a setup hook is no exception.
       Let's look at the last part of <function>findInputs</function> we haven't covered:
       <screen><xi:include href="./20/setup-hooks-0.bash" parse="text" /></screen>
-      If a package includes the path <filename><replaceable>pkg</replaceable>/nix-support/setup-hook</filename>, it will be sourced by any Stdenv-based build including that as a dependency.
+      If a package includes the path <filename><replaceable>pkg</replaceable>/nix-support/setup-hook</filename>, it will be sourced by any stdenv-based build including that as a dependency.
     </para>
 
     <para>
@@ -147,7 +148,7 @@
       indeed that's just what we do in CC Wrapper.
       <footnote>
         <para>
-          <link xlink:href="https://github.com/NixOS/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/build-support/gcc-wrapper" />. It was called GCC Wrapper in the version of nixpkgs we're using in this pill; Darwin and Clang support hadn't yet motivated the rename.
+          It was called <link xlink:href="https://github.com/NixOS/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/build-support/gcc-wrapper">GCC Wrapper</link> in the version of nixpkgs suggested for following along in this pill; Darwin and Clang support hadn't yet motivated the rename.
         </para>
       </footnote>
       But this pattern comes up fairly often, so somebody decided to add some helper support to reduce boilerplate.
@@ -156,11 +157,11 @@
     <para>
       The other half of <function>addToEnv</function> is:
       <screen><xi:include href="./20/env-hooks-0.bash" parse="text" /></screen>
-      See how for every package we iterate through the contents of <varname>envHooks</varname>, and apply every function within to the package in question.
-      The idea is one can write a setup hook like:
+      Functions listed in <varname>envHooks</varname> are applied to every package passed to <function>addToEnv</function>.
+      One can write a setup hook like:
       <screen><xi:include href="./20/env-hooks-1.bash" parse="text" /></screen>
       and if one dependency has that setup hook then all of them will be so <command>echo</command>ed.
-      Allowing dependencies to learn about their <emphasis>sibling</emphasis> dependencies is exactly what compiler need.
+      Allowing dependencies to learn about their <emphasis>sibling</emphasis> dependencies is exactly what compilers need.
     </para>
 
   </section>
@@ -169,7 +170,7 @@
     <title>Next pill...</title>
     <para>
       ...I'm not sure!
-      We could talk the additional dependency types and hooks which cross compilation necessitates, building on our knowledge here to cover stdenv as it works today.
+      We could talk about the additional dependency types and hooks which cross compilation necessitates, building on our knowledge here to cover stdenv as it works today.
       We could talk about how nixpkgs is bootstrapped.
       Or we could talk about how <varname>localSystem</varname> and <varname>crossSystem</varname> are elaborated into the <varname>buildPlatform</varname>, <varname>hostPlatform</varname>, and <varname>targetPlatform</varname> each bootstrapping stage receives.
       Let us know which most interests you!
