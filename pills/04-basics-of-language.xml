@@ -53,7 +53,8 @@
       <command>nix-env -i nix-repl</command>. The <literal>nix-repl</literal> syntax is slightly
       different to Nix syntax when it comes to assigning variables, but it shouldn't
       be confusing so long as you bear it in mind. I prefer to start with <literal>nix-repl</literal>
-      before cluttering your mind with more complex expressions.
+      before cluttering your mind with more complex expressions. If you are using a newer version of NixOS
+      while working through the pills you will want to use <command>nix repl</command> instead of <command>nix-repl</command>
     </para>
 
     <para>
