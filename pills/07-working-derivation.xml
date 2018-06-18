@@ -182,7 +182,7 @@
   <section>
     <title>Packaging a simple C program</title>
     <para>
-      Start off by writing a simple C program:
+      Start off by writing a simple C program called <filename>simple.c</filename>:
 
       <programlisting><xi:include href="./07/simple.c.txt" parse="text" /></programlisting>
 
