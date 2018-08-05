@@ -193,7 +193,7 @@
       Don't worry too much about where those variables come from yet; let's
       write the derivation and build it:
 
-      <xi:include href="./07/c-program-derivation.xml" />
+      <xi:include href="./07/c-program-derivation.txt" />
 
       Now you can run
       <filename>/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple</filename>
