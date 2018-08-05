@@ -1,0 +1,34 @@
+nix-repl> d = derivation {
+            name = "foo";
+            builder = "${bash}/bin/bash";
+            args = [ ./builder.sh ];
+            system = builtins.currentSystem;
+          }
+
+nix-repl> :b d
+these derivations will be built:
+  /nix/store/j9larr7fwl17d7xhbhcldb5xp175y1cf-foo.drv
+building '/nix/store/j9larr7fwl17d7xhbhcldb5xp175y1cf-foo.drv'...
+declare -x HOME="/homeless-shelter"
+declare -x NIX_BUILD_CORES="1"
+declare -x NIX_BUILD_TOP="/build"
+declare -x NIX_LOG_FD="2"
+declare -x NIX_STORE="/nix/store"
+declare -x OLDPWD
+declare -x PATH="/path-not-set"
+declare -x PWD="/build"
+declare -x SHLVL="1"
+declare -x TEMP="/build"
+declare -x TEMPDIR="/build"
+declare -x TMP="/build"
+declare -x TMPDIR="/build"
+declare -x builder="/nix/store/dkh7l9a4sx7zqh8riqbj3z21sz25p8xy-bash-4.4-p23/bin/bash"
+declare -x name="foo"
+declare -x out="/nix/store/9qxcvzqi1bix4w8qw6v3p833bd0nz45a-foo"
+declare -x system="x86_64-linux"
+# For now, ignore the warning
+warning: you did not specify '--add-root'; the result might be removed by the garbage collector
+/nix/store/9qxcvzqi1bix4w8qw6v3p833bd0nz45a-foo
+
+this derivation produced the following outputs:
+  out -> /nix/store/9qxcvzqi1bix4w8qw6v3p833bd0nz45a-foo
