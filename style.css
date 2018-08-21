@@ -266,14 +266,3 @@ table.simplelist
 div.navheader table, div.navfooter table {
     box-shadow: none;
 }
-
-div.sidebar
-{
-    float: right;
-    margin: 1em 5%;
-    padding: 10px;
-    border: 2px dashed #b0b0b0;
-    border-radius: 0.4em;
-    background: #f8f8fc;
-    box-shadow: 0.4em 0.4em 0.5em #e0e0e0;
-}
