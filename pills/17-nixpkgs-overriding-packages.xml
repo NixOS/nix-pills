@@ -14,7 +14,7 @@
   <section>
     <title>Overriding a package</title>
     <para>
-      I recall the override design pattern from the <link linkend="override-design-pattern">nix pill 14</link>. Instad of calling a function with parameters directly, we make the call (function + parameters) overridable.
+      I recall the override design pattern from the <link linkend="override-design-pattern">nix pill 14</link>. Instead of calling a function with parameters directly, we make the call (function + parameters) overridable.
     </para>
     <para>
       We put the override function in the returned attribute set of the original function call.
