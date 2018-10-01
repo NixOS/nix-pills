@@ -1,0 +1,20 @@
+nix-repl> :l <nixpkgs>
+Added 9235 variables.
+
+nix-repl> simple = derivation {
+              name = "simple";
+              builder = "${bash}/bin/bash";
+              args = [ ./simple_builder.sh ];
+              gcc = gcc;
+              coreutils = coreutils;
+              src = ./simple.c;
+              system = builtins.currentSystem;
+          }
+
+nix-repl> :b simple
+# For now, ignore the warning
+warning: you did not specify '--add-root'; the result might be removed by the garbage collector
+/nix/store/kks3i1rxa6jyzx6g9apjjpzbicwif4nf-simple
+
+this derivation produced the following outputs:
+  out -> /nix/store/kks3i1rxa6jyzx6g9apjjpzbicwif4nf-simple

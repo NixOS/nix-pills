@@ -93,7 +93,7 @@
       So with the usual trick, we can refer to
       <application>bin/bash</application> and create our derivation:
 
-      <xi:include href="./07/simple-derivation.xml" />
+      <xi:include href="./07/simple-derivation.txt" />
 
       We did it! The contents of
       <filename>/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></filename>
@@ -193,7 +193,7 @@
       Don't worry too much about where those variables come from yet; let's
       write the derivation and build it:
 
-      <xi:include href="./07/c-program-derivation.xml" />
+      <xi:include href="./07/c-program-derivation.txt" />
 
       Now you can run
       <filename>/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple</filename>
