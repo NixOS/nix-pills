@@ -19,7 +19,7 @@
     <para>
       In the previous article we created a Nix user, so let's start by switching
       to it with <command>su - nix</command>. If your
-      <filename>~/.profile</filename> got evaluated, then your should now be able
+      <filename>~/.profile</filename> got evaluated, then you should now be able
       to run commands like <literal>nix-env</literal> and
       <literal>nix-store</literal>.
     </para>
