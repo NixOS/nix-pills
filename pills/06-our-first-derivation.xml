@@ -160,7 +160,7 @@
   <orderedlist>
     <listitem>
       <para>
-        The output paths (they can be multiple ones). By default nix creates one
+        The output paths (there can be multiple ones). By default nix creates one
         out path called "out".
       </para>
     </listitem>

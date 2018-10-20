@@ -62,7 +62,7 @@
       You can list that directory and realize it's simply a checkout of the nixpkgs repository at a specific commit (hint: <literal>.version-suffix</literal>).
     </para>
     <para>
-      The <varname>NIX_PATH</varname> variable is exported by <filename>nix.sh</filename>, and that's the reason why I always asked you to <link xlink:href="http://nixos.org/nix/manual/#idm47361539530016">source nix.s</link> at the beginning of my posts.
+      The <varname>NIX_PATH</varname> variable is exported by <filename>nix.sh</filename>, and that's the reason why I always asked you to <link xlink:href="http://nixos.org/nix/manual/#idm47361539530016">source nix.sh</link> at the beginning of my posts.
     </para>
     <para>
       You may wonder: then I can also specify a different <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link> path to, e.g., a <command>git checkout</command> of <literal>nixpkgs</literal>? Yes, you can and I encourage doing that. We'll talk about this in the next pill.
