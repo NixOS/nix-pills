@@ -80,7 +80,7 @@
 
   <para>
     Oh oh, what's that? Did it build the derivation? No it didn't, but it
-    <emphasis role="strong">did create the .drv file</emphasis>. nix-repl does
+    <emphasis role="strong">did create the .drv file</emphasis>. <literal>nix repl</literal> does
     not build derivations unless you tell to do so.
   </para>
 
@@ -207,7 +207,7 @@
   <screen><xi:include href="./06/build-derivation.txt" parse="text" /></screen>
 
   <para>
-    The <code>:b</code> is a nix-repl specific command to build a derivation.
+    The <code>:b</code> is a <literal>nix repl</literal> specific command to build a derivation.
     You can see more commands with <code>:?</code> . So in the output you can
     see that it takes the <filename>.drv</filename> as information on how to
     build the derivation. Then it says it's trying to produce our out path.
@@ -216,8 +216,8 @@
   </para>
 
   <para>
-    We're doing the build inside nix-repl, but what if we don't want to use
-    nix-repl? You can <emphasis role="strong">realise</emphasis> a
+    We're doing the build inside <literal>nix repl</literal>, but what if we don't want to use
+    <literal>nix repl</literal>? You can <emphasis role="strong">realise</emphasis> a
     <filename>.drv</filename> with:
   </para>
 
@@ -411,7 +411,7 @@
   <para>
     Nix does not build derivations <emphasis role="strong">during
     evaluation</emphasis> of Nix expressions. In fact, that's why we have to do
-    ":b drv" in nix-repl, or use nix-store -r in the first place.
+    ":b drv" in <literal>nix repl</literal>, or use nix-store -r in the first place.
   </para>
 
   <para>

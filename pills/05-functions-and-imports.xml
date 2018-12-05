@@ -52,7 +52,7 @@ xml:id="functions-and-imports">
   <screen><xi:include href="./05/named-function.txt" parse="text" /></screen>
 
   <para>
-    As usual, please ignore the special syntax for assignments inside nix-repl.
+    As usual, please ignore the special syntax for assignments inside <literal>nix repl</literal>.
     So, we defined a function <code>x: x*2</code> that takes one parameter
     <code>x</code>, and returns
     <code>x*2</code>. This function is then assigned to the variable

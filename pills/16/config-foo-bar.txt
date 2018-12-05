@@ -1,4 +1,4 @@
-$ nix-repl
+$ nix repl
 nix-repl> pkgs = import <nixpkgs> {}
 nix-repl> pkgs.config
 { }

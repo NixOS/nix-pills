@@ -1,5 +1,4 @@
-$ nix-store -q --referrers `which nix-repl`
-/nix/store/8rj57vahlndqwg4q095x5qvfa1g4rmvr-env-manifest.nix
-/nix/store/9c8ak2h7c6vbr9kqk8i2n96bwg55br7y-env-manifest.nix
-/nix/store/dr1y2saask2k4y2wrmxw443302pp02z2-user-environment
-/nix/store/f01lfzbw7n0yzhsjd33xfj77li9raljv-user-environment
+$ nix-store -q --referrers `which hello`
+/nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10
+/nix/store/fhvy2550cpmjgcjcx5rzz328i0kfv3z3-env-manifest.nix
+/nix/store/mp987abm20c70pl8p31ljw1r5by4xwfw-user-environment
