@@ -1,5 +1,4 @@
 $ nix-env -e '*'
-uninstalling `man-1.6g'
-uninstalling `nix-repl-1.7-1734e8a'
-uninstalling `nix-1.7'
+uninstalling 'hello-2.10'
+uninstalling 'nix-2.1.3'
 [...]

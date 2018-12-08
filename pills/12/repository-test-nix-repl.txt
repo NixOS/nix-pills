@@ -1,4 +1,4 @@
-$ nix-repl
+$ nix repl
 nix-repl> :l default.nix
 Added 2 variables.
 nix-repl> hello

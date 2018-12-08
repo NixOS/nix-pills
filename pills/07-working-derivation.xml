@@ -248,9 +248,9 @@
     </para>
   </section>
   <section>
-    <title>Enough of nix-repl</title>
+    <title>Enough of <literal>nix repl</literal></title>
     <para>
-      Drop out of <application>nix-repl</application> and write a file
+      Drop out of <application>nix repl</application> and write a file
       <filename>simple.nix</filename>:
 
       <programlisting><xi:include href="./07/simple.txt" parse="text" /></programlisting>
@@ -294,7 +294,7 @@
       The value returned by the nixpkgs function is a set. More specifically,
       it's a set of derivations. Using the <code>with</code> expression we bring
       them into scope. This is the same as what <command>:l</command> does in
-      <application>nix-repl</application>, so we can easily access derivations
+      <application>nix repl</application>, so we can easily access derivations
       such as <varname>bash</varname>, <varname>gcc</varname>, and
       <varname>coreutils</varname>.
     </para>

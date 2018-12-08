@@ -1,4 +1,4 @@
-$ nix-repl
+$ nix repl
 nix-repl> :l lib.nix
 Added 1 variables.
 nix-repl> f = { a, b }: { result = a+b; }

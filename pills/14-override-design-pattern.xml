@@ -83,7 +83,7 @@
       This <literal>override</literal> attribute is a function taking a set of new arguments, and returns the result of the original function called with the original arguments unified with the new arguments. What a mess.
     </para>
     <para>
-      Let's try it with nix-repl:
+      Let's try it with <literal>nix repl</literal>:
     </para>
     <screen><xi:include href="./14/nix-repl-make-overridable-test.txt" parse="text" /></screen>
     <para>

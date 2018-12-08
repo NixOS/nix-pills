@@ -1,6 +1,6 @@
 <screen>$ ls -l ~/.nix-profile/
-bin -> /nix/store/clnpynyac3hx3a6z5lsy893p7b4rwnyf-<emphasis role="strong">nix-1.7</emphasis>/bin
+bin -> /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-<emphasis role="strong">nix-2.1.3</emphasis>/bin
 [...]
-manifest.nix -> /nix/store/82dg18wz250vvcxjbclgyy5yg2kfz1gw-<emphasis role="strong">env-manifest.nix</emphasis>
+manifest.nix -> /nix/store/q8b5238akq07lj9gfb3qb5ycq4dxxiwm-<emphasis role="strong">env-manifest.nix</emphasis>
 [...]
-share -> /nix/store/clnpynyac3hx3a6z5lsy893p7b4rwnyf-<emphasis role="strong">nix-1.7</emphasis>/share</screen>
+share -> /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-<emphasis role="strong">nix-2.1.3</emphasis>/share</screen>

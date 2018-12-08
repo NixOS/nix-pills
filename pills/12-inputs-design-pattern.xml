@@ -123,7 +123,7 @@
     </para>
     <screen><xi:include href="./12/repository.txt" parse="text" /></screen>
     <para>
-      Ready to use! Try it with <command>nix-repl</command>:
+      Ready to use! Try it with <command>nix repl</command>:
     </para>
     <screen><xi:include href="./12/repository-test-nix-repl.txt" parse="text" /></screen>
     <para>

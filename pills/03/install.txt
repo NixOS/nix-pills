@@ -1,1 +1,1 @@
-$ /nix/store/g21di262aql6xskx15z3qiw3zh3wmjlb-nix-1.7/bin/nix-env -i /nix/store/g21di262aql6xskx15z3qiw3zh3wmjlb-nix-1.7
+$ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env 

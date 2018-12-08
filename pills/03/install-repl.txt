@@ -1,6 +1,0 @@
-$ nix-env -i nix-repl
-installing `nix-repl-1.7-1734e8a'
-these paths will be fetched (18.61 MiB download, 69.53 MiB unpacked):
-[...]
-building path(s) `/nix/store/f01lfzbw7n0yzhsjd33xfj77li9raljv-user-environment'
-created 24 symlinks in user environment

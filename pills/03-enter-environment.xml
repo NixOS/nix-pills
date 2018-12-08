@@ -31,7 +31,7 @@
     <screen><xi:include href="./03/source-nix.txt" parse="text" /></screen>
 
     <para>
-      To remind you, <literal>~/.nix-profile/etc</literal> points to the <literal>nix-1.7</literal>
+      To remind you, <literal>~/.nix-profile/etc</literal> points to the <literal>nix-2.1.3</literal>
       derivation. At this point, we are in our Nix user profile.
     </para>
   </section>
@@ -41,20 +41,19 @@
 
     <para>
       Finally something practical! Installation into the Nix environment is an
-      interesting process. Let's install <literal>nix-repl</literal>, a simple command line tool
-      for playing with the Nix language. Yes, Nix is a <link xlink:href="http://nixos.org/nix/manual/#idm47361539226272">
-        pure, lazy, functional language</link>, not only a set of tools to
-      manage derivations.
+      interesting process. Let's install <literal>hello</literal>, a simple CLI
+      tool which prints <literal>Hello world</literal> and is mainly used to test compilers
+      and package installations.
     </para>
 
     <para>
       Back to the installation:
     </para>
 
-    <screen><xi:include href="./03/install-repl.txt" parse="text" /></screen>
+    <screen><xi:include href="./03/install-hello.txt" parse="text" /></screen>
 
     <para>
-      Now you can run <literal>nix-repl</literal>. Things to notice:
+      Now you can run <literal>hello</literal>. Things to notice:
     </para>
     <itemizedlist>
       <listitem>
@@ -77,7 +76,7 @@
       </listitem>
       <listitem>
         <para>
-          We installed <literal>nix-repl</literal> by derivation name minus the version. I repeat:
+          We installed <literal>hello</literal> by derivation name minus the version. I repeat:
           we specified the <emphasis role="bold">derivation name</emphasis>
           (minus the version) to install it.
         </para>
@@ -97,9 +96,9 @@
     <screen><xi:include href="./03/list-installed-derivations.txt" parse="text" /></screen>
 
     <para>
-      So, where did <literal>nix-repl</literal> really get installed?
-      <literal>which nix-repl</literal> is
-      <literal>~/.nix-profile/bin/nix-repl</literal> which points to the store.
+      So, where did <literal>hello</literal> really get installed?
+      <literal>which hello</literal> is
+      <literal>~/.nix-profile/bin/hello</literal> which points to the store.
       We can also list the derivation paths with <command>nix-env -q --out-path</command>. So
       that's what those derivation paths are called: the
       <emphasis role="bold">output</emphasis> of a build.
@@ -127,9 +126,9 @@
     <screen><xi:include href="./03/ls-nix-profile.txt" parse="text" /></screen>
 
     <para>
-      Now that's interesting. When only <literal>nix-1.7</literal> was installed, <filename>bin</filename> was a
-      symlink to <literal>nix-1.7</literal>. Now that we've actually installed some things
-      (<literal>man</literal>, <literal>nix-repl</literal>), it's a real directory, not a symlink.
+      Now that's interesting. When only <literal>nix-2.1.3</literal> was installed, <filename>bin</filename> was a
+      symlink to <literal>nix-2.1.3</literal>. Now that we've actually installed some things
+      (<literal>man</literal>, <literal>hello</literal>), it's a real directory, not a symlink.
     </para>
 
     <screen><xi:include href="./03/ls-profile-bin.txt" parse="text" /></screen>
@@ -193,7 +192,7 @@
     </para>
 
     <para>
-      To show the direct runtime dependencies of <literal>nix-repl</literal>:
+      To show the direct runtime dependencies of <literal>hello</literal>:
     </para>
 
     <screen><xi:include href="./03/references.txt" parse="text" /></screen>
@@ -205,20 +204,20 @@
 
     <para>
       It may not make sense to you right now, but let's print reverse
-      dependencies of <literal>nix-repl</literal>:
+      dependencies of <literal>hello</literal>:
     </para>
 
     <screen><xi:include href="./03/referrers.txt" parse="text" /></screen>
 
     <para>
-      Was it what you expected? It turns out that our environments depend upon <literal>nix-repl</literal>.
-      Yes, that means that the environments are in the store, and since they contain symlinks to <literal>nix-repl</literal>,
-      therefore the environment depends upon <literal>nix-repl</literal>.
+      Was it what you expected? It turns out that our environments depend upon <literal>hello</literal>.
+      Yes, that means that the environments are in the store, and since they contain symlinks to <literal>hello</literal>,
+      therefore the environment depends upon <literal>hello</literal>.
     </para>
 
     <para>
       Two environments were listed, generation 2 and generation 3, since these are the ones that had
-      <literal>nix-repl</literal> installed in them.
+      <literal>hello</literal> installed in them.
     </para>
 
     <para>
@@ -295,9 +294,9 @@
     </para>
 
     <para>
-      First, pick one <literal>nix-1.7</literal> derivation:
-      <command>ls /nix/store/*nix-1.7</command>, say
-      <filename>/nix/store/g21di262aql6xskx15z3qiw3zh3wmjlb-nix-1.7</filename>.
+      First, pick one <literal>nix-2.1.3</literal> derivation:
+      <command>ls /nix/store/*nix-2.1.3</command>, say
+      <filename>/nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3</filename>.
     </para>
 
     <para>
