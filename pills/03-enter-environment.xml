@@ -343,6 +343,8 @@
 
     <para>
       This is quite similar to <command>apt-get update</command>.
+      (See <link xlink:href="https://nixos.wiki/wiki/Cheatsheet">this page</link>
+      for a rough mapping between Ubuntu and NixOS package management.)
     </para>
   </section>
 
