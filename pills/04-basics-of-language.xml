@@ -7,7 +7,7 @@
   <title>The Basics of the Language</title>
 
   <para>
-    Welcome to the fourth Nix pill. In the 
+    Welcome to the fourth Nix pill. In the
     <link linkend="enter-environment">previous article</link> we learned about Nix
     environments. We installed software as a user, managed their profile, switched
     between generations, and queried the Nix store. Those are the very basics of
@@ -62,6 +62,8 @@
       Launch <literal>nix repl</literal>. First of all, Nix supports basic arithmetic operations:
       <literal>+</literal>, <literal>-</literal>, and <literal>*</literal>. Integer division can be
       done with <literal>builtins.div</literal>.
+      (To exit <literal>nix repl</literal>, use the command <literal>:q</literal>.
+      Help is available through the <literal>:?</literal> command.)
     </para>
 
     <screen><xi:include href="./04/basics.txt" parse="text" /></screen>
@@ -288,7 +290,7 @@
     <screen><xi:include href="./04/let-nested.txt" parse="text" /></screen>
 
     <para>
-      With <literal>let</literal> you cannot assign twice to the same variable. However, you can 
+      With <literal>let</literal> you cannot assign twice to the same variable. However, you can
       shadow outer variables:
     </para>
 

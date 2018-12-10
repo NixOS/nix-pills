@@ -65,6 +65,9 @@
 
       <programlisting><xi:include href="./07/builder.sh.txt" parse="text" /></programlisting>
 
+      The command <literal>declare -xp</literal>
+      lists exported variables.
+      (<literal>declare</literal> is a builtin bash function.)
       As we covered in the previous pill, Nix computes the output path of the
       derivation. The resulting <literal>.drv</literal> file contains a list of
       environment variables passed to the builder. One of these is
