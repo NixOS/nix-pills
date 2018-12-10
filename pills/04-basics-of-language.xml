@@ -211,12 +211,6 @@
 
     <screen><xi:include href="./04/set-basics.txt" parse="text" /></screen>
 
-    <note><para>
-      Here the string representation printed in the repl is wrong, you can't write
-      <literal>{ 123 = "num"; }</literal>, because 123 is not an identifier. You also need a semicolon
-      (<literal>;</literal>) after every key-value assignment.
-    </para></note>
-
     <para>
       For those reading Nix expressions from nixpkgs: do not confuse attribute sets with
       argument sets used in functions.
