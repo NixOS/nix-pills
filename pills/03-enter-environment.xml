@@ -8,7 +8,7 @@
 
   <para>
     Welcome to the third Nix pill. In the <link
-    linkend="install-on-your-running-system">second pill</link> we 
+    linkend="install-on-your-running-system">second pill</link> we
     installed Nix on our running system. Now we can finally play with it a
     little, these things also apply to NixOS users.
   </para>
@@ -343,7 +343,7 @@
 
     <para>
       This is quite similar to <command>apt-get update</command>.
-      (See <link xlink:href="https://nixos.wiki/wiki/Cheatsheet">this page</link>
+      (See <link xlink:href="https://nixos.wiki/wiki/Cheatsheet">this table</link>
       for a rough mapping between Ubuntu and NixOS package management.)
     </para>
   </section>
@@ -354,7 +354,7 @@
     <para>
       We learned how to query the user environment and to manipulate it by
       installing and uninstalling software. Upgrading software is also straightforward,
-      as you can read in 
+      as you can read in
       <link xlink:href="http://nixos.org/nix/manual/#idm47361539520832">the manual</link>
       (<command>nix-env -u</command> will upgrade all packages in the
       environment).
