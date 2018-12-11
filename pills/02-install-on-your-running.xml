@@ -15,6 +15,9 @@
   <para>
     Now we'll install Nix on our running system and understand what
     changed in our system after the installation.
+    If you're using NixOS, Nix is already installed;
+    you can skip to the <link
+    linkend="install-on-your-running-system">next</link> pill.
   </para>
 
   <para>
@@ -66,7 +69,7 @@
 
     <para>
       That's the <filename>/nix/store</filename> we
-      were talking in the first article. We're copying in the 
+      were talking in the first article. We're copying in the
       necessary software to bootstrap a Nix system. You can see bash,
       coreutils, the C compiler toolchain, perl libraries, sqlite and Nix itself
       with its own tools and libnix.
@@ -133,7 +136,7 @@
 
     <para>
       A profile in Nix is a general and convenient concept for
-      realizing rollbacks. Profiles are used to compose 
+      realizing rollbacks. Profiles are used to compose
       components that are spread among multiple paths under a new
       unified path. Not only that, but profiles are made up of multiple
       "generations": they are versioned. Whenever you change a profile,
@@ -152,7 +155,7 @@
     <xi:include href="./02/profile.xml" parse="xml" />
     <para>
      That <package>nix-2.1.3</package> derivation in the Nix store is
-     Nix itself, with binaries and libraries. The process of "installing" 
+     Nix itself, with binaries and libraries. The process of "installing"
      the derivation in the profile basically reproduces the hierarchy of the
      <package>nix-2.1.3</package> store derivation in the profile by means of
      symbolic links.
@@ -239,7 +242,7 @@
       does is simply to add <filename>~/.nix-profile/bin</filename> to
       <varname>PATH</varname> and
       <filename>~/.nix-defexpr/channels/nixpkgs</filename> to
-      <varname>NIX_PATH</varname>. We'll discuss 
+      <varname>NIX_PATH</varname>. We'll discuss
       <varname>NIX_PATH</varname> later.
     </para>
 

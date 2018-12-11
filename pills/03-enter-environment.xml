@@ -326,6 +326,12 @@
     <screen><xi:include href="./03/channel-list.txt" parse="text" /></screen>
 
     <para>
+      If you're using NixOS, you may not see any output from the above command
+      (if you're using the default), or you may see a channel whose
+      name begins with "nixos-" instead of "nixpkgs".
+    </para>
+
+    <para>
       That's essentially the contents of <filename>~/.nix-channels</filename>.
     </para>
 
