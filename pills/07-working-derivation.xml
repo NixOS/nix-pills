@@ -296,16 +296,16 @@
     <para>
       The value returned by the nixpkgs function is a set. More specifically,
       it's a set of derivations. Using the <code>with</code> expression we bring
-      them into scope. This is the same as what <command>:l</command> does in
-      <application>nix repl</application>, so we can easily access derivations
+      them into scope. This is equivalent to the <command>:l &lt;nixpkgs&gt;</command>
+      we used in <application>nix repl</application>; it allows us to easily access derivations
       such as <varname>bash</varname>, <varname>gcc</varname>, and
       <varname>coreutils</varname>.
     </para>
     <para>
       Then we meet the
       <link xlink:href="https://nixos.org/nix/manual/#idm140737318075200"><code>inherit</code> keyword</link>.
-      <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>;
-      <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
+      <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>.
+      Similarly, <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
     </para>
     <para>
       This syntax only makes sense inside sets. There's no magic involved, it's
