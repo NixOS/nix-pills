@@ -208,7 +208,8 @@
     <para>
       That is, for each file we run <command>patchelf --shrink-rpath</command>
       and <command>strip</command>. Note that we used two new commands here,
-      <command>find</command> and <command>patchelf</command>. These two
+      <command>find</command> and <command>patchelf</command>.
+      <emphasis role="bold">Exercise:</emphasis> These two
       deserve a place in <code>baseInputs</code> of
       <filename>autotools.nix</filename> as <command>findutils</command> and
       <command>patchelf</command>.
