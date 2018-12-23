@@ -17,6 +17,11 @@
     <title>Enter the environment</title>
 
     <para>
+      <emphasis role="bold">If you're using NixOS, you can skip to the <link
+      linkend="install-something">next</link> step.</emphasis>
+    </para>
+
+    <para>
       In the previous article we created a Nix user, so let's start by switching
       to it with <command>su - nix</command>. If your
       <filename>~/.profile</filename> got evaluated, then you should now be able
@@ -36,7 +41,7 @@
     </para>
   </section>
 
-  <section>
+  <section xml:id="install-something">
     <title>Install something</title>
 
     <para>
@@ -324,6 +329,12 @@
     </para>
 
     <screen><xi:include href="./03/channel-list.txt" parse="text" /></screen>
+
+    <para>
+      If you're using NixOS, you may not see any output from the above command
+      (if you're using the default), or you may see a channel whose
+      name begins with "nixos-" instead of "nixpkgs".
+    </para>
 
     <para>
       That's essentially the contents of <filename>~/.nix-channels</filename>.
