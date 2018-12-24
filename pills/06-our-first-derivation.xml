@@ -400,8 +400,8 @@
     Before doing our build, Nix should build the coreutils.drv. But since
     coreutils is already in our nix store, no build is needed, it's already
     there with out path
-    <filename>/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-<emphasis
-    role="strong">coreutils-8.x</emphasis></filename>.
+    <filename>/nix/store/dm20hrdk6s4jzfmk1197p2nya0p8fy3a-<emphasis
+    role="strong">coreutils-8.29</emphasis></filename>.
   </para>
 
 </section>
