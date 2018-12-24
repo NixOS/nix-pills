@@ -401,7 +401,7 @@
     coreutils is already in our nix store, no build is needed, it's already
     there with out path
     <filename>/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-<emphasis
-    role="strong">coreutils-8.21</emphasis></filename>.
+    role="strong">coreutils-8.x</emphasis></filename>.
   </para>
 
 </section>
