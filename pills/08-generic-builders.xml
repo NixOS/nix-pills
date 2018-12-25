@@ -231,6 +231,7 @@
     <screen><xi:include href="./08/set-union.txt" parse="text" /></screen>
 
     <para>
+      <emphasis role="bold">Exercise:</emphasis>
       Complete the new <filename>builder.sh</filename> by adding
       <code>$baseInputs</code> in the <code>for</code> loop together with
       <code>$buildInputs</code>. As you noticed, we passed that new variable in
