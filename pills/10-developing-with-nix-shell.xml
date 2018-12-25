@@ -129,17 +129,39 @@
     </para>
 
     <para>
-      The codebase is becoming a little long. You can find all the files in this
-      <link xlink:href="https://gist.github.com/lethalman/97fae227329b442267bc">nixpill10 gist</link>.
+      Here is our modified <filename>autotools.nix</filename>.
       Noteworthy is the <code>setup = ./setup.sh;</code> attribute in the
       derivation, which adds <filename>setup.sh</filename> to the nix store and
       as usual, adds a <code>$setup</code> environment variable in the builder.
+    </para>
+
+    <programlisting><xi:include href="./10/autotools-nix.txt" parse="text" /></programlisting>
+
+    <para>
       Thanks to that, we can split <filename>builder.sh</filename> into
       <filename>setup.sh</filename> and <filename>builder.sh</filename>. What
       <filename>builder.sh</filename> does is sourcing <code>$setup</code> and
       calling the <code>genericBuild</code> function. Everything else is just
       some bash changes.
     </para>
+
+    <para>
+      Here is the modified <filename>builder.sh</filename>.
+    </para>
+
+    <programlisting><xi:include href="./10/builder-sh.txt" parse="text" /></programlisting>
+
+    <para>
+      Here is the modified <filename>setup.sh</filename>.
+    </para>
+
+    <programlisting><xi:include href="./10/setup-sh.txt" parse="text" /></programlisting>
+
+    <para>
+      Finally, here is <filename>hello.nix</filename>.
+    </para>
+
+    <programlisting><xi:include href="./10/hello-nix.txt" parse="text" /></programlisting>
 
     <para>
       Now back to nix-shell:

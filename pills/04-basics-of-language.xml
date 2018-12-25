@@ -60,8 +60,7 @@
 
     <para>
       Launch <literal>nix repl</literal>. First of all, Nix supports basic arithmetic operations:
-      <literal>+</literal>, <literal>-</literal>, and <literal>*</literal>. Integer division can be
-      done with <literal>builtins.div</literal>.
+      <literal>+</literal>, <literal>-</literal>, <literal>*</literal> and <literal>/</literal>.
       (To exit <literal>nix repl</literal>, use the command <literal>:q</literal>.
       Help is available through the <literal>:?</literal> command.)
     </para>
@@ -69,15 +68,22 @@
     <screen><xi:include href="./04/basics.txt" parse="text" /></screen>
 
     <para>
-      You might wonder why Nix doesn't have basic operations such as integer division. The answer is
-      because it's not needed for creating packages. Nix is not a general purpose
-      language, it's a domain-specific language for writing packages.
+      Attempting to perform division in Nix can lead to some surprises.
     </para>
 
+    <screen><xi:include href="./04/relative-path.txt" parse="text" /></screen>
+
     <para>
-      Just think - <literal>builtins.div</literal> is not used in the whole of the
-      nixpkgs repository: it's not actually useful if you are writing package expressions.
+      What happened? Recall that Nix is not a general purpose language, it's a
+      domain-specific language for writing packages. Integer division isn't
+      actually that useful when writing package expressions. Nix parsed
+      <literal>6/3</literal> as a relative path to the current directory. To get
+      Nix to perform division instead, leave a space after the
+      <literal>/</literal>. Alternatively, you can use
+      <literal>builtins.div</literal>.
     </para>
+
+    <screen><xi:include href="./04/division.txt" parse="text" /></screen>
 
     <para>
       Other operators are <literal>||</literal>, <literal>&amp;&amp;</literal> and <literal>!</literal>
@@ -101,15 +107,10 @@
     </para>
 
     <para>
-      Try to use <literal>/</literal> between two numbers:
-    </para>
-
-    <screen><xi:include href="./04/relative-path.txt" parse="text" /></screen>
-
-    <para>
-      Nix parsed <literal>2/3</literal> as a relative path to the current directory. Expressions will
-      be parsed as paths as long as there's a slash. Therefore to specify the current
-      directory, use <literal>./.</literal> In addition, Nix also parses urls specially.
+      As demonstrated above, expressions will
+      be parsed as paths as long as there's a slash not followed by a space.
+      Therefore to specify the current directory, use <literal>./.</literal>
+      In addition, Nix also parses urls specially.
     </para>
 
     <para>
