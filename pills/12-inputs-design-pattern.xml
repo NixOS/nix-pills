@@ -214,7 +214,7 @@
         <listitem><para>In the end we return an attribute set from <filename>default.nix</filename>. With "<literal>let</literal>" we define some local variables.</para></listitem>
         <listitem><para>We bring <literal>pkgs</literal> into the scope when defining the packages set, which is very convenient instead of typing everytime "<literal>pkgs</literal>".</para></listitem>
         <listitem><para>We import <filename>hello.nix</filename> and <filename>graphviz.nix</filename>, which will return a function, and call it with a set of inputs to get back the derivation.</para></listitem>
-        <listitem><para>The "<literal>inherit x</literal>" syntax is equivalent to "<literal>x = x</literal>". So "<literal>inherit gd</literal>" here, combined to the above "<literal>with pkgs;</literal>" is equivalent to "<literal>x = pkgs.gd</literal>".</para></listitem>
+        <listitem><para>The "<literal>inherit x</literal>" syntax is equivalent to "<literal>x = x</literal>". So "<literal>inherit gd</literal>" here, combined to the above "<literal>with pkgs;</literal>" is equivalent to "<literal>gd = pkgs.gd</literal>".</para></listitem>
       </itemizedlist>
     </para>
     <para>
