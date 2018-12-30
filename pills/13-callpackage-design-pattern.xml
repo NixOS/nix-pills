@@ -108,7 +108,7 @@
         <listitem><para>We needed a way to pass pkgs to <literal>callPackage</literal> somehow. Instead of returning the set of packages directly from <filename>default.nix</filename>, we first assign it to a <literal>let</literal> variable and reuse it in <literal>callPackage</literal>.</para></listitem>
         <listitem><para>For convenience, in <literal>callPackage</literal> we first import the file, instead of calling it directly. Otherwise for each package we would have to write the <literal>import</literal>.</para></listitem>
         <listitem><para>Since our expressions use packages from <literal>nixpkgs</literal>, in <literal>callPackage</literal> we use <literal>allPkgs</literal>, which is the union of <literal>nixpkgs</literal> and our packages.</para></listitem>
-        <listitem><para>We moved <literal>mkDerivation</literal> in <literal>pkgs</literal> itself, so that it gets also passed automatically.</para></listitem>
+        <listitem><para>We moved <literal>mkDerivation</literal> into <literal>pkgs</literal> itself, so that it also gets passed automatically.</para></listitem>
       </itemizedlist>
     </para>
     <para>
