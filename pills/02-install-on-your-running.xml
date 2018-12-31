@@ -17,11 +17,11 @@
     changed in our system after the installation.
   </para>
 
-    <note><para>
+  <note><para>
       If you're using NixOS, Nix is already installed;
     you can skip to the <link
     linkend="install-on-your-running-system">next</link> pill.
-    </para></note>
+  </para></note>
 
   <para>
      <link xlink:href="https://nixos.org/nix/manual/#chap-installation">Installing
