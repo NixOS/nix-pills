@@ -16,10 +16,10 @@
   <section>
     <title>Enter the environment</title>
 
-    <para>
-      <emphasis role="bold">If you're using NixOS, you can skip to the <link
-      linkend="install-something">next</link> step.</emphasis>
-    </para>
+    <note><para>
+      If you're using NixOS, you can skip to the <link
+      linkend="install-something">next</link> step.
+    </para></note>
 
     <para>
       In the previous article we created a Nix user, so let's start by switching

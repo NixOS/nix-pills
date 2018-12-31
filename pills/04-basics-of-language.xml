@@ -61,9 +61,12 @@
     <para>
       Launch <literal>nix repl</literal>. First of all, Nix supports basic arithmetic operations:
       <literal>+</literal>, <literal>-</literal>, <literal>*</literal> and <literal>/</literal>.
-      (To exit <literal>nix repl</literal>, use the command <literal>:q</literal>.
-      Help is available through the <literal>:?</literal> command.)
     </para>
+
+    <note><para>
+      To exit <literal>nix repl</literal>, use the command <literal>:q</literal>.
+      Help is available through the <literal>:?</literal> command.
+    </para></note>
 
     <screen><xi:include href="./04/basics.txt" parse="text" /></screen>
 
