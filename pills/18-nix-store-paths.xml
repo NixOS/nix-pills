@@ -12,7 +12,7 @@
     Before reading existing derivations, I'd like to talk about store paths and how they are computed. In particular we are interested in fixed store paths that depend on an integrity hash (e.g. a sha256), which is usually applied to source tarballs.
   </para>
   <para>
-    The way store paths are computed is a little contrived, mostly due to historical reasons. Our reference will be the <link xlink:href="http://lxr.devzen.net/source/xref/nix/src/libstore/store-api.cc#97">Nix source code</link>.
+    The way store paths are computed is a little contrived, mostly due to historical reasons. Our reference will be the <link xlink:href="https://github.com/NixOS/nix/blob/07f992a74b64f4376d5b415d0042babc924772f3/src/libstore/store-api.cc#L197">Nix source code</link>.
   </para>
   <section>
     <title>Source paths</title>
