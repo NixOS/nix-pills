@@ -17,7 +17,7 @@
     changed in our system after the installation.
     <emphasis role="bold">If you're using NixOS, Nix is already installed;
     you can skip to the <link
-    linkend="install-on-your-running-system">next</link> pill.</emphasis>
+    linkend="enter-environment">next</link> pill.</emphasis>
   </para>
 
   <para>
