@@ -221,7 +221,7 @@ xml:id="functions-and-imports">
 
   <para>
     You may find similarities with <link
-    xlink:href="https://docs.python.org/2/faq/programming.html#how-can-i-pass-optional-or-keyword-parameters-from-one-function-to-another">Python
+    xlink:href="https://docs.python.org/3/faq/programming.html#how-can-i-pass-optional-or-keyword-parameters-from-one-function-to-another">Python
     **kwargs</link>.
   </para>
 </section>
