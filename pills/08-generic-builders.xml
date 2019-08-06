@@ -197,7 +197,7 @@
       </listitem>
       <listitem>
         <para>
-          Within a let expression we define an helper variable,
+          Within a let expression we define a helper variable,
           <code>defaultAttrs</code>, which serves as a set of common attributes
           used in derivations.
         </para>
