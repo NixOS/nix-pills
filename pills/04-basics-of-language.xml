@@ -51,7 +51,7 @@
     <para>
       Nix 2.0 contains a command named <command>nix repl</command> which is a simple command line tool
       for playing with the Nix language. In fact, Nix is a
-      <link xlink:href="http://nixos.org/nix/manual/#idm47361539226272">pure, lazy, functional language</link>,
+      <link xlink:href="https://nixos.org/nix/manual/#ch-expression-language">pure, lazy, functional language</link>,
       not only a set of tools to manage derivations. The <literal>nix repl</literal> syntax is slightly
       different to Nix syntax when it comes to assigning variables, but it shouldn't
       be confusing so long as you bear it in mind. I prefer to start with <literal>nix repl</literal>
@@ -235,7 +235,7 @@
 
     <para>
       To do so, use
-      <link xlink:href="http://nixos.org/nix/manual/#idm47361539166560">recursive attribute sets</link>:
+      <link xlink:href="https://nixos.org/nix/manual/#idm140737322044432">recursive attribute sets</link>:
     </para>
 
     <screen><xi:include href="./04/set-recursive.txt" parse="text" /></screen>
