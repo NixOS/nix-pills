@@ -264,7 +264,7 @@ xml:id="functions-and-imports">
   <screen><xi:include href="./05/import.txt" parse="text" /></screen>
 
   <para>
-    Yes it's really that straight. You import a file, and it gets parsed as
+    Yes it's really that simple. You import a file, and it gets parsed as
     expression. Note that the scope of the imported file does not inherit the
     scope of the importer.
   </para>
