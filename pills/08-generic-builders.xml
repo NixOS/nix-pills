@@ -212,7 +212,7 @@
 
     <para>
       The
-      <link xlink:href="http://nixos.org/nix/manual/#idm47361539098656">// operator</link>
+      <link xlink:href="https://nixos.org/nix/manual/#idm140737322063856">// operator</link>
       is an operator between two sets. The result is the union of the two sets.
       In case of conflicts between attribute names, the value on the right set
       is preferred.

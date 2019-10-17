@@ -257,7 +257,7 @@
       This makes packages self-contained, because we're sure (apart data and
       configuration) that copying the runtime closure on another machine is
       sufficient to run the program. That's why Nix has
-      <link xlink:href="http://nixos.org/nix/manual/#sec-one-click">one-click install</link>,
+      <link xlink:href="https://nixos.org/nix/manual/#ch-relnotes-0.8">one-click install</link>,
       or
       <link xlink:href="http://nixos.org/nixops/manual/#chap-introduction">reliable deployment in the cloud</link>.
       All with one tool.
