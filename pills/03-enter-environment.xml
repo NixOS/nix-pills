@@ -366,7 +366,7 @@
       We learned how to query the user environment and to manipulate it by
       installing and uninstalling software. Upgrading software is also straightforward,
       as you can read in
-      <link xlink:href="http://nixos.org/nix/manual/#idm47361539520832">the manual</link>
+      <link xlink:href="https://nixos.org/nix/manual/#operation-upgrade">the manual</link>
       (<command>nix-env -u</command> will upgrade all packages in the
       environment).
     </para>
