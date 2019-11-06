@@ -116,7 +116,7 @@
       Now that we have two packages, what's a good way to put them together in a single repository? We do something like <literal>nixpkgs</literal> does. With <literal>nixpkgs</literal>, we <literal>import</literal> it and then we peek derivations by accessing the giant attribute set.
     </para>
     <para>
-      For us nixers, this a good technique, because it abstracts from the file names. We don't refer to a package by <filename>REPO/some/sub/dir/package.nix</filename> but by <literal>importedRepo.package</literal> (or <literal>pkgs.package</literal> in our examples).
+      For us nixers, this is a good technique, because it abstracts from the file names. We don't refer to a package by <filename>REPO/some/sub/dir/package.nix</filename> but by <literal>importedRepo.package</literal> (or <literal>pkgs.package</literal> in our examples).
     </para>
     <para>
       Create a default.nix in the current directory:
