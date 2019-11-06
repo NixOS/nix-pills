@@ -72,7 +72,7 @@
     <title>A generic builder</title>
 
     <para>
-      Let's a create a generic <filename>builder.sh</filename> for autotools
+      Let's create a generic <filename>builder.sh</filename> for autotools
       projects:
     </para>
 
