@@ -151,7 +151,7 @@
   </para>
 
   <para>
-    Many things are empty in that <filename>.drv</filename>, however I write a
+    Many things are empty in that <filename>.drv</filename>, however I'll write a
     summary of the <link
     xlink:href="http://nixos.org/~eelco/pubs/phd-thesis.pdf">.drv format</link>
     for you:
@@ -245,8 +245,8 @@
   <title>What's in a derivation set</title>
 
   <para>
-    I find useful to inspect the returned value from the derivation function for
-    you. First of all, the returned value is a plain set:
+    It is useful to start by inspecting the return value from the derivation function.
+    In this case, the returned value is a plain set:
   </para>
 
   <screen><xi:include href="./06/inspect-values.txt" parse="text" /></screen>
@@ -457,7 +457,7 @@
   <title>Conclusion</title>
 
   <para>
-    It's that complicated to create a package for Nix? No it's not.
+    Is it that complicated to create a package for Nix? No it's not.
   </para>
 
   <para>
