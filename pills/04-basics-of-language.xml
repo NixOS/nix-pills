@@ -224,7 +224,7 @@
     <screen><xi:include href="./04/set-access.txt" parse="text" /></screen>
 
     <para>
-      Yes, you can use strings for to address keys which aren't valid identifiers.
+      Yes, you can use strings to address keys which aren't valid identifiers.
     </para>
 
     <para>
