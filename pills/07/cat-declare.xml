@@ -1,0 +1,19 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>cat /nix/store/0l6b6p86r73a9vlf7rfl9rdmgzh8jcwb-foo</userinput>
+<computeroutput>declare -x HOME="/homeless-shelter"
+declare -x NIX_BUILD_CORES="0"
+declare -x NIX_BUILD_TOP="/build"
+declare -x NIX_LOG_FD="2"
+declare -x NIX_STORE="/nix/store"
+declare -x OLDPWD
+declare -x PATH="/path-not-set"
+declare -x PWD="/build"
+declare -x SHLVL="1"
+declare -x TEMP="/build"
+declare -x TEMPDIR="/build"
+declare -x TERM="xterm-256color"
+declare -x TMP="/build"
+declare -x TMPDIR="/build"
+declare -x builder="/nix/store/czx8vkrb9jdgjyz8qfksh10vrnqa723l-bash-4.4-p23/bin/bash"
+declare -x name="foo"
+declare -x out="/nix/store/0l6b6p86r73a9vlf7rfl9rdmgzh8jcwb-foo"
+declare -x system="x86_64-linux"</computeroutput></screen>

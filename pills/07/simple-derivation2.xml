@@ -1,0 +1,8 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>:l &lt;nixpkgs></userinput>
+<computeroutput>Added 3950 variables.</computeroutput>
+<prompt>nix-repl> </prompt><userinput>d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }</userinput>
+<prompt>nix-repl> </prompt><userinput>:b d</userinput>
+<computeroutput>[1 built, 0.0 MiB DL]
+
+this derivation produced the following outputs:
+  out -> /nix/store/0l6b6p86r73a9vlf7rfl9rdmgzh8jcwb-<emphasis>foo</emphasis></computeroutput></screen>

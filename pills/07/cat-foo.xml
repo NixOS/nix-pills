@@ -1,0 +1,2 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>cat /nix/store/mypzica2nmd4w5c6faz49da97nih3k1y-foo</userinput>
+<computeroutput>foo</computeroutput></screen>
