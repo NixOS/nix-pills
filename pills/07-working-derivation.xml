@@ -60,31 +60,19 @@
     </para>
 
     <para>
-      First of all, let's write our <filename>builder.sh</filename> in the
+      The builder needs to create something in the path
+      <varname>$out</varname>, be it a file or a directory.
+      We'll start with simplest possible builder;
+      it produces a single file containing the word "foo".
+      Create <filename>builder.sh</filename> in the
       current directory:
 
       <programlisting><xi:include href="./07/builder.sh.txt" parse="text" /></programlisting>
 
-      The command <literal>declare -xp</literal>
-      lists exported variables.
-      (<literal>declare</literal> is a builtin bash function.)
       As we covered in the previous pill, Nix computes the output path of the
       derivation. The resulting <literal>.drv</literal> file contains a list of
       environment variables passed to the builder. One of these is
       <varname>$out</varname>.
-    </para>
-    <para>
-      What we have to do is create something in the path
-      <varname>$out</varname>, be it a file or a directory. In this case we are
-      creating a file.
-    </para>
-
-    <para>
-      In addition, we print out the environment variables during the build
-      process. We cannot use <application>env</application> for this, because
-      <application>env</application> is part of
-      <application>coreutils</application> and we don't have a dependency to it
-      yet. We only have <application>bash</application> for now.
     </para>
 
     <para>
@@ -98,9 +86,9 @@
 
       <xi:include href="./07/simple-derivation.xml" />
 
-      We did it! The contents of
-      <filename>/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></filename>
-      is really foo. We've built our first derivation.
+      <xi:include href="./07/cat-foo.xml" />
+
+      We did it! We've built our first derivation.
     </para>
     <para>
       Note that we used <code>./builder.sh</code> and not
@@ -114,6 +102,30 @@
 
   <section>
     <title>The builder environment</title>
+    <para>
+      What environment variables does the builder have access to?
+      We can modify  <filename>builder.sh</filename> to find out.
+
+      <programlisting><xi:include href="./07/builder2.sh.txt" parse="text" /></programlisting>
+
+      The command <literal>declare -xp</literal>
+      lists exported variables.
+      (<literal>declare</literal> is a builtin bash function.)
+      We cannot use <application>env</application> for this, because
+      <application>env</application> is part of
+      <application>coreutils</application> and we don't have a dependency to it
+      yet. We only have <application>bash</application> for now.
+    </para>
+      Create the derivation as you did before.
+
+      <xi:include href="./07/simple-derivation2.xml" />
+
+      Notice that a new path was assigned to <varname>$out</varname>.
+      Let's examine the file produced by this new version of the builder.
+
+      <xi:include href="./07/cat-declare.xml" />
+    <para>
+    </para>
     <para>
       Let's inspect those environment variables printed during the build process.
       <itemizedlist>
