@@ -151,7 +151,7 @@
   </para>
 
   <para>
-    Many things are empty in that <filename>.drv</filename>, however I write a
+    Many things are empty in that <filename>.drv</filename>, however I'll write a
     summary of the <link
     xlink:href="http://nixos.org/~eelco/pubs/phd-thesis.pdf">.drv format</link>
     for you:
@@ -245,8 +245,8 @@
   <title>What's in a derivation set</title>
 
   <para>
-    I find useful to inspect the returned value from the derivation function for
-    you. First of all, the returned value is a plain set:
+    It is useful to start by inspecting the return value from the derivation function.
+    In this case, the returned value is a plain set:
   </para>
 
   <screen><xi:include href="./06/inspect-values.txt" parse="text" /></screen>
@@ -400,7 +400,7 @@
     Before doing our build, Nix should build the coreutils.drv. But since
     coreutils is already in our nix store, no build is needed, it's already
     there with out path
-    <filename>/nix/store/dm20hrdk6s4jzfmk1197p2nya0p8fy3a-<emphasis
+    <filename>/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-<emphasis
     role="strong">coreutils-8.29</emphasis></filename>.
   </para>
 
@@ -457,7 +457,7 @@
   <title>Conclusion</title>
 
   <para>
-    It's that complicated to create a package for Nix? No it's not.
+    Is it that complicated to create a package for Nix? No it's not.
   </para>
 
   <para>

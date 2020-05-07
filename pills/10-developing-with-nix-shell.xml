@@ -8,16 +8,16 @@
 
   <para>
     Welcome to the 10th Nix pill. In the previous
-    <link linkend="automatic-runtime-dependencies">9th pill</link> we have seen
+    <link linkend="automatic-runtime-dependencies">9th pill</link> we saw
     one of the powerful features of nix, automatic discovery of runtime
     dependencies and finalized the GNU hello world package.
   </para>
 
   <para>
-    In return from vacation, we want to hack a little the GNU hello world
-    program. The nix-build tool creates an isolated environment for building
-    the derivation, we want to do the same in order to modify some source
-    files of the project.
+    Having returned from vacation, we want to hack a little the GNU hello
+    world program. The nix-build tool allows for an isolated environment
+    while building the derivation. Additionally, we'd like the same
+    isolation in order to modify some source files of the project.
   </para>
 
   <section>
@@ -27,7 +27,7 @@
       The <link
       xlink:href="https://nixos.org/nix/manual/#sec-nix-shell">nix-shell</link>
       tool drops us in a shell by setting up the necessary environment
-      variables to hack a derivation. It does not build the derivation, it
+      variables to hack on a derivation. It does not build the derivation, it
       only serves as a preparation so that we can run the build steps manually.
     </para>
 
@@ -177,7 +177,7 @@
     </para>
 
     <para>
-      It's all that straight, <command>nix-shell</command> builds the .drv file
+      It's that straightforward, <command>nix-shell</command> builds the .drv file
       and its input dependencies, then drops into a shell by setting up the
       environment variables necessary to build the .drv, in particular those
       passed to the derivation function.
@@ -190,9 +190,9 @@
     <para>
       With <command>nix-shell</command> we're able to drop into an isolated
       environment for developing a project, with the necessary dependencies
-      just like <command>nix-build</command> does, except we can build and
+      just like <command>nix-build</command> does. Additionally, we can build and
       debug the project manually, step by step like you would do in any other
-      operating system. Note that we did never install <command>gcc</command>,
+      operating system. Note that we never installed <command>gcc</command>,
       <command>make</command>, etc. system-wide. These tools and libraries are
       available per-build.
     </para>

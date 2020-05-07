@@ -149,8 +149,8 @@
     </para>
 
     <para>
-      Not only, even after reducing the rpath the hello binary would still
-      depend upon gcc. Because of debugging information. For that, the well
+      Even after reducing the rpath the hello binary would still depend
+      upon gcc. This is because of debugging information. To fix is the well
       known <command>strip</command> can be used.
     </para>
   </section>
@@ -227,9 +227,9 @@
 
     <para>
       The package is self-contained, copy its closure on another machine and
-      you will be able to run it. I remind you the very few components under
-      the <filename>/nix/store</filename> necessary to run nix
-      <link linkend="install-on-your-running-system">when we installed it</link>.
+      you will be able to run it. Remember, only a very few components under
+      the <filename>/nix/store</filename> are required to
+      <link linkend="install-on-your-running-system">run nix</link>.
       The hello binary will use that exact version of glibc library and
       interpreter, not the system one:
     </para>
@@ -248,13 +248,13 @@
     <para>
       Short post compared to previous ones as I'm still on vacation, but I hope
       you enjoyed it. Nix provides tools with cool features. In particular, Nix
-      is able to compute all runtime dependencies automatically for us. Not
-      only shared libraries, but also referenced executables, scripts, Python
-      libraries etc..
+      is able to compute all runtime dependencies automatically for us. This is
+      not limited to only shared libraries, but also referenced executables,
+      scripts, Python libraries etc..
     </para>
 
     <para>
-      This makes packages self-contained, because we're sure (apart data and
+      This makes packages self-contained, ensuring (apart data and
       configuration) that copying the runtime closure on another machine is
       sufficient to run the program. That's why Nix has
       <link xlink:href="https://nixos.org/nix/manual/#ch-relnotes-0.8">one-click install</link>,
@@ -268,9 +268,9 @@
     <title>Next pill</title>
 
     <para>
-      ...we will introduce nix-shell. With nix-build we build derivations
-      always from scratch: the source gets unpacked, configured, built and
-      installed. But this may take a long time, think of WebKit. What if we
+      ...we will introduce nix-shell. With nix-build we always build
+      derivations from scratch: the source gets unpacked, configured, built
+      and installed. But this may take a long time, think of WebKit. What if we
       want to apply some small changes and compile incrementally instead, yet
       keeping a self-contained environment similar to nix-build?
     </para>

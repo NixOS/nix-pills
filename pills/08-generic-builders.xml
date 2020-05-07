@@ -25,14 +25,14 @@
 
     <para>
       In the previous pill we packaged a simple .c file, which was being
-      compiled with a raw gcc call. That's not a good example of project. Many
-      use autotools, and since we're going to generalize our builder, better do
-      it with the most used build system.
+      compiled with a raw gcc call. That's not a good example of a project. Many
+      use autotools, and since we're going to generalize our builder, it would
+      be better do it with the most used build system.
     </para>
 
     <para>
       <link xlink:href="http://www.gnu.org/software/hello/">GNU hello world</link>,
-      despite its name, is a simple yet complete project using autotools.
+      despite its name, is a simple yet complete project which uses autotools.
       Fetch the latest tarball here:
       <link xlink:href="http://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz">http://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz</link>.
     </para>
@@ -247,15 +247,16 @@
     <screen><xi:include href="./08/hello-nix-rev-2.txt" parse="text" /></screen>
 
     <para>
-      Finally! We got a very simple description of a package! A couple of
-      remarks that you may find useful to keep understanding the nix language:
+      Finally! We got a very simple description of a package! Below are a
+      couple of remarks that you may find useful as you're continuing to
+      understand the nix language:
     </para>
 
     <itemizedlist>
       <listitem>
         <para>
           We assigned to pkgs the import that we did in the previous expressions
-          in the "with", don't be afraid. It's that straightforward.
+          in the "with". Don't be afraid, it's that straightforward.
         </para>
       </listitem>
       <listitem>
@@ -293,15 +294,15 @@
     </para>
 
     <para>
-      Out of this we managed to create a generic builder for autotools projects,
-      and a function <code>mkDerivation</code> that composes by default the
-      common components used in autotools projects instead of repeating them
+      Out of this pill we managed to create a generic builder for autotools
+      projects, and a function <code>mkDerivation</code> that composes by default
+      the common components used in autotools projects instead of repeating them
       in all the packages we would write.
     </para>
 
     <para>
-      We are feeling the way a Nix system grows up: it's about creating and
-      composing derivations with the Nix language.
+      We are familiarizing ourselves with the way a Nix system grows up: it's
+      about creating and composing derivations with the Nix language.
     </para>
 
     <para>

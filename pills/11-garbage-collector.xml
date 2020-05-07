@@ -9,18 +9,18 @@
   <para>
     Welcome to the 11th Nix pill. In the previous
     <link linkend="developing-with-nix-shell">10th pill</link> we managed to
-    obtain a self-contained environment for developing a project. The concept
-    is that whereas <command>nix-build</command> is able to build a derivation
-    in isolation, <command>nix-shell</command> is able to drop us in a shell
-    with (almost) the same environment used by <command>nix-build</command>.
+    obtain a self-contained development environment for a project. The concept
+    is that <command>nix-build</command> is able to build a derivation
+    in isolation, while <command>nix-shell</command> is able to drop us in a
+    shell with (almost) the same environment used by <command>nix-build</command>.
     This allows us to debug, modify and manually build software.
   </para>
 
   <para>
     Today we stop packaging and look at a mandatory nix component, the garbage
     collector. When using nix tools, often derivations are built. This include
-    both .drv files and out paths. These artifacts go in the nix store, and we
-    never cared about deleting them until now.
+    both .drv files and out paths. These artifacts go in the nix store, but
+    we've never cared about deleting them until now.
   </para>
 
 
@@ -28,15 +28,15 @@
     <title>How does it work</title>
 
     <para>
-      Other package managers, like <command>dpkg</command>, have somehow a way
-      to remove unused software. However, nix is much more precise compared to
-      other systems.
+      Other package managers, like <command>dpkg</command>, have ways of
+      removing unused software. Nix is much more precise in its garbage
+      ollection compared to these other systems.
     </para>
 
     <para>
-      I bet with <command>dpkg</command>, <command>rpm</command> or anything
-      else, you end up with having some unnecessary package installed or
-      dangling files. With nix this does not happen.
+      I bet with <command>dpkg</command>, <command>rpm</command> or similar
+      traditional packaging systems, you end up having some unnecessary
+      packages installed or dangling files. With nix this does not happen.
     </para>
 
 
@@ -91,7 +91,7 @@
     <para>
       Before playing with the GC, first run the
       <link xlink:href="http://nixos.org/nix/manual/#sec-nix-collect-garbage">nix garbage collector</link>
-      once, so that we have a cleaned up playground for our experiments:
+      once, so that we have a clean playground for our experiments:
     </para>
 
     <screen><xi:include href="./11/nix-collect-garbage.txt" parse="text" /></screen>
@@ -126,7 +126,7 @@
     <screen><xi:include href="./11/remove-bsd-games.txt" parse="text" /></screen>
 
     <para>
-      That's because the old generation is still in the nix store because it's a GC root. As we'll see below, all profiles and their generations are GC roots.
+      This is because the old generation is still in the nix store because it's a GC root. As we'll see below, all profiles and their generations are GC roots.
     </para>
 
     <para>
@@ -164,7 +164,7 @@
     <title>Indirect roots</title>
 
     <para>
-      I remind you that building the GNU hello world package with
+      Remember that building the GNU hello world package with
       <command>nix-build</command> produces a <filename>result</filename>
       symlink in the current directory. Despite the collected garbage done
       above, the <command>hello</command> program is still working: therefore
@@ -276,7 +276,7 @@
 
     <para>
       Garbage collection in Nix is a powerful mechanism to cleanup your system.
-      The nix-store commands allows us to know why a certain derivation is in
+      The nix-store commands allow us to know why a certain derivation is in
       the nix store.
     </para>
 
@@ -293,7 +293,7 @@
 
     <para>
       ...we will package another project and introduce what I call the "inputs"
-      design pattern. We only played with a single derivation until now,
+      design pattern. We've only played with a single derivation until now,
       however we'd like to start organizing a small repository of software. The
       "inputs" pattern is widely used in nixpkgs; it allows us to decouple
       derivations from the repository itself and increase customization

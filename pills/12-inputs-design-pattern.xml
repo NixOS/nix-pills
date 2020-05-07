@@ -9,12 +9,12 @@
     Welcome to the 12th Nix pill. In the previous <link linkend="garbage-collector">11th pill</link> we stopped packaging and cleaned up the system with the garbage collector.
   </para>
   <para>
-    We restart our packaging, but we will improve a different aspect. We only packaged an hello world program so far, what if we want to create a repository of multiple packages?
+    We'll be resuming packaging, and improving different aspects of it. We've only packaged a hello world program so far, but what if we want to create a repository of multiple packages?
   </para>
   <section>
     <title>Repositories in Nix</title>
     <para>
-      Nix is a tool for build and deployment, it does not enforce any particular repository format. A repository of packages is the main usage for Nix, but not the only possibility. See it more like a consequence due to the need of organizing packages.
+      Nix is a tool for build and deployment, it does not enforce any particular repository format. A repository of packages is the main usage for Nix, but not the only possibility. It's more like a consequence due to the need of organizing packages.
     </para>
     <para>
       Nix is a language, and it is powerful enough to let you choose the format of your own repository. In this sense, it is not declarative, but functional.
@@ -35,16 +35,16 @@
       Before introducing the "<literal>inputs</literal>" pattern, we can start talking about another pattern first which I'd like to call "<literal>single repository</literal>" pattern.
     </para>
     <para>
-      Systems like Debian scatter packages in several small repositories. Personally, this makes it hard to track interdependent changes and to contribute to new packages.
+      Systems like Debian scatter packages in several small repositories. This can make it hard to track interdependent changes and to contribute to new packages.
     </para>
     <para>
-      Systems like Gentoo instead, put package descriptions all in a single repository.
+      Alternatively, systems like Gentoo put package descriptions all in a single repository.
     </para>
     <para>
       The nix reference for packages is <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, a single repository of all descriptions of all packages. I find this approach very natural and attractive for new contributions.
     </para>
     <para>
-      From now on, we will adopt this technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
+      For the rest is chapter, we will adopt the single repository technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
     </para>
     <para>
       But isn't that heavy? It isn't, because Nix is a lazy language, it evaluates only what's needed! And that's why <literal>nixpkgs</literal> is able to maintain such a big software repository in a giant attribute set.
@@ -53,7 +53,7 @@
   <section>
     <title>Packaging graphviz</title>
     <para>
-      We have packaged <package>GNU hello world</package>, I guess you would like to package something else for creating at least a repository of two projects :-) . I chose <package>graphviz</package>, which uses the standard autotools build system, requires no patching and dependencies are optional.
+      We have packaged <package>GNU hello world</package>, imagine you would like to package something else for creating at least a repository of two projects :-) . I chose <package>graphviz</package>, which uses the standard autotools build system, requires no patching and dependencies are optional.
     </para>
     <para>
       Download <package>graphviz</package> from <link xlink:href="http://pkgs.fedoraproject.org/repo/pkgs/graphviz/graphviz-2.38.0.tar.gz/5b6a829b2ac94efcd5fa3c223ed6d3ae/graphviz-2.38.0.tar.gz">here</link>. The <filename>graphviz.nix</filename> expression is straightforward:
@@ -64,10 +64,10 @@
     </para>
     <screen><xi:include href="./12/simple-png.txt" parse="text" /></screen>
     <para>
-      Oh of course... <package>graphviz</package> can't know about png. It built only the output formats it supports natively, without using any extra library.
+      Oh of course... <package>graphviz</package> doesn't know about png. It built only the output formats it supports natively, without using any extra library.
     </para>
     <para>
-      I remind you, in <filename>autotools.nix</filename> there's a <literal>buildInputs</literal> variable which gets concatenated to <literal>baseInputs</literal>.  That would be the perfect place to add a build dependency. We created that variable exactly for this reason to be overridable from package expressions.
+      Remember, in <filename>autotools.nix</filename> there's a <literal>buildInputs</literal> variable which gets concatenated to <literal>baseInputs</literal>.  That would be the perfect place to add a build dependency. We created that variable exactly for this reason to be overridable from package expressions.
     </para>
     <para>
       This 2.38 version of <package>graphviz</package> has several plugins to output png. For simplicity, we will use <package>libgd</package>.
@@ -79,7 +79,7 @@
       The <package>gd</package>, <package>jpeg</package>, <package>fontconfig</package> and <package>bzip2</package> libraries (dependencies of <package>gd</package>) don't use <command>pkg-config</command> to specify which flags to pass to the compiler. Since there's no global location for libraries, we need to tell <command>gcc</command> and <command>ld</command> where to find includes and libs.
     </para>
     <para>
-      The <literal>nixpkgs</literal> provides <package>gcc</package> and <package>binutils</package>, and we are using them for our packaging. Not only, it also <link xlink:href="http://nixos.org/nixpkgs/manual/#ssec-setup-hooks">provides wrappers</link> for them which allow passing extra arguments to <command>gcc</command> and <command>ld</command>, bypassing the project build systems:
+      The <literal>nixpkgs</literal> provides <package>gcc</package> and <package>binutils</package>, which we are currently using for our packaging. It also <link xlink:href="http://nixos.org/nixpkgs/manual/#ssec-setup-hooks">provides wrappers</link> for them which allow passing extra arguments to <command>gcc</command> and <command>ld</command>, bypassing the project build systems:
       <itemizedlist>
         <listitem><para><varname>NIX_CFLAGS_COMPILE</varname>: extra flags to <command>gcc</command> at compile time</para></listitem>
         <listitem><para><varname>NIX_LDFLAGS</varname>: extra flags to <command>ld</command></para></listitem>
@@ -113,7 +113,7 @@
   <section>
     <title>The repository expression</title>
     <para>
-      Now that we have two packages, what's a good way to put them together in a single repository? We do something like <literal>nixpkgs</literal> does. With <literal>nixpkgs</literal>, we <literal>import</literal> it and then we peek derivations by accessing the giant attribute set.
+      Now that we have two packages, what's a good way to put them together in a single repository? We'll do something like <literal>nixpkgs</literal> does. With <literal>nixpkgs</literal>, we <literal>import</literal> it and then we pick derivations by accessing the giant attribute set.
     </para>
     <para>
       For us nixers, this is a good technique, because it abstracts from the file names. We don't refer to a package by <filename>REPO/some/sub/dir/package.nix</filename> but by <literal>importedRepo.package</literal> (or <literal>pkgs.package</literal> in our examples).
@@ -140,7 +140,7 @@
       For pythoners, it is similar to <filename>__init__.py</filename>.
     </para>
     <para>
-      With <command>nix-env</command>, to install the package in your user environment:
+      With <command>nix-env</command>, install the package into your user environment:
     </para>
     <screen><xi:include href="./12/nix-env-install-graphviz.txt" parse="text" /></screen>
     <para>
@@ -159,7 +159,7 @@
   <section>
     <title>The inputs pattern</title>
     <para>
-      After a long preparation, we finally arrived. I know you have a big doubt in this moment. It's about the <filename>hello.nix</filename> and <filename>graphviz.nix</filename>. They are very, very dependent on <literal>nixpkgs</literal>:
+      After a long preparation, we finally arrived. I know you're having a big doubt in this moment. It's about the <filename>hello.nix</filename> and <filename>graphviz.nix</filename>. They are very, very dependent on <literal>nixpkgs</literal>:
       <itemizedlist>
         <listitem><para>First big problem: they import <literal>nixpkgs</literal> directly. In <filename>autotools.nix</filename> instead we pass <literal>nixpkgs</literal> as an argument. That's a much better approach.</para></listitem>
         <listitem><para>Second problem: what if we want a variant of <package>graphviz</package> without <package>libgd</package> support?</para></listitem>
@@ -167,10 +167,10 @@
       </itemizedlist>
     </para>
     <para>
-      The current answer to the above questions is: change the expression to match your needs (or change the callee to match your needs).
+      The current answers to the above questions are: change the expression to match your needs (or change the callee to match your needs).
     </para>
     <para>
-      With the <literal>inputs</literal> pattern, we choose to give another answer: let the user change the <literal>inputs</literal> of the expression (or change the caller to pass different inputs).
+      With the <literal>inputs</literal> pattern, we decided to provide another answer: let the user change the <literal>inputs</literal> of the expression (or change the caller to pass different inputs).
     </para>
     <para>
       By inputs of an expression, we refer to the set of derivations needed to build that expression. In this case:
@@ -186,7 +186,7 @@
       <emphasis role="underline">Goal:</emphasis> make package expressions independent of the repository.
     </para>
     <para>
-      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. Doing it for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
+      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. t for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
     </para>
     <screen><xi:include href="./12/graphviz-mkderivation.txt" parse="text" /></screen>
     <para>
@@ -224,7 +224,7 @@
   <section>
     <title>Conclusion</title>
     <para>
-      The "<literal>inputs</literal>" pattern allows our expressions to be easily customizable through a set of arguments. These arguments could be flags, derivations, or whatelse. Our package expressions are functions, don't think there's any magic in there.
+      The "<literal>inputs</literal>" pattern allows our expressions to be easily customizable through a set of arguments. These arguments could be flags, derivations, or whatever else. Our package expressions are functions, don't think there's any magic in there.
     </para>
     <para>
       It also makes the expressions independent of the repository. Given that all the needed information is passed through arguments, it is possible to use that expression in any other context.
