@@ -8,7 +8,7 @@
   <para>
     Welcome to the sixth Nix pill. In the previous <link
     linkend="functions-and-imports">fifth pill</link> we introduced functions
-    and imports. Functions and imports are very simple concepts that allows for
+    and imports. Functions and imports are very simple concepts that allow for
     building complex abstractions and composition of modules to build a flexible
     Nix system.
   </para>
