@@ -44,7 +44,7 @@
       The nix reference for packages is <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, a single repository of all descriptions of all packages. I find this approach very natural and attractive for new contributions.
     </para>
     <para>
-      For the rest is chapter, we will adopt the single repository technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
+      For the rest of this chapter, we will adopt the single repository technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
     </para>
     <para>
       But isn't that heavy? It isn't, because Nix is a lazy language, it evaluates only what's needed! And that's why <literal>nixpkgs</literal> is able to maintain such a big software repository in a giant attribute set.
