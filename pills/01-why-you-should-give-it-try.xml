@@ -32,9 +32,10 @@
     <para>
       The <link xlink:href="https://nixos.org/nix/manual/">Nix</link>,
       <link xlink:href="https://nixos.org/nixpkgs/manual/">Nixpkgs</link>, and
-      <link xlink:href="https://nixos.org/nixos/manual/">NixOS</link> manuals;
-      and wiki are excellent resources for explaining how Nix/NixOS works, how
-      you can use it, and the number of cool things being done with it.
+      <link xlink:href="https://nixos.org/nixos/manual/">NixOS</link> manuals
+      along with <link xlink:href="https://nixos.wiki/">the wiki</link> are
+      excellent resources for explaining how Nix/NixOS works, how
+      you can use it, and how cool things are being done with it.
       However, at the beginning you may feel that some of the magic
       which happens behind the scenes is hard to grasp.
     </para>
