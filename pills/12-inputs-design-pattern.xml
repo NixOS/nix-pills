@@ -90,7 +90,7 @@
     </para>
     <screen><xi:include href="./12/setup-sh.txt" parse="text" /></screen>
     <para>
-      Now by adding derivations to <literal>buildInputs</literal>, will add the <filename>lib</filename>, <filename>include</filename> and <filename>bin</filename> paths automatically in <filename>setup.sh</filename>.
+      Now adding derivations to <literal>buildInputs</literal> will add their <filename>lib</filename>, <filename>include</filename> and <filename>bin</filename> paths automatically in <filename>setup.sh</filename>.
     </para>
     <para>
       The <arg>-rpath</arg> flag in <command>ld</command> is needed because at runtime, the executable must use exactly that version of the library.
