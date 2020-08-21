@@ -49,9 +49,11 @@
 
     <screen><xi:include href="./08/hello-nix.txt" parse="text" /></screen>
     <note><title>Nix on darwin</title>
-    <para>The darwin (i.e. macOS) <literal>stdenv</literal> diverges from the Linux <literal>stdenv</literal> in several ways. A main difference is that the darwin <literal>stdenv</literal> relies upon <literal>clang</literal> rather than <literal>gcc</literal> as its C compiler. We can adapt this early example of how a <literal>stdenv</literal> works for darwin by using this modified version of <filename>hello.nix</filename>:
+    <para>Darwin (i.e. macOS) builds typically use <literal>clang</literal> rather than <literal>gcc</literal> for a C compiler.
+    We can adapt this early example for darwin by using this modified version of <filename>hello.nix</filename>:
     <screen><xi:include href="./08/hello-nix-darwin.txt" parse="text" /></screen>
-    Please be aware that similar changes may be needed in what follows.
+    Later, we will show how Nix can automatically handle these differences.
+    For now, please be just aware that changes similar to the above may be needed in what follows.
     </para>
     </note>
 
