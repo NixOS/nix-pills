@@ -235,7 +235,7 @@
 
     <para>
       To do so, use
-      <link xlink:href="https://nixos.org/nix/manual/#idm140737322044432">recursive attribute sets</link>:
+      <link xlink:href="https://nixos.org/nix/manual/#idm140737321979088">recursive attribute sets</link>:
     </para>
 
     <screen><xi:include href="./04/set-recursive.txt" parse="text" /></screen>
