@@ -152,7 +152,7 @@
     <programlisting><xi:include href="./10/builder-sh.txt" parse="text" /></programlisting>
 
     <para>
-      Here is the modified <filename>setup.sh</filename>.
+      Here is the newly added <filename>setup.sh</filename>.
     </para>
 
     <programlisting><xi:include href="./10/setup-sh.txt" parse="text" /></programlisting>
