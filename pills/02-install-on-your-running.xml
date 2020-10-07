@@ -69,7 +69,7 @@
 
     <para>
       That's the <filename>/nix/store</filename> we
-      were talking in the first article. We're copying in the
+      were talking about in the first article. We're copying in the
       necessary software to bootstrap a Nix system. You can see bash,
       coreutils, the C compiler toolchain, perl libraries, sqlite and Nix itself
       with its own tools and libnix.
