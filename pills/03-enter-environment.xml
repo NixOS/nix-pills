@@ -117,7 +117,7 @@
       At this point you probably want to run <literal>man</literal> to get some documentation.
       Even if you
       already have man system-wide outside of the Nix environment, you can
-      install and use it within Nix with <command>nix-env -i man</command>. As
+      install and use it within Nix with <command>nix-env -i man-db</command>. As
       usual, a new generation will be created, and <filename>~/.nix-profile</filename> will point to
       it.
     </para>
