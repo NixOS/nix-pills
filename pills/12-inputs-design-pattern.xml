@@ -186,7 +186,7 @@
       <emphasis role="underline">Goal:</emphasis> make package expressions independent of the repository.
     </para>
     <para>
-      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. t for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
+      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. Doing it for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
     </para>
     <screen><xi:include href="./12/graphviz-mkderivation.txt" parse="text" /></screen>
     <para>
