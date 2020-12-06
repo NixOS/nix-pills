@@ -30,7 +30,7 @@
     <para>
       Other package managers, like <command>dpkg</command>, have ways of
       removing unused software. Nix is much more precise in its garbage
-      ollection compared to these other systems.
+      collection compared to these other systems.
     </para>
 
     <para>
