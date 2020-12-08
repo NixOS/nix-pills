@@ -121,7 +121,7 @@
   <section>
     <title>Conclusion</title>
     <para>
-      The "<literal>callPackage</literal>" pattern has simplified a lot our repository. We're able to import packages that require some named arguments and call them automatically, given the set of all packages.
+      The "<literal>callPackage</literal>" pattern has simplified our repository a lot. We're able to import packages that require some named arguments and call them automatically, given the set of all packages.
     </para>
     <para>
       We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, rather to provide tools for packaging. That's why they are not documented in the <link xlink:href="http://nixos.org/nix/manual/">nix manual</link>.
