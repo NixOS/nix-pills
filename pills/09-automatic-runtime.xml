@@ -117,7 +117,7 @@
     </orderedlist>
 
     <para>
-      You get all the runtime dependencies, and that's why Nix
+      You really do get all the runtime dependencies; that's why Nix
       deployments are so easy.
     </para>
 
