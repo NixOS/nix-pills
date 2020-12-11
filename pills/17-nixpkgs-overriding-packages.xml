@@ -20,7 +20,7 @@
       We put the override function in the returned attribute set of the original function call.
     </para>
     <para>
-      Take for example <package>graphviz</package>. It has an input parameter <package>xlibs</package>. If it's null, then <package>graphviz</package> will build without X support.
+      Take for example <package>graphviz</package>. It has an input parameter <package>xorg</package>. If it's null, then <package>graphviz</package> will build without X support.
     </para>
     <screen><xi:include href="./17/graphviz-override.txt" parse="text" /></screen>
     <para>
