@@ -1,5 +1,5 @@
 {
   packageOverrides = pkgs: {
-    graphviz = pkgs.graphviz.override { xlibs = null; };
+    graphviz = pkgs.graphviz.override { xorg = null; };
   };
 }

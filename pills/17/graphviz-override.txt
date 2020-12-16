@@ -1,4 +1,4 @@
-$ nix-repl
+$ nix repl
 nix-repl> :l <nixpkgs>
 Added 4360 variables.
-nix-repl> :b graphviz.override { xlibs = null; }
+nix-repl> :b graphviz.override { xorg = null; }
