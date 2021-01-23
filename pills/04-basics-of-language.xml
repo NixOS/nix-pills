@@ -19,7 +19,7 @@
     <link xlink:href="http://nixos.org/nix/manual/#chap-writing-nix-expressions">Nix language</link>
     is used to write expressions that produce derivations. The
     <link xlink:href="http://nixos.org/nix/manual/#sec-nix-build">nix-build</link>
-    tool is used to build a derivations from an expression. Even as a system administrator that
+    tool is used to build derivations from an expression. Even as a system administrator that
     wants to customize the installation, it's necessary to master Nix. Using
     Nix for your jobs means you get the features we saw in the previous articles
     for free.
