@@ -338,7 +338,7 @@
     <title>Laziness</title>
 
     <para>
-      Nix evaluates expression only when needed. This is a great feature when
+      Nix evaluates expressions only when needed. This is a great feature when
       working with packages.
     </para>
 
