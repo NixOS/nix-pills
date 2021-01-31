@@ -44,7 +44,7 @@
       The nix reference for packages is <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, a single repository of all descriptions of all packages. I find this approach very natural and attractive for new contributions.
     </para>
     <para>
-      For the rest is chapter, we will adopt the single repository technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
+      For the rest of this chapter, we will adopt the single repository technique. The natural implementation in Nix is to create a top-level Nix expression, and one expression for each package. The top-level expression imports and combines all expressions in a giant attribute set with name -> package pairs.
     </para>
     <para>
       But isn't that heavy? It isn't, because Nix is a lazy language, it evaluates only what's needed! And that's why <literal>nixpkgs</literal> is able to maintain such a big software repository in a giant attribute set.
@@ -90,7 +90,7 @@
     </para>
     <screen><xi:include href="./12/setup-sh.txt" parse="text" /></screen>
     <para>
-      Now by adding derivations to <literal>buildInputs</literal>, will add the <filename>lib</filename>, <filename>include</filename> and <filename>bin</filename> paths automatically in <filename>setup.sh</filename>.
+      Now adding derivations to <literal>buildInputs</literal> will add their <filename>lib</filename>, <filename>include</filename> and <filename>bin</filename> paths automatically in <filename>setup.sh</filename>.
     </para>
     <para>
       The <arg>-rpath</arg> flag in <command>ld</command> is needed because at runtime, the executable must use exactly that version of the library.
@@ -186,7 +186,7 @@
       <emphasis role="underline">Goal:</emphasis> make package expressions independent of the repository.
     </para>
     <para>
-      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. t for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
+      How do we achieve that? The answer is simple: use functions to declare inputs for a derivation. Doing it for <filename>graphviz.nix</filename>, will make the derivation independent of the repository and customizable:
     </para>
     <screen><xi:include href="./12/graphviz-mkderivation.txt" parse="text" /></screen>
     <para>

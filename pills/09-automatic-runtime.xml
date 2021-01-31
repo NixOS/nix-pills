@@ -149,9 +149,12 @@
     </para>
 
     <para>
-      Even after reducing the rpath the hello binary would still depend
-      upon gcc. This is because of debugging information. To fix is the well
-      known <command>strip</command> can be used.
+      Even after reducing the rpath, the hello binary would still
+      depend upon gcc because of some debugging information. This
+      unnecesarily increases the size of our runtime
+      dependencies. We'll explore how <command><link
+      xlink:href="https://linux.die.net/man/1/strip">strip</link>
+      </command> can help us with that in the next section.
     </para>
   </section>
 

@@ -84,7 +84,7 @@
       Then nix puts that out path in the .drv, and that's it.
     </para>
     <para>
-      In case the .drv has input derivations, that is it references other .drv, then such .drv paths are replaced by this same algorithm which returns an hash.
+      In case the .drv has input derivations, that is it references other .drv, then such .drv paths are replaced by this same algorithm which returns a hash.
     </para>
     <para>
       In other words, you get a final .drv where every other .drv path is replaced by its hash.
