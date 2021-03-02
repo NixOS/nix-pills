@@ -99,7 +99,7 @@
       <xi:include href="./07/simple-derivation.xml" />
 
       We did it! The contents of
-      <filename>/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></filename>
+      <filename>/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis></filename>
       is really foo. We've built our first derivation.
     </para>
     <para>
@@ -173,7 +173,7 @@
       that they are not changed during the build process and that the deployment
       is stateless and independent of the building machine.
       <filename>builder.sh</filename> is not only in the arguments passed to the
-      builder, it's also in the input derivations.
+      builder, it's also in the input sources.
     </para>
     <para>
       Given that <filename>builder.sh</filename> is a plain file, it has no .drv
@@ -231,9 +231,9 @@
       is the path to <filename>simple.c</filename> in the nix store. As an
       exercise, pretty print the .drv file. You'll see
       <filename>simple_builder.sh</filename> and <filename>simple.c</filename>
-      listed in the input derivations, along with
+      listed in the input sources while
       <application>bash</application>, <application>gcc</application> and
-      <application>coreutils</application> .drv files. The newly added
+      <application>coreutils</application> .drv files are listed in input derivations. The newly added
       environment variables described above will also appear.
     </para>
     <para>
