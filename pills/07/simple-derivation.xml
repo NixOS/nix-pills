@@ -1,8 +1,13 @@
 <screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }</userinput>
 <prompt>nix-repl> </prompt><userinput>:b d</userinput>
-<computeroutput>these derivations will be built:
-  /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-<emphasis>foo.drv</emphasis>
-building '/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-<emphasis>foo.drv</emphasis>'...
+<computeroutput>[1 build, 0.0MiB DL]
+
+this derivation produced the following outputs:
+  out -> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis></computeroutput>
+
+<prompt>nix-repl> </prompt><userinput>nix log /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis></userinput>
+
+<computeroutput>
 declare -x HOME="/homeless-shelter"
 declare -x NIX_BUILD_CORES="4"
 declare -x NIX_BUILD_TOP="/tmp/nix-build-foo.drv-0"
@@ -19,9 +24,4 @@ declare -x TMPDIR="/tmp/nix-build-foo.drv-0"
 declare -x builder="/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash"
 declare -x name="foo"
 declare -x out="/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo"
-declare -x system="x86_64-linux"
-warning: you did not specify '--add-root'; the result might be removed by the garbage collector
-/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis>
-
-this derivation produced the following outputs:
-  out -> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis></computeroutput></screen>
+declare -x system="x86_64-linux"</computeroutput></screen>

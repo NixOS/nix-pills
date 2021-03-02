@@ -67,11 +67,21 @@
 
       The command <literal>declare -xp</literal>
       lists exported variables
-      (<literal>declare</literal> is a builtin bash function).
+      (<literal>declare</literal> is a builtin bash function). If you try out
+      <literal>declare -xp</literal> in the terminal now, you should see
+      a long list of variables like <literal>TERM="xterm"</literal>.
       As we covered in the previous pill, Nix computes the output path of the
       derivation. The resulting <literal>.drv</literal> file contains a list of
-      environment variables passed to the builder. One of these is
-      <varname>$out</varname>.
+      environment variables passed to the builder, which are then available
+      for use by the builder script. The environment variables in 
+      the <literal>.drv</literal>
+      file are taken from the attributes of the derivation, with a few
+      nix-specific variables added automatically. One of these is 
+      <varname>$out</varname>. Since nix builders run in an environment that 
+      excludes outside variables, while including attributes supplied by the
+      derivation, we would expect the output of <literal>declare -xp</literal>
+      to look quite different if run within a builder script actually being
+      executed by nix. Let's have a look.
     </para>
     <para>
       What we have to do is create something in the path
@@ -81,7 +91,8 @@
 
     <para>
       In addition, we print out the environment variables during the build
-      process. We cannot use <application>env</application> for this, because
+      process, which will show the environment variables available to the
+      builder. We cannot use <application>env</application> for this, because
       <application>env</application> is part of
       <application>coreutils</application> and we don't have a dependency to it
       yet. We only have <application>bash</application> for now.
@@ -94,7 +105,9 @@
       <xi:include href="./07/bash.xml" />
 
       So with the usual trick, we can refer to
-      <application>bin/bash</application> and create our derivation:
+      <application>bin/bash</application> and create our derivation, and then use
+      <code>nix log</code> to view the logs created by the execution of our
+      builder script:
 
       <xi:include href="./07/simple-derivation.xml" />
 
@@ -115,7 +128,8 @@
   <section>
     <title>The builder environment</title>
     <para>
-      Let's inspect those environment variables printed during the build process.
+    As expected, the variables that <literal>declare -xp</literal> shows were
+    available to our builder script were quite different.
       <itemizedlist>
         <listitem><para>
           <envar>$HOME</envar> is not your home directory, and
