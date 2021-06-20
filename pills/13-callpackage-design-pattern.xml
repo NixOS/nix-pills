@@ -124,7 +124,7 @@
       The "<literal>callPackage</literal>" pattern has simplified our repository a lot. We're able to import packages that require some named arguments and call them automatically, given the set of all packages.
     </para>
     <para>
-      We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, rather to provide tools for packaging. That's why they are not documented in the <link xlink:href="http://nixos.org/nix/manual/">nix manual</link>.
+      We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, rather to provide tools for packaging. They are documented in the <link xlink:href="https://nixos.org/manual/nix/stable/#ssec-builtins">nix manual</link>.
     </para>
     <para>
       Writing a repository in nix is an evolution of writing convenient functions for combining the packages. This demonstrates even more how nix is a generic tool to build and deploy something, and how suitable it is to create software repositories with your own conventions.
