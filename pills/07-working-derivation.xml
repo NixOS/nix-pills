@@ -115,6 +115,11 @@
   <section>
     <title>The builder environment</title>
     <para>
+      We can use <command>nix-store --read-log</command> to see the logs our
+      builder produced:
+      <xi:include href="./07/read-log.xml" />
+    </para>
+    <para>
       Let's inspect those environment variables printed during the build process.
       <itemizedlist>
         <listitem><para>
