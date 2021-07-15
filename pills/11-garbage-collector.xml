@@ -147,10 +147,15 @@
     <para>
       However we removed the link from
       <filename>/nix/var/nix/profiles</filename>, not from
-      <filename>/nix/var/nix/gcroots</filename>. Turns out, that
-      <filename>/nix/var/nix/gcroots/profiles</filename> is a symlink to
-      <filename>/nix/var/nix/profiles</filename>. That is very handy. It means
-      any profile and its generations are GC roots.
+      <filename>/nix/var/nix/gcroots</filename>. Turns out, Nix
+      also treats <filename>/nix/var/nix/profiles</filename> as a GC root.
+      That is very handy. It means any profile and its generations are GC roots.
+      <footnote>
+        <para>
+          Before Nix 1.6, <filename>/nix/var/nix/gcroots/profiles</filename>
+          used to be a symlink to <filename>/nix/var/nix/profiles</filename>.
+        </para>
+      </footnote>
     </para>
 
     <para>
