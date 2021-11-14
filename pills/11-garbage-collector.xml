@@ -61,7 +61,7 @@
 
     <para>
       In Nix there's this same concept. Instead of being objects, of course,
-      <link xlink:href="http://nixos.org/nix/manual/#ssec-gc-roots">GC roots are store paths</link>.
+      <link xlink:href="https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html">GC roots are store paths</link>.
       The implementation is very simple and transparent to the user. GC roots
       are stored under <filename>/nix/var/nix/gcroots</filename>. If there's a
       symlink to a store path, then that store path is a GC root.
@@ -90,7 +90,7 @@
 
     <para>
       Before playing with the GC, first run the
-      <link xlink:href="http://nixos.org/nix/manual/#sec-nix-collect-garbage">nix garbage collector</link>
+      <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-collect-garbage.html">nix garbage collector</link>
       once, so that we have a clean playground for our experiments:
     </para>
 

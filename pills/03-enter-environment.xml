@@ -75,7 +75,7 @@
       <listitem>
         <para>
           The <link
-          xlink:href="http://nixos.org/nix/manual/#sec-nix-env">nix-env</link>
+          xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html">nix-env</link>
           tool manages environments, profiles and their generations.
         </para>
       </listitem>
@@ -124,7 +124,7 @@
 
     <para>
       Lets inspect the <link
-      xlink:href="http://nixos.org/nix/manual/#sec-profiles">profile</link>
+      xlink:href="https://nixos.org/manual/nix/stable/package-management/profiles.html">profile</link>
       a bit:
     </para>
 
@@ -176,9 +176,9 @@
 
     <para>
       You can of course also <link
-        xlink:href="https://nixos.org/nix/manual/#operation-uninstall">
+        xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---uninstall">
       uninstall</link> and <link
-      xlink:href="https://nixos.org/nix/manual/#operation-upgrade">upgrade</link> packages.
+      xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade">upgrade</link> packages.
     </para>
   </section>
 
@@ -325,7 +325,7 @@
       <link linkend="install-on-your-running-system">second article</link>.
       There's a list of channels from which we get packages, although usually we use a
       single channel. The tool to manage channels is
-      <link xlink:href="http://nixos.org/nix/manual/#sec-nix-channel">nix-channel</link>.
+      <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-channel.html">nix-channel</link>.
     </para>
 
     <screen><xi:include href="./03/channel-list.txt" parse="text" /></screen>
@@ -366,7 +366,7 @@
       We learned how to query the user environment and to manipulate it by
       installing and uninstalling software. Upgrading software is also straightforward,
       as you can read in
-      <link xlink:href="https://nixos.org/nix/manual/#operation-upgrade">the manual</link>
+      <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade">the manual</link>
       (<command>nix-env -u</command> will upgrade all packages in the
       environment).
     </para>

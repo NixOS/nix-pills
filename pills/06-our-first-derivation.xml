@@ -30,7 +30,7 @@
 
   <para>
     The <link
-    xlink:href="https://nixos.org/nix/manual/#ssec-derivation">derivation
+    xlink:href="https://nixos.org/manual/nix/stable/expressions/derivations.html">derivation
     built-in function</link> is used to create derivations. I invite you to read
     the link in the Nix manual about the derivation built-in. A derivation from
     a Nix language view point is simply a set, with some attributes. Therefore
@@ -426,7 +426,7 @@
         During evaluation, you can refer to other derivations because Nix will
         create .drv files and we will know out paths beforehand. This is
         achieved with <link
-        xlink:href="https://nixos.org/nix/manual/#sec-nix-instantiate">nix-instantiate</link>.
+        xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html">nix-instantiate</link>.
       </para>
     </listitem>
     <listitem>
@@ -434,7 +434,7 @@
         <emphasis role="strong">Realise/Build time</emphasis>: the .drv from the
         derivation set is built, first building .drv inputs (build
         dependencies). This is achieved with <link
-        xlink:href="https://nixos.org/nix/manual/#rsec-nix-store-realise">nix-store
+        xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise">nix-store
         -r</link>.
       </para>
     </listitem>

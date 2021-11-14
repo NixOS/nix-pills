@@ -21,7 +21,7 @@
   </para>
 
   <para>
-     <link xlink:href="https://nixos.org/nix/manual/#chap-installation">Installing
+     <link xlink:href="https://nixos.org/manual/nix/stable/installation/installation.html">Installing
      Nix</link> is as easy as installing any other package.
      It will not drastically change our system, it will stay out of our way.
   </para>
@@ -54,7 +54,7 @@
       the store is owned by root and multiple users can install and build
       software through a Nix daemon. You can read more about multi-user
       installations here: <link
-      xlink:href="https://nixos.org/nix/manual/#ssec-multi-user">https://nixos.org/nix/manual/#ssec-multi-user</link>.
+      xlink:href="https://nixos.org/manual/nix/stable/installation/installing-binary.html#multi-user-installation">https://nixos.org/manual/nix/stable/installation/installing-binary.html#multi-user-installation</link>.
     </para></note>
   </section>
 
@@ -129,7 +129,7 @@
 
     <para>
       Next in the installation, we encounter the concept of the <link
-      xlink:href="https://nixos.org/nix/manual/#sec-profiles">profile</link>:
+      xlink:href="https://nixos.org/manual/nix/stable/package-management/profiles.html">profile</link>:
     </para>
 
     <xi:include href="./02/user-environment.xml" parse="xml" />
@@ -201,7 +201,7 @@
 
     <para>
       <link
-          xlink:href="https://nixos.org/nix/manual/#chap-writing-nix-expressions">Nix
+          xlink:href="https://nixos.org/manual/nix/stable/expressions/writing-nix-expressions.html">Nix
       expressions</link> are used to describe packages and how to
       build them. <link
       xlink:href="https://nixos.org/nixpkgs/">Nixpkgs</link> is the

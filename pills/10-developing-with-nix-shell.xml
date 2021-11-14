@@ -25,7 +25,7 @@
 
     <para>
       The <link
-      xlink:href="https://nixos.org/nix/manual/#sec-nix-shell">nix-shell</link>
+      xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-shell.html">nix-shell</link>
       tool drops us in a shell by setting up the necessary environment
       variables to hack on a derivation. It does not build the derivation, it
       only serves as a preparation so that we can run the build steps manually.
