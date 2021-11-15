@@ -303,7 +303,7 @@
     </para>
     <para>
       Then we meet the
-      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html?highlight=inherit#inheriting-attributes"><code>inherit</code> keyword</link>.
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes"><code>inherit</code> keyword</link>.
       <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>.
       Similarly, <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
     </para>
