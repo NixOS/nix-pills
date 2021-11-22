@@ -96,7 +96,7 @@
       Finally, the other most used kind of path is when we know beforehand an integrity hash of a file. This is usual for tarballs.
     </para>
     <para>
-      A derivation can take three special attributes: <literal>outputHashMode</literal>, <literal>outputHash</literal> and <literal>outputHashAlgo</literal> which are well documented in the <link xlink:href="https://nixos.org/nix/manual/#sec-advanced-attributes">nix manual</link>.
+      A derivation can take three special attributes: <literal>outputHashMode</literal>, <literal>outputHash</literal> and <literal>outputHashAlgo</literal> which are well documented in the <link xlink:href="https://nixos.org/manual/nix/stable/expressions/advanced-attributes.html">nix manual</link>.
     </para>
     <para>
       The builder must create the out path and make sure its hash is the same as the one declared with <literal>outputHash</literal>.

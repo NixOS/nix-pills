@@ -14,7 +14,7 @@
   <section>
     <title>The NIX_PATH</title>
     <para>
-      The <link xlink:href="http://nixos.org/nix/manual/#sec-common-env">NIX_PATH environment variable</link> is very important. It's very similar to the <varname>PATH</varname> environment variable. The syntax is similar, several paths are separated by a colon <literal>:</literal>. Nix will then search for something in those paths from left to right.
+      The <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/env-common.html">NIX_PATH environment variable</link> is very important. It's very similar to the <varname>PATH</varname> environment variable. The syntax is similar, several paths are separated by a colon <literal>:</literal>. Nix will then search for something in those paths from left to right.
     </para>
     <para>
       Who uses <varname>NIX_PATH</varname>? The nix expressions! Yes, <varname>NIX_PATH</varname> is not of much use by the nix tools themselves, rather it's used when writing nix expressions.
@@ -29,7 +29,7 @@
       What's <varname>NIX_PATH</varname> good for? Nix expressions may refer to an "abstract" path such as <literal>&lt;nixpkgs&gt;</literal>, and it's possible to override it from the command line.
     </para>
     <para>
-      For ease we will use <command>nix-instantiate --eval</command> to do our tests. I remind you, <link xlink:href="http://nixos.org/nix/manual/#sec-nix-instantiate">nix-instantiate</link> is used to evaluate nix expressions and generate the .drv files. Here we are not interested in building derivations, so evaluation is enough. It can be used for one-shot expressions.
+      For ease we will use <command>nix-instantiate --eval</command> to do our tests. I remind you, <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html">nix-instantiate</link> is used to evaluate nix expressions and generate the .drv files. Here we are not interested in building derivations, so evaluation is enough. It can be used for one-shot expressions.
     </para>
   </section>
   <section>
@@ -62,7 +62,7 @@
       You can list that directory and realize it's simply a checkout of the nixpkgs repository at a specific commit (hint: <literal>.version-suffix</literal>).
     </para>
     <para>
-      The <varname>NIX_PATH</varname> variable is exported by <filename>nix.sh</filename>, and that's the reason why I always asked you to <link xlink:href="https://nixos.org/nix/manual/#ch-env-variables">source nix.sh</link> at the beginning of my posts.
+      The <varname>NIX_PATH</varname> variable is exported by <filename>nix.sh</filename>, and that's the reason why I always asked you to <link xlink:href="https://nixos.org/manual/nix/stable/installation/env-variables.html">source nix.sh</link> at the beginning of my posts.
     </para>
     <para>
       You may wonder: then I can also specify a different <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link> path to, e.g., a <command>git checkout</command> of <literal>nixpkgs</literal>? Yes, you can and I encourage doing that. We'll talk about this in the next pill.
@@ -78,7 +78,7 @@
   <section>
     <title>A big word about nix-env</title>
     <para>
-      The <link xlink:href="http://nixos.org/nix/manual/#sec-nix-env">nix-env</link> command is a little different than <command>nix-instantiate</command> and <command>nix-build</command>. Whereas <command>nix-instantiate</command> and <command>nix-build</command> require a starting nix expression, <command>nix-env</command> does not.
+      The <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html">nix-env</link> command is a little different than <command>nix-instantiate</command> and <command>nix-build</command>. Whereas <command>nix-instantiate</command> and <command>nix-build</command> require a starting nix expression, <command>nix-env</command> does not.
     </para>
     <para>
       You may be crippled by this concept at the beginning, you may think <command>nix-env</command> uses <varname>NIX_PATH</varname> to find the <literal>nixpkgs</literal> repository. But that's not it.

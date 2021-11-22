@@ -19,7 +19,7 @@ xml:id="functions-and-imports">
     Functions help to build reusable components in a big repository like
     <link xlink:href="https://github.com/NixOS/nixpkgs/">nixpkgs</link>. The Nix
     manual has a <link
-    xlink:href="https://nixos.org/nix/manual/#ss-functions">great explanation of
+    xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#functions">great explanation of
     functions</link>. Let's go: pill on one hand, Nix manual on the other hand.
   </para>
 
@@ -309,7 +309,7 @@ xml:id="functions-and-imports">
     <listitem>
       <para>
         <code>builtins.trace</code> is a <link
-        xlink:href="https://nixos.org/nix/manual/#ssec-builtins">built-in
+        xlink:href="https://nixos.org/manual/nix/stable/expressions/builtins.html">built-in
         function</link> that takes two arguments. The first is the message to
         display, the second is the value to return. It's usually used for
         debugging purposes.

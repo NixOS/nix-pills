@@ -16,9 +16,9 @@
 
   <para>
     The
-    <link xlink:href="http://nixos.org/nix/manual/#chap-writing-nix-expressions">Nix language</link>
+    <link xlink:href="https://nixos.org/manual/nix/stable/expressions/expression-language.html">Nix language</link>
     is used to write expressions that produce derivations. The
-    <link xlink:href="http://nixos.org/nix/manual/#sec-nix-build">nix-build</link>
+    <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-build.html">nix-build</link>
     tool is used to build derivations from an expression. Even as a system administrator that
     wants to customize the installation, it's necessary to master Nix. Using
     Nix for your jobs means you get the features we saw in the previous articles
@@ -51,7 +51,7 @@
     <para>
       Nix 2.0 contains a command named <command>nix repl</command> which is a simple command line tool
       for playing with the Nix language. In fact, Nix is a
-      <link xlink:href="https://nixos.org/nix/manual/#ch-expression-language">pure, lazy, functional language</link>,
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/expression-language.html">pure, lazy, functional language</link>,
       not only a set of tools to manage derivations. The <literal>nix repl</literal> syntax is slightly
       different to Nix syntax when it comes to assigning variables, but it shouldn't
       be confusing so long as you bear it in mind. I prefer to start with <literal>nix repl</literal>
@@ -96,7 +96,7 @@
 
     <para>
       Nix has integer, floating point, string, path, boolean and null
-      <link xlink:href="http://nixos.org/nix/manual/#ssec-values">simple</link>
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-values.html">simple</link>
       types. Then there are also lists, sets and functions. These types are enough
       to build an operating system.
     </para>
@@ -154,7 +154,7 @@
 
     <para>
       It's possible to
-      <link xlink:href="http://nixos.org/nix/manual/#ssec-values">interpolate</link>
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-values.html">interpolate</link>
       whole Nix expressions inside strings with the <literal>${...}</literal> syntax and only that syntax,
       not <literal>$foo</literal> or <literal>{$foo}</literal> or anything else.
     </para>
@@ -235,7 +235,7 @@
 
     <para>
       To do so, use
-      <link xlink:href="https://nixos.org/nix/manual/#idm140737322044432">recursive attribute sets</link>:
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#recursive-sets">recursive attribute sets</link>:
     </para>
 
     <screen><xi:include href="./04/set-recursive.txt" parse="text" /></screen>

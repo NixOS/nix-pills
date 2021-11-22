@@ -128,7 +128,7 @@
         </para></listitem>
         <listitem><para>
           <envar>$NIX_BUILD_CORES</envar> and <envar>$NIX_STORE</envar> are
-          <link xlink:href="http://nixos.org/nix/manual/#sec-conf-file">nix
+          <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/conf-file.html">nix
           configuration options</link>
         </para></listitem>
         <listitem><para>
@@ -266,13 +266,13 @@
       <application>nix-build</application> does two jobs:
       <itemizedlist>
         <listitem><para>
-          <link xlink:href="http://nixos.org/nix/manual/#sec-nix-instantiate">
+          <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html">
             <application>nix-instantiate</application>
           </link>: parse and evaluate <filename>simple.nix</filename> and return
           the .drv file corresponding to the parsed derivation set
         </para></listitem>
         <listitem><para>
-            <link xlink:href="http://nixos.org/nix/manual/#rsec-nix-store-realise">
+            <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise">
               <command>nix-store -r</command>
             </link>: realise the .drv file, which actually builds it.
         </para></listitem>
@@ -303,7 +303,7 @@
     </para>
     <para>
       Then we meet the
-      <link xlink:href="https://nixos.org/nix/manual/#idm140737322036688"><code>inherit</code> keyword</link>.
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes"><code>inherit</code> keyword</link>.
       <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>.
       Similarly, <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
     </para>

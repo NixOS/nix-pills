@@ -30,9 +30,9 @@
   <section>
     <title>Rationale for this series</title>
     <para>
-      The <link xlink:href="https://nixos.org/nix/manual/">Nix</link>,
-      <link xlink:href="https://nixos.org/nixpkgs/manual/">Nixpkgs</link>, and
-      <link xlink:href="https://nixos.org/nixos/manual/">NixOS</link> manuals
+      The <link xlink:href="https://nixos.org/manual/nix">Nix</link>,
+      <link xlink:href="https://nixos.org/manual/nixpkgs/">Nixpkgs</link>, and
+      <link xlink:href="https://nixos.org/manual/nixos/">NixOS</link> manuals
       along with <link xlink:href="https://nixos.wiki/">the wiki</link> are
       excellent resources for explaining how Nix/NixOS works, how
       you can use it, and how cool things are being done with it.

@@ -134,7 +134,7 @@
       The <arg>-A</arg> argument is used to access an attribute of the set from the given .nix expression.
     </para>
     <para>
-      <emphasis role="bold">Important:</emphasis> why did we choose the <filename>default.nix</filename>? Because when a directory (by default the current directory) has a <filename>default.nix</filename>, that <filename>default.nix</filename> will be used (see <literal>import</literal> <link xlink:href="http://nixos.org/nix/manual/#ssec-builtins">here</link>). In fact you can run <command>nix-build -A hello</command> without specifying <filename>default.nix</filename>.
+      <emphasis role="bold">Important:</emphasis> why did we choose the <filename>default.nix</filename>? Because when a directory (by default the current directory) has a <filename>default.nix</filename>, that <filename>default.nix</filename> will be used (see <literal>import</literal> <link xlink:href="https://nixos.org/manual/nix/stable/expressions/builtins.html">here</link>). In fact you can run <command>nix-build -A hello</command> without specifying <filename>default.nix</filename>.
     </para>
     <para>
       For pythoners, it is similar to <filename>__init__.py</filename>.
