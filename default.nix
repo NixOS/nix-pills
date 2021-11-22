@@ -71,11 +71,11 @@ in pkgs.stdenv.mkDerivation {
     xsltproc \
       ${manualXsltprocOptions} \
       --nonet --output $dst/ \
-      ${pkgs.docbook5_xsl}/xml/xsl/docbook/xhtml/chunk.xsl \
+      ${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl \
       ${combined}
 
     mkdir -p $dst/images
-    cp -r ${pkgs.docbook5_xsl}/xml/xsl/docbook/images/callouts $dst/images/callouts
+    cp -r ${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts $dst/images/callouts
 
     cp ${./style.css} $dst/style.css
 
