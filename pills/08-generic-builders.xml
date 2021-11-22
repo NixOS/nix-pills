@@ -214,7 +214,7 @@
 
     <para>
       The
-      <link xlink:href="https://nixos.org/manual/nix/stable/#sec-language-operators">// operator</link>
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-operators.html">// operator</link>
       is an operator between two sets. The result is the union of the two sets.
       In case of conflicts between attribute names, the value on the right set
       is preferred.
