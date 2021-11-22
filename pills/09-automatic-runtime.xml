@@ -259,8 +259,8 @@
     <para>
       This makes packages self-contained, ensuring (apart data and
       configuration) that copying the runtime closure on another machine is
-      sufficient to run the program. That's why Nix has
-      <link xlink:href="https://nixos.org/manual/nix/stable/release-notes/rl-0.8.html">one-click install</link>,
+      sufficient to run the program. That's what allows running programs without
+      installation using <code>nix-shell</code>
       or
       <link xlink:href="https://nixos.org/manual/nix/stable/introduction.html">reliable deployment in the cloud</link>.
       All with one tool.
