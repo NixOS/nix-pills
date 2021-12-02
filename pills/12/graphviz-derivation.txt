@@ -3,5 +3,5 @@ let
   mkDerivation = import ./autotools.nix pkgs;
 in mkDerivation {
   name = "graphviz";
-  src = ./graphviz-2.38.0.tar.gz;
+  src = ./graphviz-2.49.3.tar.gz;
 }
