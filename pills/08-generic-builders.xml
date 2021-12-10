@@ -93,7 +93,7 @@
       <listitem>
         <para>
           First <command>unset PATH</command>, because it's initially set to a
-          non-existant path.
+          non-existent path.
         </para>
       </listitem>
       <listitem>
