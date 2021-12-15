@@ -60,11 +60,9 @@ in pkgs.stdenv.mkDerivation {
   name = "nix-pills";
 
   src = sources;
-  buildInputs = with pkgs; [ jing libxslt ];
+  buildInputs = with pkgs; [ libxslt ];
 
   installPhase = ''
-    jing ${pkgs.docbook5}/xml/rng/docbook/docbook.rng $combined
-
     # Generate the HTML manual.
     dst=$out/share/doc/nix-pills
     mkdir -p $dst
