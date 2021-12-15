@@ -2,21 +2,19 @@
 
 https://nixos.org/nixos/nix-pills/
 
+You can also build them locally:
+
+    nix-build release.nix -A html-split && firefox result/share/doc/nix-pills/index.html
+
+Similarly, for an [EPUB](https://www.w3.org/publishing/epub32/) version, run:
+
+    nix-build release.nix -A epub && foliate result/share/doc/nix-pills/nix-pills.epub
+
 ## Development
 
- - List of Elements: http://tdg.docbook.org/tdg/5.2/chunk-part-d6252e15351.html
- - Tracking Issue: https://github.com/NixOS/nixpkgs/issues/27908
+ - [List of DocBook Elements](https://tdg.docbook.org/tdg/5.2/part2.html)
 
-When starting a new Pill, comment on the tracking issue which one
-you're doing. If you need help, ask there. If you make progress but
-don't finish in one go, make a PR anyway! I'm trying to not edit
-things as I go, in order to not get bogged down.
-
-How I've built and tested:
-
-`nix-build release.nix -A html-split && firefox result/share/doc/nix-pills/index.html`
-
-Emacs config for a nice docbook experience:
+Emacs config for a nice DocBook experience:
 
  ```nix
  let
