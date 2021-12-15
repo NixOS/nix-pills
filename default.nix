@@ -72,8 +72,8 @@ in pkgs.stdenv.mkDerivation {
       "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl" \
       "${combined}"
 
-    mkdir -p "$dst/images"
-    cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts" "$dst/images/callouts"
+    mkdir -p "$dst/images/callouts"
+    cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/images/callouts"
 
     cp "${./style.css}" "$dst/style.css"
 
