@@ -56,29 +56,94 @@ let
     "--stringparam chunk.toc '${toc}'"
   ];
 
-in pkgs.stdenv.mkDerivation {
-  name = "nix-pills";
+in {
+  html-split = pkgs.stdenv.mkDerivation {
+    name = "nix-pills";
 
-  src = sources;
-  buildInputs = with pkgs; [ libxslt ];
+    src = sources;
 
-  installPhase = ''
-    # Generate the HTML manual.
-    dst=$out/share/doc/nix-pills
-    mkdir -p "$dst"
-    xsltproc \
-      ${manualXsltprocOptions} \
-      --nonet --output "$dst/" \
-      "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl" \
-      "${combined}"
+    buildInputs = with pkgs; [
+      libxslt
+    ];
 
-    mkdir -p "$dst/images/callouts"
-    cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/images/callouts"
+    installPhase = ''
+      runHook preInstall
 
-    cp "${./style.css}" "$dst/style.css"
+      # Generate the HTML manual.
+      dst=$out/share/doc/nix-pills
+      mkdir -p "$dst"
+      xsltproc \
+        ${manualXsltprocOptions} \
+        --nonet --output "$dst/" \
+        "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl" \
+        "${combined}"
 
-    mkdir -p "$out/nix-support"
-    echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
-    echo "doc nix-pills $dst" >> "$out/nix-support/hydra-build-products"
-  '';
+      mkdir -p "$dst/images/callouts"
+      cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/images/callouts"
+
+      cp "${./style.css}" "$dst/style.css"
+
+      mkdir -p "$out/nix-support"
+      echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
+      echo "doc nix-pills $dst" >> "$out/nix-support/hydra-build-products"
+
+      runHook postInstall
+    '';
+  };
+
+  epub = pkgs.stdenv.mkDerivation {
+    name = "nix-pills-epub";
+
+    src = sources;
+
+    buildInputs = with pkgs; [
+      libxslt
+      zip
+    ];
+
+    installCheckInputs = with pkgs; [
+      epubcheck
+    ];
+
+    doInstallCheck = true;
+
+    installPhase = ''
+      runHook preInstall
+
+      # Generate the EPUB manual.
+      dst=$out/share/doc/nix-pills
+      mkdir -p "$dst"
+      xsltproc \
+        ${manualXsltprocOptions} \
+        --nonet --output "$dst/epub/" \
+        "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/epub3/chunk.xsl" \
+        "${combined}"
+
+      mkdir -p "$dst/epub/OEBPS/images/callouts"
+      cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/epub/OEBPS/images/callouts"
+      cp "${./style.css}" "$dst/epub/OEBPS/style.css"
+
+      echo "application/epub+zip" > mimetype
+      manual="$dst/nix-pills.epub"
+      zip -0Xq "$manual" mimetype
+      pushd "$dst/epub" && zip -Xr9D "$manual" *
+      popd
+
+      rm -rf "$dst/epub"
+
+      mkdir -p "$out/nix-support"
+      echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
+      echo "doc-epub nix-pills $manual" >> "$out/nix-support/hydra-build-products"
+
+      runHook postInstall
+    '';
+
+    installCheckPhase = ''
+      runHook preInstallCheck
+
+      epubcheck "$manual"
+
+      runHook postInstallCheck
+    '';
+  };
 }
