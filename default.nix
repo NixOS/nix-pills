@@ -29,7 +29,7 @@ let
       cd sources
 
       printf "%s-%s" "$revCount" "$shortRev" > version
-      xmllint --xinclude --output $out ./book.xml
+      xmllint --xinclude --output "$out" ./book.xml
     '';
 
   toc = builtins.toFile "toc.xml"
@@ -53,7 +53,7 @@ let
     "--param chunk.first.sections 1"
     "--param use.id.as.filename 1"
     "--stringparam generate.toc 'book toc appendix toc'"
-    "--stringparam chunk.toc ${toc}"
+    "--stringparam chunk.toc '${toc}'"
   ];
 
 in pkgs.stdenv.mkDerivation {
@@ -65,20 +65,20 @@ in pkgs.stdenv.mkDerivation {
   installPhase = ''
     # Generate the HTML manual.
     dst=$out/share/doc/nix-pills
-    mkdir -p $dst
+    mkdir -p "$dst"
     xsltproc \
       ${manualXsltprocOptions} \
-      --nonet --output $dst/ \
-      ${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl \
-      ${combined}
+      --nonet --output "$dst/" \
+      "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl" \
+      "${combined}"
 
-    mkdir -p $dst/images
-    cp -r ${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts $dst/images/callouts
+    mkdir -p "$dst/images"
+    cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts" "$dst/images/callouts"
 
-    cp ${./style.css} $dst/style.css
+    cp "${./style.css}" "$dst/style.css"
 
-    mkdir -p $out/nix-support
-    echo "nix-build out $out" >> $out/nix-support/hydra-build-products
-    echo "doc nix-pills $dst" >> $out/nix-support/hydra-build-products
+    mkdir -p "$out/nix-support"
+    echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
+    echo "doc nix-pills $dst" >> "$out/nix-support/hydra-build-products"
   '';
 }
