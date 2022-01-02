@@ -27,7 +27,7 @@
       In the previous pill we packaged a simple .c file, which was being
       compiled with a raw gcc call. That's not a good example of a project. Many
       use autotools, and since we're going to generalize our builder, it would
-      be better do it with the most used build system.
+      be better to do it with the most used build system.
     </para>
 
     <para>
