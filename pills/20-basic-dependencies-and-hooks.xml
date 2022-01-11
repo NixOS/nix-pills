@@ -33,7 +33,7 @@
     <para>
       For the simplest dependencies where the current package directly needs another, we use the <varname>buildInputs</varname> attribute.
       This is exactly the pattern in taught with our builder in <link linkend="generic-builders">Pill 8</link>.
-      To demo this, lets build GNU Hello, and then another package which provides a shell script that <command>exec</command>s it.
+      To demo this, let's build GNU Hello, and then another package which provides a shell script that <command>exec</command>s it.
       <screen><xi:include href="./20/two-hellos.nix" parse="text" /></screen>
     </para>
 
@@ -70,8 +70,8 @@
 
     <para>
       How does this work?
-      You might think we do something in Nix, but actually its done not at eval time but at build time in bash.
-      lets look at part of the <function>fixupPhase</function> of stdenv:
+      You might think we do something in Nix, but actually it's done not at eval time but at build time in bash.
+      let's look at part of the <function>fixupPhase</function> of stdenv:
 
       <screen><xi:include href="./20/propagated-build-inputs-0.bash" parse="text" /></screen>
 
