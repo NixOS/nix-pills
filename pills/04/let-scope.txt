@@ -1,2 +1,2 @@
-nix-repl> let a = (let b = 3; in b); in b
-error: undefined variable `b' at (string):1:31
+nix-repl> let a = (let c = 3; in c); in c
+error: undefined variable `c' at (string):1:31
