@@ -147,10 +147,11 @@
     <para>
       However we removed the link from
       <filename>/nix/var/nix/profiles</filename>, not from
-      <filename>/nix/var/nix/gcroots</filename>. Turns out, that
-      <filename>/nix/var/nix/gcroots/profiles</filename> is a symlink to
-      <filename>/nix/var/nix/profiles</filename>. That is very handy. It means
-      any profile and its generations are GC roots.
+      <filename>/nix/var/nix/gcroots</filename>. Turns out, Nix
+      also treats <filename>/nix/var/nix/profiles</filename> as a GC root.
+      That is very handy. It means any profile and its generations are GC roots.
+      There are other paths that are taken into account as well, for example <filename>/run/booted-system</filename> on NixOS.
+      The command <command>nix-store --gc --print-roots</command> prints all the paths considered before performing a GC.
     </para>
 
     <para>
