@@ -115,7 +115,7 @@
       Note how easy is to override arguments in the case of <package>graphviz</package> without <package>gd</package>. But most importantly, how easy it was to merge two repositories: <literal>nixpkgs</literal> and our <literal>pkgs</literal>!
     </para>
     <para>
-      The reader should notice a magic thing happening. We're defining <literal>pkgs</literal> in terms of <literal>callPackage</literal>, and <literal>callPackage</literal> in terms of <literal>pkgs</literal>. That magic is possible thanks to lazy evaluation.
+      The reader should notice a magic thing happening. We're defining <literal>pkgs</literal> in terms of <literal>callPackage</literal>, and <literal>callPackage</literal> in terms of <literal>pkgs</literal>. That magic is possible thanks to lazy evaluation: <literal>builtins.intersectAttrs</literal> doesn't need to know the values in <literal>allPkgs</literal> in order to perform intersection, only the keys that do not require <literal>callPackage</literal> evaluation.
     </para>
   </section>
   <section>
