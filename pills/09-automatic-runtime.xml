@@ -9,13 +9,13 @@
   <para>
     Welcome to the 9th Nix pill. In the previous
     <link linkend="generic-builders">8th pill</link> we wrote a generic builder
-    for autotools projects. We feed build dependencies, a source tarball, and
-    we get a Nix derivation as a result.
+    for autotools projects. We fed in build dependencies and a source tarball, and
+    we received a Nix derivation as a result.
   </para>
 
   <para>
-    Today we stop by the GNU hello world program to analyze build and runtime
-    dependencies, and enhance the builder in order to avoid unnecessary runtime
+    Today we stop by the GNU <code>hello</code> program to analyze build and runtime
+    dependencies, and we enhance our builder to eliminate unnecessary runtime
     dependencies.
   </para>
 
@@ -23,26 +23,26 @@
     <title>Build dependencies</title>
 
     <para>
-      Let's start analyzing build dependencies for our GNU hello world package:
+      Let's start analyzing build dependencies for our GNU <code>hello</code> package:
     </para>
 
     <screen><xi:include href="./09/instantiate.txt" parse="text" /></screen>
 
     <para>
-      It has exactly the derivations referenced in the <code>derivation</code>
-      function, nothing more, nothing less. Some of them might not be used at
-      all, however given that our generic mkDerivation function always pulls
+      It has precisely the derivations referenced in the <code>derivation</code> function;
+      nothing more, nothing less. Of course, we may not use some of them at all.
+      However, given that our generic <code>mkDerivation</code> function always pulls
       such dependencies (think of it like
       <link xlink:href="https://packages.debian.org/unstable/build-essential">build-essential</link>
-      of Debian), for every package you build from now on, you will have these
-      packages in the nix store.
+      from Debian), we will already have these packages in the nix store for any future packages that
+      need them.
     </para>
 
     <para>
-      Why are we looking at .drv files? Because the hello.drv file is the
-      representation of the build action to perform in order to build the hello
-      out path, and as such it also contains the input derivations needed to be
-      built before building hello.
+     Why are we looking at <code>.drv</code> files? Because the <code>hello.drv</code>
+      file is the representation of the build action that builds the <code>hello</code>
+      out path. As such, it contains the input derivations needed before building
+      <code>hello</code>.
     </para>
   </section>
 
@@ -50,23 +50,29 @@
     <title>Digression about NAR files</title>
 
     <para>
-      NAR is the Nix ARchive. First question: why not tar? Why another archiver?
-      Because commonly used archivers are not deterministic. They add padding,
-      they do not sort files, they add timestamps, etc.. Hence NAR, a very
-      simple deterministic archive format being used by Nix for deployment.
-      NARs are also used extensively within Nix itself as we'll see below.
+      The <code>NAR</code> format is the "Nix ARchive". This format was designed due to
+      existing archive formats, such as <code>tar</code>, being insufficient.
+      Nix benefits from deterministic build tools, but commonly used archivers
+      lack this property: they add padding, they do not sort files, they add timestamps,
+      and so on. This can result in directories containing bit-identical files turning into
+      non-bit-identical archives, which leads to different hashes.
     </para>
 
     <para>
-      For the rationale and implementation details you can find more in the
+      Thus the <code>NAR</code> format was developed as a simple, deterministic
+      archive format. <code>NAR</code>s are used extensively within Nix, as we will
+      see below.
+    </para>
+
+    <para>
+      For more rationale and implementation details behind <code>NAR</code> see
       <link xlink:href="http://nixos.org/~eelco/pubs/phd-thesis.pdf">Dolstra's PhD Thesis</link>.
     </para>
 
     <para>
-      To create NAR archives, it's possible to use
+      To create NAR archives from store paths, we can  use
       <command>nix-store --dump</command> and
-      <command>nix-store --restore</command>. Those two commands work
-      regardless of <filename>/nix/store</filename>.
+      <command>nix-store --restore</command>.
     </para>
   </section>
 
@@ -74,83 +80,72 @@
     <title>Runtime dependencies</title>
 
     <para>
-      Something is different for runtime dependencies however. Build
-      dependencies are automatically recognized by Nix once they are used in
-      any <code>derivation</code> call, but we never specify what are the
-      runtime dependencies for a derivation.
+      We now note that Nix automatically recognized build dependencies once our
+      <code>derivation</code> call referred to them, but we never specified the
+      runtime dependencies.
     </para>
 
     <para>
-      There's really no black magic involved. It's something that at first glance
-      makes you think "no, this can't work in the long term", but at the same
-      time it works so well that a whole operating system is built on top of
-      this magic.
-    </para>
-
-    <para>
-      In other words, Nix automatically computes all the runtime dependencies
-      of a derivation, and it's possible thanks to the hash of the store paths.
-    </para>
-
-    <para>
-      Steps:
+      Nix handles runtime dependencies for us automatically. The technique it uses
+      to do so may seem fragile at first glance, but it works so well that the NixOS
+      operating system is built off of it. The underlying mechanism relies on the
+      hash of the store paths. It proceeds in three steps:
     </para>
 
     <orderedlist>
       <listitem>
         <para>
-          Dump the derivation as NAR, a serialization of the derivation output.
-          Works fine whether it's a single file or a directory.
+          Dump the derivation as a NAR. Recall that this is a serialization of
+          the derivation output -- meaning this works fine whether the output
+          is a single file or a directory.
         </para>
       </listitem>
       <listitem>
         <para>
-          For each build dependency .drv and its relative out path, search the
-          contents of the NAR for this out path.
+          For each build dependency <code>.drv</code> and it's relative out path,
+          search the contents of the NAR for this out path.
         </para>
       </listitem>
       <listitem>
         <para>
-          If found, then it's a runtime dependency.
+          If the path is found, then it's a runtime dependency.
         </para>
       </listitem>
     </orderedlist>
 
     <para>
-      You really do get all the runtime dependencies; that's why Nix
-      deployments are so easy.
+      The snippet below shows the dependencies for <code>hello</code>.
     </para>
 
     <screen><xi:include href="./09/instantiate-hello.txt" parse="text" /></screen>
 
     <para>
-      Ok glibc and gcc. Well, gcc really should not be a runtime dependency!
+      We see that <code>glibc</code> and <code>gcc</code> are runtime dependencies.
+      Intuitively, <code>gcc</code> shouldn't be in this list! Displaying the
+      printable strings in the <code>hello</code> binary shows that the out path
+      of <code>gcc</code> does indeed appear:
     </para>
 
     <screen><xi:include href="./09/strings.txt" parse="text" /></screen>
 
     <para>
-      Oh Nix added gcc because its out path is mentioned in the "hello" binary.
-      Why is that? That's the
-      <link xlink:href="http://en.wikipedia.org/wiki/Rpath">ld rpath</link>.
-      It's the list of directories where libraries can be found at runtime. In
-      other distributions, this is usually not abused. But in Nix, we have to
-      refer to particular versions of libraries, thus the rpath has an
-      important role.
+      This is why Nix added <code>gcc</code>. But why is that path present in the
+      first place? The answer is that it is the <link xlink:href="http://en.wikipedia.org/wiki/Rpath">ld rpath</link>: the list of
+      directories where libraries can be found at runtime. In other distributions,
+      this is usually not abused. But in Nix, we have to refer to particular versions
+      of libraries, and thus the rpath has an important role.
     </para>
 
     <para>
-      The build process adds that gcc lib path thinking it may be useful at
-      runtime, but really it's not. How do we get rid of it? Nix authors have
-      written another magical tool called
-      <link xlink:href="https://nixos.org/patchelf.html">patchelf</link>, which
-      is able to reduce the rpath to the paths that are really used by the
-      binary.
+      The build process adds the <code>gcc</code> lib path thinking it may be useful
+      at runtime, but this isn't necessary. To address issues like these, Nix provides
+      a tool called <link xlink:href="https://nixos.org/patchelf.html">patchelf</link>,
+      which reduces the rpath to the paths that are actually used by the binary.
     </para>
 
     <para>
-      Even after reducing the rpath, the hello binary would still
-      depend upon gcc because of some debugging information. This
+      Even after reducing the rpath, the <code>hello</code> binary would still
+      depend upon <code>gcc</code> because of some debugging information. This
       unnecesarily increases the size of our runtime
       dependencies. We'll explore how <command><link
       xlink:href="https://linux.die.net/man/1/strip">strip</link>
@@ -162,48 +157,49 @@
     <title>Another phase in the builder</title>
 
     <para>
-      We will add a new phase to our autotools builder. The builder has these
+      We will add a new phase to our autotools builder. The builder has six
       phases already:
     </para>
 
     <orderedlist>
       <listitem>
         <para>
-          First the environment is set up
+          The "environment setup" phase
         </para>
       </listitem>
       <listitem>
         <para>
-          Unpack phase: we unpack the sources in the current directory
-          (remember, Nix changes dir to a temporary directory first)
+          The "unpack phase": we unpack the sources in the current directory
+          (remember, Nix changes to a temporary directory first)
         </para>
       </listitem>
       <listitem>
         <para>
-          Change source root to the directory that has been unpacked
+          The "change directory" phase, where we change source root to the
+          directory that has been unpacked
         </para>
       </listitem>
       <listitem>
         <para>
-          Configure phase: <command>./configure</command>
+          The "configure" phase: <command>./configure</command>
         </para>
       </listitem>
       <listitem>
         <para>
-          Build phase: <command>make</command>
+          The "build" phase: <command>make</command>
         </para>
       </listitem>
       <listitem>
         <para>
-          Install phase: <command>make install</command>
+          The "install" phase: <command>make install</command>
         </para>
       </listitem>
     </orderedlist>
 
     <para>
-      We add a new phase after the installation phase, which we call
-      <emphasis role="bold">fixup</emphasis> phase. At the end of the
-      <filename>builder.sh</filename> follows:
+      Now we will add a new phase after the installation phase, which we call
+      the "fixup" phase. At the end of the
+      <filename>builder.sh</filename>, we append:
     </para>
 
     <screen><xi:include href="./09/find.txt" parse="text" /></screen>
@@ -211,36 +207,40 @@
     <para>
       That is, for each file we run <command>patchelf --shrink-rpath</command>
       and <command>strip</command>. Note that we used two new commands here,
-      <command>find</command> and <command>patchelf</command>.
-      <emphasis role="bold">Exercise:</emphasis> These two
-      deserve a place in <code>baseInputs</code> of
-      <filename>autotools.nix</filename> as <command>findutils</command> and
-      <command>patchelf</command>.
+      <command>find</command> and <command>patchelf</command>. These must be
+      added to our derivation.
     </para>
 
     <para>
-      Rebuild <filename>hello.nix</filename> and...:
+      <emphasis role="bold">Exercise:</emphasis> Add <code>findutils</code>
+      and <code>patchelf</code> to the <code>baseInputs</code> of
+      <filename>autotools.nix</filename>.
+    </para>
+
+    <para>
+      Now, we rebuild <filename>hello.nix</filename>:nd...:
     </para>
 
     <screen><xi:include href="./09/build-hello-nix.txt" parse="text" /></screen>
 
     <para>
-      ...only glibc is the runtime dependency. Exactly what we wanted.
+      and we see that <code>glibc</code> is a runtime dependency. This is
+      exactly what we wanted.
     </para>
 
     <para>
-      The package is self-contained, copy its closure on another machine and
-      you will be able to run it. Remember, only a very few components under
-      the <filename>/nix/store</filename> are required to
+      The package is self-contained. This means that we can copy its closure onto
+      another machine and we will be able to run it. Remember, only a very few
+      components under the <filename>/nix/store</filename> are required to
       <link linkend="install-on-your-running-system">run nix</link>.
-      The hello binary will use that exact version of glibc library and
-      interpreter, not the system one:
+      The <code>hello</code> binary will use the exact version of <code>glibc</code>
+      library and interpreter referred to in the binary, rather than the system one:
     </para>
 
     <screen><xi:include href="./09/ldd-hello.txt" parse="text" /></screen>
 
     <para>
-      Of course, the executable runs fine as long as everything is under the
+      Of course, the executable will run fine as long as everything is under the
       <filename>/nix/store</filename> path.
     </para>
   </section>
@@ -249,21 +249,19 @@
     <title>Conclusion</title>
 
     <para>
-      Short post compared to previous ones as I'm still on vacation, but I hope
-      you enjoyed it. Nix provides tools with cool features. In particular, Nix
-      is able to compute all runtime dependencies automatically for us. This is
-      not limited to only shared libraries, but also referenced executables,
-      scripts, Python libraries etc..
+      We saw some of the tools Nix provides, along with their features.
+      In particular, we saw how Nix is able to compute runtime dependencies
+      automatically. This is not limited to only shared libraries,
+      but can also referenced executables, scripts, Python libraries, and so
+      forth.
     </para>
 
     <para>
-      This makes packages self-contained, ensuring (apart data and
-      configuration) that copying the runtime closure on another machine is
-      sufficient to run the program. That's what allows running programs without
-      installation using <code>nix-shell</code>
-      or
+      Approaching builds in this way makes packages self-contained, ensuring
+      (apart from data and configuration) that copying the runtime closure onto
+      another machine is sufficient to run the program. This enables us to run programs
+      without installation using <command>nix-shell</command>, and forms the basis for
       <link xlink:href="https://nixos.org/manual/nix/stable/introduction.html">reliable deployment in the cloud</link>.
-      All with one tool.
     </para>
   </section>
 
@@ -271,11 +269,13 @@
     <title>Next pill</title>
 
     <para>
-      ...we will introduce nix-shell. With nix-build we always build
-      derivations from scratch: the source gets unpacked, configured, built
-      and installed. But this may take a long time, think of WebKit. What if we
-      want to apply some small changes and compile incrementally instead, yet
-      keeping a self-contained environment similar to nix-build?
+      The next pill will introduce <command>nix-shell</command>. With
+      <command>nix-build</command>, we've always built derivations from
+      scratch: the source gets unpacked, configured, built, and installed.
+      But this can take a long time for large packages. What if we want to
+      apply some small changes and compile incrementally instead, yet still
+      want to keep a self-contained environment similar to <command>nix-build</command>?
+      <command>nix-shell</command> enables this.
     </para>
   </section>
 </chapter>
