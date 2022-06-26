@@ -6,134 +6,262 @@
 
   <title>Callpackage Design Pattern</title>
   <para>
-    Welcome to the 13th Nix pill. In the previous <link linkend="inputs-design-pattern">12th pill</link> we have introduced the first basic design pattern for organizing a repository of software. In addition we packaged <package>graphviz</package> to have at least another package for our little repository.
+    Welcome to the 13th Nix pill. In the previous <link linkend="inputs-design-pattern">12th
+    pill</link>, we introduced the first basic design pattern for organizing a repository of
+    software. In addition, we packaged <package>graphviz</package> so that we had two packages
+    to bundle into an example repository.
   </para>
   <para>
-    The next design pattern worth noting is what I'd like to call the <literal>callPackage</literal> pattern. This technique is extensively used in <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, it's the current standard for importing packages in a repository.
+    The next design pattern we will examine is called the <literal>callPackage</literal>
+    pattern. This technique is extensively used in <link
+    xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, and it's the current
+    de facto standard for importing packages in a repository. It's purpose is to reduce
+    the duplication of identifiers between package derivation inputs and repository
+    derivations.
   </para>
   <section>
     <title>The callPackage convenience</title>
     <para>
-      In the previous pill, we underlined the fact that the inputs pattern is great to decouple packages from the repository, in that we can pass manually the inputs to the derivation. The derivation declares its inputs, and the caller passes the arguments.
+      In the previous pill, we demonstrated how the <literal>inputs</literal>
+      pattern decouples packages from the repository. This allowed us to
+      manually pass the inputs to the derivation; the derivation declares
+      its inputs, and the caller passes the arguments.
     </para>
     <para>
-      However as with usual programming languages, we declare parameter names, and then we have to pass arguments. We do the job twice. With package management, we often see common patterns. In the case of <literal>nixpkgs</literal> it's the following.
-    </para>
-    <para>
-      Some package derivation:
+      However, as with usual programming languages, there is some duplication of work:
+      we declare parameter names and then we pass arguments, typically with the same name.
+      For example, if we define a package derivation using the <literal>inputs</literal>
+      pattern such as:
     </para>
     <screen><xi:include href="./13/package-derivation.txt" parse="text" /></screen>
     <para>
-      Repository derivation:
+      we would likely want to bundle that package derivation into a respository via a
+      an attribute set defined as something like:
     </para>
     <screen><xi:include href="./13/repository-derivation.txt" parse="text" /></screen>
     <para>
-      Where inputs may even be packages in the repository itself (note the rec keyword). The pattern here is clear, often inputs have the same name of the attributes in the repository itself. Our desire is to pass those inputs from the repository automatically, and in case be able to specify a particular argument (that is, override the automatically passed default argument).
+      There are two things to note. First, that inputs often have the same name as
+      attributes in the respository itself. Second, that (due to the <code>rec</code>
+      keyword), the inputs to a package derivation may be other packages in the
+      repository itself.
     </para>
     <para>
-      To achieve this, we will define a <literal>callPackage</literal> function with the following synopsis:
+      Rather than passing the inputs twice, we would prefer to pass those inputs from
+      the respoistory automatically and allow for manually overriding defaults.
+    </para>
+    <para>
+      To achieve this, we will define a <literal>callPackage</literal> function with
+      the following calling convention:
     </para>
     <screen><xi:include href="./13/callpackage-function-call.txt" parse="text" /></screen>
     <para>
-      What should it do?
+      We want <code>callPackage</code> to be a function of two arguments, with the
+      following behavior:
       <itemizedlist>
-        <listitem><para>Import the given expression, which in turn returns a function.</para></listitem>
-        <listitem><para>Determine the name of its arguments.</para></listitem>
-        <listitem><para>Pass default arguments from the repository set, and let us override those arguments.</para></listitem>
+        <listitem><para>
+          Import the given expression contained in the file of the first argument,
+          and return a function. This function returns a package derivation that
+          uses the inputs pattern.
+        </para></listitem>
+        <listitem><para>
+          Determine the name of the arguments to the function (i.e., the names
+          of the inputs to the package derivation).
+        </para></listitem>
+        <listitem><para>
+          Pass default arguments from the repository set, and let us override those
+          arguments if we wish to customize the package derivation.
+        </para></listitem>
       </itemizedlist>
     </para>
   </section>
   <section>
-    <title>Implementing callPackage</title>
+    <title>Implementing <code>callPackage</code></title>
     <para>
-      First of all, we need a way to introspect (reflection or whatever) at runtime the argument names of a function. That's because we want to automatically pass such arguments.
+      In this section, we will build up the <code>callPackages</code> pattern
+      from scratch. To start, we need a way to obtain the argument names
+      of a function (in this case, the function that takes "inputs" and produces
+      a package derivation) at runtime. This is because we want to automatically pass
+      such arguments.
     </para>
     <para>
-      Then <literal>callPackage</literal> requires access to the whole packages set, because it needs to find the packages to pass automatically.
-    </para>
-    <para>
-      We start off simple with <command></command>:
+      Nix provides a builtin function to do this:
     </para>
     <screen><xi:include href="./13/get-args-function.txt" parse="text" /></screen>
     <para>
-      Nix provides a builtin function to introspect the names of the arguments of a function. In addition, for each argument, it tells whether the argument has a default value or not. We don't really care about default values in our case. We are only interested in the argument names.
+      In addition to returning the argument names, the attribute set returned by
+      <code>functionArgs</code> indicates whether or not the argument has a default value.
+      For our purposes, we are only interested in the argument names; we do not care
+      about the default values right now.
+    </para>
+
+    <para>
+      The next step is to make <code>callPackage</code> automatically pass inputs to our
+      package derivations based on the argument names we've just obtained with
+      <code>functionArgs</code>.
     </para>
     <para>
-      Now we need a set with all the <literal>values</literal>, let's call it <literal>values</literal>.  And a way to intersect the attributes of values with the function arguments:
+      To do this, we need two things:
+      <itemizedlist>
+        <listitem><para>
+          A package repository set containing package derivations that match the arguments
+          names we've obtained
+        </para></listitem>
+        <listitem><para>
+          A way to obtain an auto-populated attribute set combining the package repository
+          and the return value of <code>functionArgs</code>.
+        </para></listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      The former is easy: we just have to set our package deriviation's inputs
+      to be package names in a repository, such as <code>nixpkgs</code>. For
+      the latter, Nix provides another builtin function:
     </para>
     <screen><xi:include href="./13/intersect-attr-values.txt" parse="text" /></screen>
     <para>
-      Perfect, note from the example above that the <literal>intersectAttrs</literal> returns a set whose names are the intersection, and the attribute values are taken from the second set.
+      The <literal>intersectAttrs</literal> returns an attribute set whose names are
+      the intersection of both arguments' attribute names, with the attribute
+      values taken from the second argument.
     </para>
     <para>
-      We're done, we have a way to get argument names from a function, and match with an existing set of attributes. This is our simple implementation of <literal>callPackage</literal>:
+      This is all we need to do: we have obtained the argument names from a function,
+      and populated these with an existing set of attributes. This is our simple
+      implementation of <literal>callPackage</literal>:
     </para>
     <screen><xi:include href="./13/callpackage-function.txt" parse="text" /></screen>
     <para>
-      Clearing up the syntax:
+      Let's dissect the above snippet:
       <itemizedlist>
-        <listitem><para>We define a <literal>callPackage</literal> variable which is a function.</para></listitem>
-        <listitem><para>The second parameter is the function to "autocall".</para></listitem>
-        <listitem><para>We take the argument names of the function and intersect with the set of all values.</para></listitem>
-        <listitem><para>Finally we call the passed function <literal>f</literal> with the resulting intersection.</para></listitem>
+        <listitem><para>
+          We define a <literal>callPackage</literal> variable which is a
+          function.
+        </para></listitem>
+        <listitem><para>
+          The first parameter to the <literal>callPackage</literal> function
+          is a set of name-value pairs that may appear in the argument set of
+          the function we wish to "autocall".
+        </para></listitem>
+        <listitem><para>
+          The second parameter is the function to "autocall"
+        </para></listitem>
+        <listitem><para>
+          We take the argument names of the function and intersect with the set of all
+          values.
+        </para></listitem>
+        <listitem><para>
+          Finally, we call the passed function <literal>f</literal> with the resulting
+          intersection.
+        </para></listitem>
       </itemizedlist>
     </para>
     <para>
-      In the code above, I've also shown that the <literal>callPackage</literal> call is equivalent to directly calling <literal>add a b</literal>.
+      In the snippet above, we've also demonstrated that the <literal>callPackage</literal>
+      call is equivalent to directly calling <literal>add a b</literal>.
     </para>
     <para>
-      We achieved what we wanted. Automatically call functions given a set of possible arguments. If an argument is not found in the set, that's nothing special. It's a function call with a missing parameter, and that's an error (unless the function has varargs <literal>...</literal> as explained in the <link linkend="functions-and-imports">5th pill</link>).
+      We achieved most of what we wanted: to automatically call functions given a set of
+      possible arguments. If an argument is not found within the set we used to call the
+      function, then we receive an error (unless the function has variadic arguments
+      denoted with <literal>...</literal>,  as explained in the <link
+      linkend="functions-and-imports">5th pill</link>).
     </para>
     <para>
-      Or not. We missed something. Being able to override some of the parameters. We may not want to always call functions with values taken from the big set. Then we add a further parameter, which takes a set of overrides:
+      The last missing piece is allowing users to override some of the parameters.
+      We may not want to always call functions with values taken from the big set.
+      Thus, we add a third parameter which takes a set of overrides:
     </para>
     <screen><xi:include href="./13/callpackage-function-overrides.txt" parse="text" /></screen>
     <para>
-      Apart from the increasing number of parenthesis, it should be clear that we simply do a set union between the default arguments, and the overriding set.
+      Apart from the increasing number of parentheses, it should be clear that we simply
+      take a set union between the default arguments and the overriding set.
     </para>
   </section>
   <section>
-    <title>Use callPackage to simplify the repository</title>
+    <title>Using callPackage to simplify the repository</title>
     <para>
-      Given our brand new tool, we can simplify the repository expression (default.nix).
-    </para>
-    <para>
-      Let me write it down first:
+      Given our <literal>callPackages</literal>, we can simplify the repository expression
+      in <filename>default.nix</filename>:
     </para>
     <screen><xi:include href="./13/callpackage-usage.txt" parse="text" /></screen>
     <para>
-      Wow, there's a lot to say here:
+      Let's examine this in detail:
       <itemizedlist>
-        <listitem><para>We renamed the old <literal>pkgs</literal> of the previous pill to <literal>nixpkgs</literal>. Our package set is now instead named <literal>pkgs</literal>. Sorry for the confusion.</para></listitem>
-        <listitem><para>We needed a way to pass pkgs to <literal>callPackage</literal> somehow. Instead of returning the set of packages directly from <filename>default.nix</filename>, we first assign it to a <literal>let</literal> variable and reuse it in <literal>callPackage</literal>.</para></listitem>
-        <listitem><para>For convenience, in <literal>callPackage</literal> we first import the file, instead of calling it directly. Otherwise for each package we would have to write the <literal>import</literal>.</para></listitem>
-        <listitem><para>Since our expressions use packages from <literal>nixpkgs</literal>, in <literal>callPackage</literal> we use <literal>allPkgs</literal>, which is the union of <literal>nixpkgs</literal> and our packages.</para></listitem>
-        <listitem><para>We moved <literal>mkDerivation</literal> into <literal>pkgs</literal> itself, so that it also gets passed automatically.</para></listitem>
+        <listitem><para>
+          The expression above defines our own package repository, which we call
+          <literal>pkgs</literal>, that contains <literal>hello</literal> along
+          with our two variants of <literal>graphviz</literal>.
+        </para></listitem>
+        <listitem><para>
+          In the <code>let</code> expression, we import <literal>nixpkgs</literal>.
+          Note that previously, we referred to this import with the variable
+          <literal>pkgs</literal>, but now that name is taken by the repository
+          we are creating ourselves.
+        </para></listitem>
+        <listitem><para>
+          We needed a way to pass <literal>pkgs</literal> to <literal>callPackage</literal>
+          somehow. Instead of returning the set of packages directly from
+          <filename>default.nix</filename>, we first assign it to a <literal>let</literal>
+          variable and reuse it in <literal>callPackage</literal>.
+        </para></listitem>
+        <listitem><para>
+          For convenience, in <literal>callPackage</literal> we first
+          import the file instead of calling it directly. Otherwise we would have to
+          write the <literal>import</literal> for each package.
+        </para></listitem>
+        <listitem><para>
+          Since our expressions use packages from <literal>nixpkgs</literal>, in
+          <literal>callPackage</literal> we use <literal>allPkgs</literal>, which
+          is the union of <literal>nixpkgs</literal> and our packages.
+        </para></listitem>
+        <listitem><para>
+          We moved <literal>mkDerivation</literal> into <literal>pkgs</literal> itself,
+          so that it also gets passed automatically.</para></listitem>
       </itemizedlist>
     </para>
     <para>
-      Note how easy is to override arguments in the case of <package>graphviz</package> without <package>gd</package>. But most importantly, how easy it was to merge two repositories: <literal>nixpkgs</literal> and our <literal>pkgs</literal>!
+      Note how easily we overrode arguments in the case of <literal>graphviz</literal>
+      without <literal>gd</literal>. In addition, note how easy it was to merge
+      two repositories: <literal>nixpkgs</literal> and our <literal>pkgs</literal>!
     </para>
     <para>
-      The reader should notice a magic thing happening. We're defining <literal>pkgs</literal> in terms of <literal>callPackage</literal>, and <literal>callPackage</literal> in terms of <literal>pkgs</literal>. That magic is possible thanks to lazy evaluation: <literal>builtins.intersectAttrs</literal> doesn't need to know the values in <literal>allPkgs</literal> in order to perform intersection, only the keys that do not require <literal>callPackage</literal> evaluation.
+      The reader should notice a magic thing happening. We're defining
+      <literal>pkgs</literal> in terms of <literal>callPackage</literal>, and
+      <literal>callPackage</literal> in terms of <literal>pkgs</literal>. That magic is
+      possible thanks to lazy evaluation: <literal>builtins.intersectAttrs</literal> doesn't
+      need to know the values in <literal>allPkgs</literal> in order to perform intersection,
+      only the keys that do not require <literal>callPackage</literal> evaluation.
     </para>
   </section>
   <section>
     <title>Conclusion</title>
     <para>
-      The "<literal>callPackage</literal>" pattern has simplified our repository a lot. We're able to import packages that require some named arguments and call them automatically, given the set of all packages.
+      The "<literal>callPackage</literal>" pattern has simplified our repository
+      considerably. We were able to import packages that require named arguments
+      and call them automatically, given the set of all packages sourced from
+      <literal>nixpkgs</literal>.
     </para>
     <para>
-      We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, rather to provide tools for packaging. They are documented in the <link xlink:href="https://nixos.org/manual/nix/stable/expressions/builtins.html">Nix manual</link>.
+      We've also introduced some useful builtin functions that allows us to introspect Nix
+      functions and manipulate attributes. These builtin functions are not usually used when
+      packaging software, but rather act as tools for packaging. They are documented in the
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/builtins.html">Nix
+      manual</link>.
     </para>
     <para>
-      Writing a repository in nix is an evolution of writing convenient functions for combining the packages. This demonstrates even more how nix is a generic tool to build and deploy something, and how suitable it is to create software repositories with your own conventions.
+      Writing a repository in Nix is an evolution of writing convenient functions for
+      combining the packages. This pills demonstrates how Nix can be a generic tool
+      to build and deploy software, and how suitable it is to create software
+      repositories with our own conventions.
     </para>
   </section>
   <section>
     <title>Next pill</title>
     <para>
-      ...we will talk about the "<literal>override</literal>" design pattern. The <literal>graphvizCore</literal> seems straightforward. It starts from <filename>graphviz.nix</filename> and builds it without <package>gd</package>. Now I want to give you another point of view: what if we instead wanted to start from <literal>pkgs.graphviz</literal> and disable <package>gd</package>?
+      In the next pill, we will talk about the "<literal>override</literal>" design
+      pattern. The <literal>graphvizCore</literal> seems straightforward. It starts from
+      <filename>graphviz.nix</filename> and builds it without <package>gd</package>.
+      In the next pill, we will consider another point of view: starting from
+      <literal>pkgs.graphviz</literal> and disabling <package>gd</package>?
     </para>
   </section>
 </chapter>
