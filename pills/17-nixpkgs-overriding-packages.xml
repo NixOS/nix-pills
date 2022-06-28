@@ -47,7 +47,7 @@
       The fixed point with lazy evaluation is crippling but about necessary in a language like Nix. It lets us achieve something similar to what we'd do imperatively.
     </para>
     <para>
-      Follows the definition of fixed point in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/lib/trivial.nix#L21">nixpkgs</link>:
+      Follows the definition of fixed point in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">nixpkgs</link>:
     </para>
     <screen><xi:include href="./17/fix-function.txt" parse="text" /></screen>
     <para>
@@ -108,12 +108,12 @@
     </para>
   </section>
   <section>
-    <title>The ~/.nixpkgs/config.nix file</title>
+    <title>The ~/.config/nixpkgs/config.nix file</title>
     <para>
-      In the previous pill we already talked about this file. The above <filename>config.nix</filename> that we just wrote could be the content of <filename>~/.nixpkgs/config.nix</filename>.
+      In the previous pill we already talked about this file. The above <filename>config.nix</filename> that we just wrote could be the content of <filename>~/.config/nixpkgs/config.nix</filename> (or the deprecated location <filename>~/.nixpkgs/config.nix</filename>).
     </para>
     <para>
-      Instead of passing it explicitly whenever we import <literal>nixpkgs</literal>, it will be automatically <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/all-packages.nix#L54">imported by nixpkgs</link>.
+      Instead of passing it explicitly whenever we import <literal>nixpkgs</literal>, it will be automatically <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">imported by nixpkgs</link>.
     </para>
   </section>
   <section>

@@ -63,10 +63,10 @@
   <section>
     <title>The config parameter</title>
     <para>
-      I'm sure on the wiki or other manuals you've read about <filename>~/.nixpkgs/config.nix</filename> and I'm sure you've wondered whether that's hardcoded in nix. It's not, it's in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/all-packages.nix#L45">nixpkgs</link>.
+      I'm sure on the wiki or other manuals you've read about <filename>~/.config/nixpkgs/config.nix</filename> (previously <filename>~/.nixpkgs/config.nix</filename>) and I'm sure you've wondered whether that's hardcoded in nix. It's not, it's in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/32c523914fdb8bf9cc7912b1eba023a8daaae2e8/pkgs/top-level/impure.nix#L28">nixpkgs</link>.
     </para>
     <para>
-      The <filename>all-packages.nix</filename> expression accepts the <literal>config</literal> parameter. If it's <literal>null</literal>, then it reads the <varname>NIXPKGS_CONFIG</varname> environment variable. If not specified, <literal>nixpkgs</literal> will peek <filename>$HOME/.nixpkgs/config.nix</filename>.
+      The <filename>all-packages.nix</filename> expression accepts the <literal>config</literal> parameter. If it's <literal>null</literal>, then it reads the <varname>NIXPKGS_CONFIG</varname> environment variable. If not specified, <literal>nixpkgs</literal> will peek <filename>$HOME/.config/nixpkgs/config.nix</filename>.
     </para>
     <para>
       After determining <filename>config.nix</filename>, it will be imported as nix expression, and that will be the value of <literal>config</literal> (in case it hasn't been passed as parameter to import <literal>&lt;nixpkgs&gt;</literal>).
