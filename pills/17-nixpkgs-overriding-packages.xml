@@ -108,12 +108,12 @@
     </para>
   </section>
   <section>
-    <title>The ~/.nixpkgs/config.nix file</title>
+    <title>The ~/.config/nixpkgs/config.nix file</title>
     <para>
-      In the previous pill we already talked about this file. The above <filename>config.nix</filename> that we just wrote could be the content of <filename>~/.nixpkgs/config.nix</filename>.
+      In the previous pill we already talked about this file. The above <filename>config.nix</filename> that we just wrote could be the content of <filename>~/.config/nixpkgs/config.nix</filename> (or the deprecated location <filename>~/.nixpkgs/config.nix</filename>).
     </para>
     <para>
-      Instead of passing it explicitly whenever we import <literal>nixpkgs</literal>, it will be automatically <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/all-packages.nix#L54">imported by nixpkgs</link>.
+      Instead of passing it explicitly whenever we import <literal>nixpkgs</literal>, it will be automatically <link xlink:href="https://github.com/NixOS/nixpkgs/blob/32c523914fdb8bf9cc7912b1eba023a8daaae2e8/pkgs/top-level/impure.nix#L28">imported by nixpkgs</link>.
     </para>
   </section>
   <section>
