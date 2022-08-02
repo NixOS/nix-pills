@@ -3,8 +3,8 @@ pkgs: attrs:
   let defaultAttrs = {
     builder = "${bash}/bin/bash";
     args = [ ./builder.sh ];
-    baseInputs = [ gnutar gzip gnumake gcc coreutils gawk gnused gnugrep binutils.bintools ];
-    buildInputs = [];
+    buildInputs = [ gnutar gzip gnumake gcc coreutils gawk gnused gnugrep binutils.bintools ];
+    baseInputs = [];
     system = builtins.currentSystem;
   };
   in
