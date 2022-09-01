@@ -1,6 +1,6 @@
 # Nix Pills
 
-https://nixos.org/nixos/nix-pills/
+Available online as a [multi-page HTML](https://nixos.org/guides/nix-pills/) or an [e-book in EPUB format](https://nixos.org/guides/nix-pills/nix-pills.epub).
 
 You can also build them locally:
 
