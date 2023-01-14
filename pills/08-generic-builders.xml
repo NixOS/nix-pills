@@ -50,7 +50,9 @@
     <screen><xi:include href="./08/hello-nix.txt" parse="text" /></screen>
     <note><title>Nix on darwin</title>
     <para>Darwin (i.e. macOS) builds typically use <literal>clang</literal> rather than <literal>gcc</literal> for a C compiler.
-    We can adapt this early example for darwin by using this modified version of <filename>hello.nix</filename>:
+    Additionally, <literal>codesign_allocate<literal> tool is required to be present in PATH.
+    We can adapt this early example for darwin by using this modified version of <filename>hello_builder.sh</filename> and <filename>hello.nix</filename>:
+    <screen><xi:include href="./08/hello-builder-darwin.txt" parse="text" /></screen>
     <screen><xi:include href="./08/hello-nix-darwin.txt" parse="text" /></screen>
     Later, we will show how Nix can automatically handle these differences.
     For now, please be just aware that changes similar to the above may be needed in what follows.
