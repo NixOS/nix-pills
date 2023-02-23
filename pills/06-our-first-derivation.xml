@@ -42,7 +42,7 @@
   </para>
 
   <para>
-    The <code>derivation</code> function receives a set as first argument. This
+    The <code>derivation</code> function receives a set as its first argument. This
     set requires at least the following three attributes:
   </para>
 
@@ -61,7 +61,7 @@
     </listitem>
     <listitem>
       <para>
-        builder: it is the binary program that builds the derivation.
+        builder: is the binary program that builds the derivation.
       </para>
     </listitem>
   </itemizedlist>
@@ -101,19 +101,19 @@
   <itemizedlist mark='bullet'>
     <listitem>
       <para>
-        <filename>.nix</filename> files are like <filename>.c</filename> files
+        <filename>.nix</filename> files are like <filename>.c</filename> files.
       </para>
     </listitem>
     <listitem>
       <para>
         <filename>.drv</filename> files are intermediate files like
         <filename>.o</filename> files. The <filename>.drv</filename> describes
-        how to build a derivation, it's the bare minimum information.
+        how to build a derivation; it's the bare minimum information.
       </para>
     </listitem>
     <listitem>
       <para>
-        out paths are then the product of the build
+        out paths are then the product of the build.
       </para>
     </listitem>
   </itemizedlist>
@@ -131,14 +131,14 @@
 
 
   <para>
-    Ok we can see there's an out path, but it does not exist yet. We never told
+    Ok, we can see there's an out path, but it does not exist yet. We never told
     Nix to build it, but we know beforehand where the build output will be. Why?
   </para>
 
   <para>
     Think, if Nix ever built the derivation just because we accessed it in Nix,
     we would have to wait a long time if it was, say, Firefox. That's why Nix
-    let us know the path beforehand and keep evaluating the Nix expressions, but
+    let us know the path beforehand and kept evaluating the Nix expressions, but
     it's still empty because no build was ever made.
   </para>
 
@@ -252,7 +252,7 @@
   <screen><xi:include href="./06/inspect-values.txt" parse="text" /></screen>
 
   <para>
-    You can guess what <code>builtins.isAttrs</code> does, it returns true if
+    You can guess what <code>builtins.isAttrs</code> does; it returns true if
     the argument is a set. While <code>builtins.attrNames</code> returns a list
     of keys of the given set. Some kind of reflection, you might say.
   </para>
@@ -264,9 +264,9 @@
   <screen><xi:include href="./06/drvattrs.txt" parse="text" /></screen>
 
   <para>
-    That's basically the input we gave to the derivation function. Also
+    That's basically the input we gave to the derivation function. Also the
     <code>d.name</code>, <code>d.system</code> and <code>d.builder</code>
-    attributes are straight the ones we gave as input.
+    attributes are exactly the ones we gave as input.
   </para>
 
   <screen><xi:include href="./06/check-drvattrs.txt" parse="text" /></screen>
@@ -286,7 +286,7 @@
   <para>
     Something interesting is the <code>type</code> attribute. It's
     <code>"derivation"</code>. Nix does add a little of magic to sets with type
-    derivation, but not that much. To let you understand, you can create
+    derivation, but not that much. To help you understand, you can create
     yourself a set with that type, it's a simple set:
   </para>
 
@@ -304,7 +304,7 @@
   </para>
 
   <para>
-    The outPath attribute is the build path in the nix store:
+    The <code>outPath</code> attribute is the build path in the nix store:
     <filename>/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-<emphasis
     role="strong">myname</emphasis></filename>.
   </para>
@@ -317,9 +317,9 @@
   <para>
     Just like dependencies in other package managers, how do we refer to other
     packages? How do we refer to other derivations in terms of files on the
-    disk? We use the outPath. The outPath tells where the files are of that
-    derivation. To make it more convenient, Nix is able to do a conversion from
-    a derivation set to a string.
+    disk? We use the <code>outPath</code>. The <code>outPath</code> describes 
+    the location of the files of that derivation. To make it more convenient, 
+    Nix is able to do a conversion from a derivation set to a string.
   </para>
 
   <screen><xi:include href="./06/outpath.txt" parse="text" /></screen>
@@ -457,7 +457,7 @@
   <title>Conclusion</title>
 
   <para>
-    Is it that complicated to create a package for Nix? No it's not.
+    Is it that complicated to create a package for Nix? No, it's not.
   </para>
 
   <para>
@@ -469,8 +469,8 @@
   <para>
     With the derivation function we provide a set of information on how to build
     a package, and we get back the information about where the package was
-    built. Nix converts a set to a string when there's an outPath, that's very
-    convenient. With that, it's easy to refer to other derivations.
+    built. Nix converts a set to a string when there's an <code>outPath</code>; 
+    that's very convenient. With that, it's easy to refer to other derivations.
   </para>
 
   <para>
