@@ -21,21 +21,13 @@
   </para>
 
   <para>
-     <link xlink:href="https://nixos.org/manual/nix/stable/installation/installation.html">Installing
-     Nix</link> is as easy as installing any other package.
-     It will not drastically change our system, it will stay out of our way.
+     For installation instructions, please refer to this link - 
+     <link xlink:href="https://nixos.org/manual/nix/stable/installation/installation.html">
+     Installing Nix</link>.
   </para>
 
   <section>
     <title>Installation</title>
-
-    <para>
-      To install Nix, run <command>curl -L https://nixos.org/nix/install | sh</command>
-      as a non-root user and follow the instructions. Alternatively, you may
-      prefer to download the installation script and verify its integrity using
-      GPG signatures. Instructions for doing so can be found here: <link
-      xlink:href="https://nixos.org/nix/download.html">https://nixos.org/nix/download.html</link>.
-    </para>
 
     <para>
       These articles are not a tutorial on <emphasis>using</emphasis> Nix.
