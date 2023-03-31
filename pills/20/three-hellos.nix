@@ -36,6 +36,7 @@ let
       mkdir -p "$out/bin"
       echo "#! ${stdenv.shell}" >> "$out/bin/hello"
       echo "exec $(which hello)" >> "$out/bin/hello"
+      chmod 0755 "$out/bin/hello"
     '';
   };
 
