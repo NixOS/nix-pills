@@ -97,11 +97,11 @@
     </para>
     <screen><xi:include href="./17/config-nix.txt" parse="text" /></screen>
     <para>
-      Now we can build e.g. <package>asciidocFull</package> and it will automatically use the overridden <package>graphviz</package>:
+      Now we can build e.g. <package>asciidoc-full</package> and it will automatically use the overridden <package>graphviz</package>:
     </para>
     <screen><xi:include href="./17/build-asciidoc-graphviz-override.txt" parse="text" /></screen>
     <para>
-      Note how we pass the <literal>config</literal> with <literal>packageOverrides</literal> when importing <literal>nixpkgs</literal>. Then <literal>pkgs.asciidocFull</literal> is a derivation that has <package>graphviz</package> input (<literal>pkgs.asciidoc</literal> is the lighter version and doesn't use <package>graphviz</package> at all).
+      Note how we pass the <literal>config</literal> with <literal>packageOverrides</literal> when importing <literal>nixpkgs</literal>. Then <literal>pkgs.asciidoc-full</literal> is a derivation that has <package>graphviz</package> input (<literal>pkgs.asciidoc</literal> is the lighter version and doesn't use <package>graphviz</package> at all).
     </para>
     <para>
       Since there's no version of <package>asciidoc</package> with <package>graphviz</package> without X support in the binary cache, Nix will recompile the needed stuff for you.
