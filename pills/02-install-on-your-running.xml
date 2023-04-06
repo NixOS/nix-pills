@@ -21,7 +21,7 @@
   </para>
 
   <para>
-     For installation instructions, please refer to this link - 
+     For installation instructions, please refer to the Nix Reference Manual on
      <link xlink:href="https://nixos.org/manual/nix/stable/installation/installation.html">
      Installing Nix</link>.
   </para>
