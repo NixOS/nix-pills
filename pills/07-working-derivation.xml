@@ -307,10 +307,15 @@
       <varname>coreutils</varname>.
     </para>
     <para>
-      Then we meet the
+      Below is a revised version of the <filename>simple.nix</filename> file, using the inherit keyword:
+
+      <programlisting><xi:include href="./07/simple_inherit.txt" parse="text" /></programlisting>
+
+      Here we also take the opportunity to introduce the
       <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes"><code>inherit</code> keyword</link>.
       <code>inherit foo;</code> is equivalent to <code>foo = foo;</code>.
-      Similarly, <code>inherit foo bar;</code> is equivalent to <code>foo = foo; bar = bar;</code>.
+      Similarly, <code>inherit gcc coreutils;</code> is equivalent to <code> gcc = gcc; coreutils = coreutils;</code>.
+      Lastly, <code>inherit (pkgs) gcc coreutils;</code> is equivalent to <code> gcc = pkgs.gcc; coreutils = pkgs.coreutils;</code>.
     </para>
     <para>
       This syntax only makes sense inside sets. There's no magic involved, it's
