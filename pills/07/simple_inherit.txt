@@ -1,12 +1,11 @@
 let
   pkgs = import <nixpkgs> {};
-  inherit (pkgs) gcc coreutils;
 in
   pkgs.stdenv.mkDerivation {
     name = "simple";
     builder = "${pkgs.bash}/bin/bash";
     args = [ ./simple_builder.sh ];
-    inherit gcc coreutils;
+    inherit (pkgs) gcc coreutils;
     src = ./simple.c;
     system = builtins.currentSystem;
 }
