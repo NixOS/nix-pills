@@ -307,7 +307,7 @@
       <varname>coreutils</varname>.
     </para>
     <para>
-      Below is a revised version of the <filename>simple.nix</filename> file, using the inherit keyword:
+      Below is a revised version of the <filename>simple.nix</filename> file, using the <code>inherit</code> keyword:
 
       <programlisting><xi:include href="./07/simple_inherit.txt" parse="text" /></programlisting>
 
