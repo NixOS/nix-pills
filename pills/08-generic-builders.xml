@@ -297,7 +297,7 @@
 
     <para>
       Out of this pill we managed to create a generic builder for autotools
-      projects, and a function <code>mkDerivation</code> that composes by default
+      projects, and a function <code>mymkDerivation</code> that composes by default
       the common components used in autotools projects instead of repeating them
       in all the packages we would write.
     </para>
