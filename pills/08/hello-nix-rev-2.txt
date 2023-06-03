@@ -1,7 +1,8 @@
 let
   pkgs = import <nixpkgs> {};
-  mkDerivation = import ./autotools.nix pkgs;
-in mkDerivation {
+  mymkDerivation = import ./autotools.nix pkgs;
+in 
+mymkDerivation {
   name = "hello";
-  src = ./hello-2.10.tar.gz;
+  src = ./hello-2.12.1.tar.gz;
 }
