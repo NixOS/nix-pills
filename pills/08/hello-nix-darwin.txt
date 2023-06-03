@@ -4,6 +4,7 @@ derivation {
   builder = "${bash}/bin/bash";
   args = [ ./hello_builder.sh ];
   inherit gnutar gzip gnumake coreutils gawk gnused gnugrep;
+  cctools = darwin.cctools;
   gcc = clang;
   bintools = clang.bintools.bintools_bin;
   src = ./hello-2.10.tar.gz;
