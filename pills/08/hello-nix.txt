@@ -1,7 +1,7 @@
 let
   pkgs = import <nixpkgs> {};
 in
-  pkgs.stdenv.mkDerivation {
+  derivation {
     name = "hello";
     builder = "${pkgs.bash}/bin/bash";
     args = [ ./hello_builder.sh ];
