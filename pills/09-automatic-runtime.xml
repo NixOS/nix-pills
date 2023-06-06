@@ -143,7 +143,7 @@
       The build process adds that gcc lib path thinking it may be useful at
       runtime, but really it's not. How do we get rid of it? Nix authors have
       written another magical tool called
-      <link xlink:href="https://nixos.org/patchelf.html">patchelf</link>, which
+      <link xlink:href="https://github.com/NixOS/patchelf">patchelf</link>, which
       is able to reduce the rpath to the paths that are really used by the
       binary.
     </para>
