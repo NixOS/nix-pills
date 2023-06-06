@@ -7,4 +7,4 @@ pkgs: attrs:
     system = builtins.currentSystem;
   };
   in
-  pkgs.stdenv.mkDerivation (defaultAttrs // attrs)
+  derivation (defaultAttrs // attrs)
