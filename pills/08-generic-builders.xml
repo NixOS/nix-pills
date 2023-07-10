@@ -34,7 +34,7 @@
       <link xlink:href="https://www.gnu.org/software/hello/">GNU hello world</link>,
       despite its name, is a simple yet complete project which uses autotools.
       Fetch the latest tarball here:
-      <link xlink:href="https://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz">https://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz</link>.
+      <link xlink:href="https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz">https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz</link>.
     </para>
 
     <para>
@@ -297,7 +297,7 @@
 
     <para>
       Out of this pill we managed to create a generic builder for autotools
-      projects, and a function <code>mkDerivation</code> that composes by default
+      projects, and a function <code>mymkDerivation</code> that composes by default
       the common components used in autotools projects instead of repeating them
       in all the packages we would write.
     </para>
