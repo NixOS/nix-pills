@@ -7,35 +7,35 @@
   <title>Fundamentals of Stdenv</title>
 
   <para>
-    Welcome to the 19th Nix pill. In the previous <link linkend="nix-store-paths">18th</link> pill we did dive into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.
+    Welcome to the 19th Nix pill. In the previous <link linkend="nix-store-paths">18th</link> pill we dived into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.
   </para>
 
   <para>
-    This time we will instead look into <literal>nixpkgs</literal>, in particular one of its core derivation: <literal>stdenv</literal>.
+    This time we will instead look into <literal>nixpkgs</literal>, in particular one of its core derivations: <literal>stdenv</literal>.
   </para>
 
   <para>
-    The <literal>stdenv</literal> is not a special derivation to Nix, but it's very important for the <literal>nixpkgs</literal> repository. It serves as base for packaging software. It is used to pull in dependencies such as the GCC toolchain, GNU make, core utilities, patch and diff utilities, and so on. Basic tools needed to compile a huge pile of software currently present in <literal>nixpkgs</literal>.
+    The <literal>stdenv</literal> is not treated as a special derivation by Nix, but it's very important for the <literal>nixpkgs</literal> repository. It serves as a base for packaging software. It is used to pull in dependencies such as the GCC toolchain, GNU make, core utilities, patch and diff utilities, and so on: basic tools needed to compile a huge pile of software currently present in <literal>nixpkgs</literal>.
   </para>
   <section>
-    <title>What is stdenv</title>
+    <title>What is stdenv?</title>
 
     <para>
-      First of all <literal>stdenv</literal> is a derivation. And it's a very simple one:
+      First of all, <literal>stdenv</literal> is a derivation, and it's a very simple one:
     </para>
 
     <screen><xi:include href="./19/stdenv-derivation.txt" parse="text" /></screen>
     <para>
-      It has just two files: <filename>/setup</filename> and <filename>/nix-support/propagated-user-env-packages</filename>. Don't care about the latter; it's empty, in fact. The important file is <filename>/setup</filename>.
+      It has just two files: <filename>/setup</filename> and <filename>/nix-support/propagated-user-env-packages</filename>. Don't worry about the latter. It's empty, in fact. The important file is <filename>/setup</filename>.
     </para>
 
     <para>
-      How can this simple derivation pull in all the toolchain and basic tools needed to compile packages? Let's look at the runtime dependencies:
+      How can this simple derivation pull in all of the toolchain and basic tools needed to compile packages? Let's look at the runtime dependencies:
     </para>
 
     <screen><xi:include href="./19/stdenv-references.txt" parse="text" /></screen>
     <para>
-      How can it be? The package must be referring to those package somehow. In fact, they are hardcoded in the <filename>/setup</filename> file:
+      How can it be? The package must be referring to those other packages somehow. In fact, they are hardcoded in the <filename>/setup</filename> file:
     </para>
 
     <screen><xi:include href="./19/stdenv-setup-head.txt" parse="text" /></screen>
@@ -48,7 +48,7 @@
     </para>
 
     <para>
-      The <literal>stdenv</literal> <filename>setup</filename> file is exactly that. It sets up several environment variables like <varname>PATH</varname> and creates some helper bash functions to build a package. I invite you to read it, it's only 860 lines at the time of this writing.
+      The <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh">stdenv setup file</link> is exactly that. It sets up several environment variables like <varname>PATH</varname> and creates some helper bash functions to build a package. I invite you to read it.
     </para>
 
     <para>
@@ -60,7 +60,7 @@
     </para>
 
     <para>
-      What <literal>genericBuild</literal> does is just run these phases. Default phases are just bash functions, you can easily read them.
+      What <literal>genericBuild</literal> does is just run these phases. Default phases are just bash functions. You can easily read them.
     </para>
 
     <para>
@@ -75,19 +75,19 @@
     <screen><xi:include href="./19/stdenv-setup-fake-builder.txt" parse="text" /></screen>
 
     <para>
-      <emphasis role="italic">I unset <varname>PATH</varname> to further show that the <literal>stdenv</literal> is enough self-contained to build autotools packages that have no other dependencies.</emphasis>
+      <emphasis role="italic">I unset <varname>PATH</varname> to further show that the <literal>stdenv</literal> is sufficiently self-contained to build autotools packages that have no other dependencies.</emphasis>
     </para>
 
     <para>
-      So we ran the <literal>configurePhase</literal> function and <literal>buildPhase</literal> function and they worked. These bash functions should be self-explanatory, you can read the code in the <filename>setup</filename> file.
+      So we ran the <literal>configurePhase</literal> function and <literal>buildPhase</literal> function and they worked. These bash functions should be self-explanatory. You can read the code in the <filename>setup</filename> file.
     </para>
 
   </section>
   <section>
-    <title>How is the setup file built</title>
+    <title>How the setup file is built</title>
 
     <para>
-      Until now we worked with plain bash scripts. What about the Nix side? The <literal>nixpkgs</literal> repository offers a useful function, like we did with our old builder. It is a wrapper around the raw derivation function which pulls in the <literal>stdenv</literal> for us, and runs <literal>genericBuild</literal>. It's <literal>stdenv.mkDerivation</literal>.
+      Until now we worked with plain bash scripts. What about the Nix side? The <literal>nixpkgs</literal> repository offers a useful function, like we did with our old builder. It is a wrapper around the raw derivation function which pulls in the <literal>stdenv</literal> for us, and runs <literal>genericBuild</literal>. It's <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/make-derivation.nix">stdenv.mkDerivation</link>.
     </para>
 
     <para>
@@ -95,7 +95,7 @@
     </para>
 
     <para>
-      Let's write a <filename>hello.nix</filename> expression using this new discovered <literal>stdenv</literal>:
+      Let's write a <filename>hello.nix</filename> expression using this newly discovered <literal>stdenv</literal>:
     </para>
 
     <screen><xi:include href="./19/stdenv-hello.txt" parse="text" /></screen>
@@ -140,11 +140,11 @@
 
     <xi:include href="./19/hello-derivation.xml" />
     <para>
-      So short I decided to paste it entirely above. The builder is bash, with <literal>-e default-builder.sh</literal> arguments. Then you can see the <literal>src</literal> and <literal>stdenv</literal> environment variables.
+      It's so short I decided to paste it entirely above. The builder is bash, with <literal>-e default-builder.sh</literal> arguments. Then you can see the <literal>src</literal> and <literal>stdenv</literal> environment variables.
     </para>
 
     <para>
-      Last bit, the <literal>unpackPhase</literal> in the setup is used to unpack the sources and enter the directory, again like we did in our old builder.
+      The last bit, the <literal>unpackPhase</literal> in the setup, is used to unpack the sources and enter the directory. Again, like we did in our old builder.
     </para>
 
   </section>
@@ -167,7 +167,7 @@
     </para>
 
     <para>
-      That's it, everything you need to know about the stdenv phases is in the <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh">setup file</link>.
+      That's it. Everything you need to know about the stdenv phases is in the <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh">setup file</link>.
     </para>
 
     <para>
