@@ -285,11 +285,10 @@
       Finally, it creates the symlink.
     </para>
     <para>
-      In the first line of <filename>simple.nix</filename>, we have an
-      <function>import</function> function call nested in a <code>with</code>
-      statement. Recall that <function>import</function> accepts one argument, a
-      nix file to load. In this case, the contents of the file evaluated to a
-      function.
+      In the second line of <filename>simple.nix</filename>, we have an
+      <function>import</function> function call. Recall that <function>import</function>
+      accepts one argument, a nix file to load. In this case, the contents of
+      the file evaluate to a function.
     </para>
     <para>
       Afterwards, we call the function with the empty set. We saw this already
@@ -299,12 +298,15 @@
       clearer.
     </para>
     <para>
-      The value returned by the nixpkgs function is a set. More specifically,
-      it's a set of derivations. Using the <code>with</code> expression we bring
-      them into scope. This is equivalent to the <command>:l &lt;nixpkgs&gt;</command>
-      we used in <application>nix repl</application>; it allows us to easily access derivations
-      such as <varname>bash</varname>, <varname>gcc</varname>, and
-      <varname>coreutils</varname>.
+      The value returned by the nixpkgs function is a set; more specifically,
+      it's a set of derivations. Calling <code>import &lt;nixpkgs> {}</code>
+      into a <function>let</function>-expression creates the local variable
+      <varname>pkgs</varname> and brings it into scope. This has an effect similar to
+      the <command>:l &lt;nixpkgs&gt;</command> we used in <application>nix repl</application>,
+      in that it allows us to easily access derivations such as <varname>bash</varname>,
+      <varname>gcc</varname>, and <varname>coreutils</varname>, but those derivations
+      will have to be explicitly referred to as members of the <varname>pkgs</varname> set
+      (e.g., <varname>pkgs.bash</varname> instead of just <varname>bash</varname>).
     </para>
     <para>
       Below is a revised version of the <filename>simple.nix</filename> file, using the <code>inherit</code> keyword:
