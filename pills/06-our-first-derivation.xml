@@ -127,8 +127,11 @@
     better to pretty print it:
   </para>
 
-  <xi:include href="./06/show-derivation.xml" />
+  <note><para>
+      If your version of nix doesn't have <literal>nix derivation show</literal>, use <literal>nix show-derivation</literal> instead.
+  </para></note>
 
+  <xi:include href="./06/show-derivation.xml" />
 
   <para>
     Ok, we can see there's an out path, but it does not exist yet. We never told
