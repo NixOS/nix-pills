@@ -1,4 +1,4 @@
-<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix show-derivation $(nix-instantiate hello.nix)</userinput>
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix derivation show $(nix-instantiate hello.nix)</userinput>
 <computeroutput>warning: you did not specify '--add-root'; the result might be removed by the garbage collector
 {
   "/nix/store/abwj50lycl0m515yblnrvwyydlhhqvj2-hello.drv": {
