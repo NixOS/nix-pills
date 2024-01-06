@@ -192,10 +192,9 @@
     parse="text" /></screen>
 
     <para>
-      <link
-          xlink:href="https://nixos.org/manual/nix/stable/expressions/writing-nix-expressions.html">Nix
-      expressions</link> are used to describe packages and how to
-      build them. <link
+      Nix expressions are written in the <link 
+      xlink:href="https://nix.dev/tutorials/nix-language">Nix language</link> and used to 
+      describe packages and how to build them. <link 
       xlink:href="https://nixos.org/nixpkgs/">Nixpkgs</link> is the
       repository containing all of the expressions: <link
       xlink:href="https://github.com/NixOS/nixpkgs">https://github.com/NixOS/nixpkgs</link>.
