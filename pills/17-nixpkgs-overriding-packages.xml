@@ -51,14 +51,17 @@
     </para>
     <screen><xi:include href="./17/fix-function.txt" parse="text" /></screen>
     <para>
-      It's a function that accepts a function <literal>f</literal>, calls <literal>f result</literal> on the result just returned by <literal>f result</literal> and returns it. In other words it's <literal>f(f(f(....</literal>
+      It's a function that accepts a function <literal>f</literal> and keeps applying it to its argument. In other words, it turns the function it receives into a function that recurses over its arguments.
     </para>
     <para>
-      At first sight, it's an infinite loop. With lazy evaluation it isn't, because the call is done only when needed.
+     To illustrate, consider:
     </para>
-    <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
+    <screen><xi:include href="./17/fix-function-sum.txt" parse="text" /></screen>
     <para>
-      Without the <literal>rec</literal> keyword, we were able to refer to <literal>a</literal> and <literal>b</literal> of the same set.
+        Here we use `const sum` to turn `sum` into a function that works just like the original `sum`, except that it "declines" any argument it might receive past the first one. (This is for illustration purposes: it allows us to "lock-step" the recursion one function application at a time.) This means that by applying `fix` to this modified version of `sum`, we get a function that evaluates its arguments one by one -- until all arguments are evaluated.
+    </para>
+    <para>
+      This in a nutshell is the secret sauce behind Nix's overrides. In particular the idea works wonder with functions that take attribute sets as parameter, such as <literal>pkgs = self: { a = 3; b = 4; c = self.a+self.b; }</literal> Consider:
       <itemizedlist>
         <listitem><para>First <literal>pkgs</literal> gets called with an unevaluated thunk <literal>(pkgs(pkgs(...)</literal></para></listitem>
         <listitem><para>To set the value of <literal>c</literal> then <literal>self.a</literal> and <literal>self.b</literal> are evaluated.</para></listitem>
@@ -66,7 +69,7 @@
       </itemizedlist>
     </para>
     <para>
-      The trick is that <literal>c</literal> is not needed to be evaluated in the inner call, thus it doesn't go in an infinite loop.
+      Here we don't use any technique to "lock-step" the recursion over the attribute set. As a consequence we get a fully evaluated attribute set as output. If we did "lock-step" it, we would observe that in the first step of the recursion, the <literal>c</literal> attribute is set, and in the second step, that the <literal>a</literal> and <literal>b</literal> attributes are set. 
     </para>
     <para>
       Won't go further with the explanation here. A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.

@@ -1,0 +1,11 @@
+# Use `fix` to pass a function its arguments one by one
+nix-repl> fix = f: let f result; in result
+# Helper function (more on this below)  
+nix-repl> const = a: b: a
+# A modest yet famous function
+nix-repl> sum = a: b: a + b
+# Keep passing `sum` its parameters one by one
+nix-repl> sum_0 = fix (const (sum)) # a: b: a + b
+nix-repl> sum_1 = sum_0 1 # b: 1 + b
+nix-repl> sum_1 2 # 1 + 2   
+3
