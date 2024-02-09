@@ -28,6 +28,9 @@
       contributors in 2017.
     </para>
 
+    <para>
+      For an up-to-date version, please visit <link xlink:href="https://nixos.org/guides/nix-pills/" />. An <link xlink:href="https://nixos.org/guides/nix-pills/nix-pills.epub">EPUB version</link> is also available.
+    </para>
 
     <para>If you encounter problems, please report them on the
     <link xlink:href="https://github.com/NixOS/nix-pills/issues">nixos/nix-pills</link>

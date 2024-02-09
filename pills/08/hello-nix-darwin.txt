@@ -1,11 +1,13 @@
-with (import <nixpkgs> {});
-derivation {
-  name = "hello";
-  builder = "${bash}/bin/bash";
-  args = [ ./hello_builder.sh ];
-  inherit gnutar gzip gnumake coreutils gawk gnused gnugrep;
-  gcc = clang;
-  binutils = clang.bintools.bintools_bin;
-  src = ./hello-2.10.tar.gz;
-  system = builtins.currentSystem;
-}
+let
+  pkgs = import <nixpkgs> {};
+in
+  derivation {
+    name = "hello";
+    builder = "${pkgs.bash}/bin/bash";
+    args = [ ./hello_builder.sh ];
+    inherit (pkgs) gnutar gzip gnumake coreutils gawk gnused gnugrep;
+    gcc = pkgs.clang;
+    bintools = pkgs.clang.bintools.bintools_bin;
+    src = ./hello-2.12.1.tar.gz;
+    system = builtins.currentSystem;
+  }

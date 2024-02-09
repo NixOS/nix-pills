@@ -1,4 +1,4 @@
-<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix show-derivation /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-<emphasis>foo.drv</emphasis></userinput>
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-<emphasis>foo.drv</emphasis></userinput>
 <computeroutput>{
   "/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv": {
     "outputs": {
