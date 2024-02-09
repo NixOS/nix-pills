@@ -14,7 +14,7 @@
   <section>
     <title>Repositories in Nix</title>
     <para>
-      Nix is a tool for build and deployment, it does not enforce any particular repository format. A repository of packages is the main usage for Nix, but not the only possibility. It's more like a consequence due to the need of organizing packages.
+      Nix is a tool for build and deployment, it does not enforce any particular repository format. A repository of packages, like for example <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, is the main usage for Nix, but not the only possibility. It's more like a consequence due to the need of organizing packages.
     </para>
     <para>
       Nix is a language, and it is powerful enough to let you choose the format of your own repository. In this sense, it is not declarative, but functional.
