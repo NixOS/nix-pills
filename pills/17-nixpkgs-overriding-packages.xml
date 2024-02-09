@@ -51,10 +51,7 @@
     </para>
     <screen><xi:include href="./17/fix-function.txt" parse="text" /></screen>
     <para>
-      It's a function that accepts a function <literal>f</literal> and keeps applying it to its argument. In other words, it turns the function it receives into a function that recurses over its arguments.
-    </para>
-    <para>
-     To illustrate, consider:
+      It's a function that accepts a function <literal>f</literal> that recurses over its arguments. Why is this useful? In a nutshell, because it plays nicely with Nix's lazyness, specifically the way functions are curried in Nix. To fix ideas (pun intended!) consider:
     </para>
     <screen><xi:include href="./17/fix-function-sum.txt" parse="text" /></screen>
     <para>
