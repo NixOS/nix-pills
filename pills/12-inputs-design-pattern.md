@@ -6,7 +6,7 @@ This time, we will resume packaging and improve different aspects of it. We will
 
 ## Repositories in Nix
 
-Package repositories in Nix arose naturally from the need to organize packages. There is no preset directory structure or packaging policy prescribed by Nix itself; Nix, as a full, functional programming language, is powerful enough to support multiple different repository formats.
+Package repositories in Nix, like for example [nixpkgs](https://github.com/NixOS/nixpkgs), arose naturally from the need to organize packages. There is no preset directory structure or packaging policy prescribed by Nix itself; Nix, as a full, functional programming language, is powerful enough to support multiple different repository formats.
 
 Over time, the `nixpkgs` repository evolved a particular structure. This structure reflects the history of Nix as well as the design patterns adopted by its users as useful tools in building and organizing packages. Below, we will examine some of these patterns in detail.
 
