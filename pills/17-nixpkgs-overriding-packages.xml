@@ -66,7 +66,7 @@
       </itemizedlist>
     </para>
     <para>
-      Here our <literal>pkgs</literal> functions takes only one argument so we don't need any technique to "lock-step" the recursion. But like in the previous example, the "fixed" function recurses over its argument until it is fully evaluated. 
+      Here <literal>pkgs</literal> takes only one argument so we don't need any technique to "lock-step" the recursion. But like in the previous example, the "fixed" function recurses over its argument until it is fully evaluated. 
     </para>
     <para>
       Won't go further with the explanation here. A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.
