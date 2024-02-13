@@ -2,7 +2,7 @@
 nix-repl> sum = a: b: a + b
 
 # Our new friend `fix`
-nix-repl> fix = f: let f result; in result
+nix-repl> fix = f: let result = f result; in result
 
 # Helper function that forces the "fixed" function to recurse over its arguments __one argument at a time__ in each recursion
 nix-repl> const = a: b: a
