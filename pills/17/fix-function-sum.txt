@@ -8,7 +8,7 @@ nix-repl> const = a: b: a
 # Our new friend `fix`
 nix-repl> fix = f: let f result; in result
 
-# Now use `fix` and `const` to turn `sum` into a functions that keep evaluating
+# Now use `fix` and `const` to turn `sum` into functions that keep evaluating
 # `sum` arguments one by one, one application at a time, until there is no more argument to evaluate
 nix-repl> sum_0 = fix (const (sum))     # `sum_0` => a: b: a + b
 nix-repl> sum_1 = sum_0 1               # `sum_1` => b: 1 + b
