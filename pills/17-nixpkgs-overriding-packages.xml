@@ -51,22 +51,19 @@
     </para>
     <screen><xi:include href="./17/fix-function.txt" parse="text" /></screen>
     <para>
-      It's a function that accepts a function <literal>f</literal> that recurses over its arguments. Why is this useful? In a nutshell, because it plays nicely with Nix's lazyness, specifically the way functions are curried in Nix. To fix ideas (pun intended!) consider:
+      It's a function that accepts a function <literal>f</literal> and returns a function that recurses over f's arguments. Why is this useful? Because it plays nicely with Nix' laziness: it turns any function that otherwise would happily return (at least some) of its arguments unevaluated, into a function that recursively evaluates its arguments until there is nothing left to evaluate. To fix ideas (pun intended!) consider:
     </para>
     <screen><xi:include href="./17/fix-function-sum.txt" parse="text" /></screen>
     <para>
-        Here we use `const sum` to turn `sum` into a function that works just like the original `sum`, except that it "declines" any argument it might receive past the first one. (This is for illustration purposes: it allows us to "lock-step" the recursion one function application at a time.) This means that by applying `fix` to this modified version of `sum`, we get a function that evaluates its arguments one by one -- until all arguments are evaluated.
+        What is the main difference between <literal>fix (const (sum))</literal> and <literal>sum</literal>? Thanks to <literal>fix</literal>, the function recursively evaluates its arguments until there is no unevaluated value left (unevaluated values are called <literal>thunks</literal>). If at any point in the recursion an argument is found to be a thunk, it is evaluated and the result is passed to the next function application in the recursion.
     </para>
     <para>
-      This in a nutshell is the secret sauce behind Nix's overrides. In particular the idea works wonder with functions that take attribute sets as parameter, such as <literal>pkgs = self: { a = 3; b = 4; c = self.a+self.b; }</literal> Consider:
+      The idea of turning functions into functions that recursively "suck the laziness" out of their arguments is the secret sauce behind Nix overrides. Consider <literal>pkgs = self: { a = 3; b = 4; c = self.a+self.b; }</literal> (In contrast to the previous example, this function takes only one parameter so we don't need to use <literal>const</literal>.) Here's how <literal>pkgs</literal> is "fixed":
       <itemizedlist>
         <listitem><para>First <literal>pkgs</literal> gets called with an unevaluated thunk <literal>(pkgs(pkgs(...)</literal></para></listitem>
         <listitem><para>To set the value of <literal>c</literal> then <literal>self.a</literal> and <literal>self.b</literal> are evaluated.</para></listitem>
         <listitem><para>The <literal>pkgs</literal> function gets called again to get the value of <literal>a</literal> and <literal>b</literal>.</para></listitem>
       </itemizedlist>
-    </para>
-    <para>
-      Here <literal>pkgs</literal> takes only one argument so we don't need any technique to "lock-step" the recursion. But like in the previous example, the "fixed" function recurses over its argument until it is fully evaluated. 
     </para>
     <para>
       Won't go further with the explanation here. A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.
