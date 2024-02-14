@@ -12,7 +12,7 @@ nix-repl> pkgs { a = 3; b = 4; }
 
 nix-repl> fix = f: let result = f result; in result
 
-# Now we can use `fix` to force f to recurse over its arguments until it can no longer postpone evaluating them.
+# Now we can use `fix` to have f to recurse over its arguments until it can no longer postpone evaluating them.
 # We can do this in one go:
 nix-repl> fix pkgs
 { a = 3; b = 4; c = 7; }
