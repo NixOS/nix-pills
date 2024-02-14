@@ -46,11 +46,12 @@
     <para>
       A fixed point is a common pattern in lazy languages to ensure that functions that would otherwise return non fully evaluated values do return fully evaluated values. Let's unpack this idea. Remember that in Nix functions are lazy. Consider:
     </para>
-    <screen><xi:include href="./17/laziness.txt" parse="text" /></screen>
     <para>
-      Thus in Nix functions return fully evaluated values just in case they cannot postpone evaluating them. As long as evaluation can be postponed, the expression is allocated a special sort of container for the future value: a thunk. 
+        Remember that in Nix functions return fully evaluated values just in case they cannot postpone evaluating them. As long as evaluation can be postponed, the expression is allocated a special sort of container for the future value: a thunk. 
     </para>
-    <literal>How does this related to <literal>fix</literal>? Well it's a function that takes a function f into function g such that g recursively calls f until f can no longer evaluate its arguments. Or in other words: until all thunks have been replaced by the actual values. See:
+    <para>
+      <literal>How does this related to <literal>fix</literal>? Well it's a function that takes a function f into function g such that g recursively calls f until f can no longer evaluate its arguments. Or in other words: until all thunks have been replaced by the actual values. See:
+    </para>
     <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
     <para>
       To summarize: <literal>fix</literal> allows Nix users to define extensible (= modifiable by other users) attribute sets via a chain of functions which <literal>fix</literal> promises to eventually evaluate all the way down. This is what enables them to define overlays.
