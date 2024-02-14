@@ -7,17 +7,18 @@ nix-repl> pkgs = self: { a = 1; b = 2; c = self.a + self.b; }
 nix-repl> pkgs { a = 3; b = 4; }
 { a = 1; b = 2; c = 7; } 
 
-# But what if there is an open-ended number of callers, some of which want to set some values in the attribute set to values which are a function of 
+# But what if there is an open-ended number of callers, some of which want to set some values in the attribute to values which are a function of 
 # another value in the set? We need to make sure that the attribute set has been computed throughout all callers. For this, we need `fix`:
 
 nix-repl> fix = f: let result = f result; in result
 
-# Now we can use `fix` to force f to recurse over its arguments until it can no longer postpone evaluating them:
+# Now we can use `fix` to force f to recurse over its arguments until it can no longer postpone evaluating them.
+# We can do this in one go:
 nix-repl> fix pkgs
 { a = 3; b = 4; c = 7; }
 
 # ...or we can create a chain of functions that will modify the attribute set and pass the result to the next one:
-nix-repl> f = prev: new: pkgs { a = prev.b; b = new.b; c = prev.a + prev.b; }
+nix-repl> f = prev: next: pkgs { a = prev.b; b = next.b; c = prev.a + prev.b; }
 nix-repl> g = f { a = 3; b = 4; }
 nix-repl> g { a = 0; b = 9;}
 { a = 1; b = 2; c = 13; }
