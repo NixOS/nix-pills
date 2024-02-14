@@ -50,10 +50,10 @@
     <para>
       Thus in Nix functions return fully evaluated values just in case they cannot postpone evaluating them. As long as evaluation can be postponed, the expression is allocated a special sort of container for the future value: a thunk. 
     </para>
-    <literal>How does this related to <literal>fix</literal>? Well it is a function that takes a function f into function g such that g recursively calls f until f can no longer evaluate its arguments. Or in other words: until all thunks have been replaced by the actual values. Consider:
+    <literal>How does this related to <literal>fix</literal>? Well it's a function that takes a function f into function g such that g recursively calls f until f can no longer evaluate its arguments. Or in other words: until all thunks have been replaced by the actual values. See:
     <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
     <para>
-      Thus in the context of Nix <literal>fix</literal> can be seen as a helper function that allows users to define extensible (= modifiable by other users) attribute sets via a chain of functions which <literal>fix</literal> promises to eventually evaluate all the way down.
+      To summarize: <literal>fix</literal> allows Nix users to define extensible (= modifiable by other users) attribute sets via a chain of functions which <literal>fix</literal> promises to eventually evaluate all the way down. This is what enable them to define overlays.
     </para>
     <para>
     For the reader interested in this technique, more details can be found at <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">nixpkgs</link> A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.
