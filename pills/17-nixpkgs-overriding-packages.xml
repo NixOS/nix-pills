@@ -44,20 +44,17 @@
   <section>
     <title>Fixed point</title>
     <para>
-      A fixed point is a common pattern in lazy languages to ensure that functions that would otherwise return non fully evaluated values do return fully evaluated values. Let's unpack this idea. Remember that in Nix functions are lazy. Consider:
+      A fixed point of a function <literal>f</literal> is a value <literal>a</literal> such that <literal>f a == a</literal>. Fixed points are much more significant than meets the eye. Indeed a recipe for finding the fixed point of any input function f would enable users to turn any function into a recursion that will apply f until its output and its argument evaluate to the same thing.
     </para>
     <para>
-        Remember that in Nix functions return fully evaluated values just in case they cannot postpone evaluating them. As long as evaluation can be postponed, the expression is allocated a special sort of container for the future value: a thunk. 
-    </para>
-    <para>
-      <literal>How does this related to <literal>fix</literal>? Well it's a function that takes a function f into function g such that g recursively calls f until f can no longer evaluate its arguments. Or in other words: until all thunks have been replaced by the actual values. See:
+      <literal>The Nix function <literal>fix</literal> is such a recipe. When given a function f, it calls f with its arguments until the arguments and the output are the same. This can be put to good use in Nix as it allows users to define extensible (= modifiable by other users) functions for setting attribute sets. Consider:
     </para>
     <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
     <para>
-      To summarize: <literal>fix</literal> allows Nix users to define extensible (= modifiable by other users) attribute sets via a chain of functions which <literal>fix</literal> promises to eventually evaluate all the way down. This is what enables them to define overlays.
+      To summarize: <literal>fix</literal> promises to evaluate chains of functions overriding attribute sets all the way down until a fixed point is reached, which for attribute sets means: until the recursion evaluates to a an attribute set that contains nothing but Nix values. 
     </para>
     <para>
-    For the reader interested in this technique, more details can be found at <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">nixpkgs</link> A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.
+      For the reader interested in this technique, more details can be found at <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">nixpkgs</link> A good post about fixed point and Nix can be <link xlink:href="http://r6.ca/blog/20140422T142911Z.html">found here</link>.
     </para>
     <section>
       <title>Overriding a set with fixed point</title>
