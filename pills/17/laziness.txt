@@ -1,0 +1,13 @@
+# Our old friend `add`:
+nix-repl> add = a: b: a + b
+
+# Like all functions in Nix, `add` is curried: we can pass it arguments one by one and always get a valid type in return:
+nix-repl> add_1 = add 1
+nix-repl> add_1 2
+3
+
+# As long as the function has not received all its arguments, it is not saturated, and doesn't compute anything.
+# Does that mean that the function evaluates as soon as it has received all its arguments? Nope:
+
+# The right-hand side of `||` is never evaluated because the left-hand side is `true`:
+nix-repl> true || add 1 2 == 3

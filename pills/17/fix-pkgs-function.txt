@@ -1,4 +1,23 @@
+# We want to let the caller set the values of `a` and `b` as they prefer
+# so we write a function to allow them to do so:
+nix-repl> pkgs = self: { a = 1; b = 2; c = self.a + self.b; }
+
+# This works for one single caller, as it can simply pass the attribute set it wants to
+# set `a` and `b` as desired:
+nix-repl> pkgs { a = 3; b = 4; }
+{ a = 1; b = 2; c = 7; } 
+
+# But what if there is an open-ended number of callers, some of which want to set some values in the attribute set to values which are a function of 
+# another value in the set? We need to make sure that the attribute set has been computed throughout all callers. For this, we need `fix`:
+
 nix-repl> fix = f: let result = f result; in result
-nix-repl> pkgs = self: { a = 3; b = 4; c = self.a+self.b; }
+
+# Now we can use `fix` to force f to recurse over its arguments until it can no longer postpone evaluating them:
 nix-repl> fix pkgs
 { a = 3; b = 4; c = 7; }
+
+# ...or we can create a chain of functions that will modify the attribute set and pass the result to the next one:
+nix-repl> f = prev: new: pkgs { a = prev.b; b = new.b; c = prev.a + prev.b; }
+nix-repl> g = f { a = 3; b = 4; }
+nix-repl> g { a = 0; b = 9;}
+{ a = 1; b = 2; c = 13; }
