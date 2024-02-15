@@ -42,12 +42,9 @@
     </para>
   </section>
   <section>
-    <title>Fixed point</title>
+    <title>Fix and fixed point</title>
     <para>
-      A fixed point of a function <literal>f</literal> is a value <literal>a</literal> such that <literal>f a == a</literal>. Fixed points are much more significant than meets the eye. Indeed a recipe for finding the fixed point of any input function f would enable users to turn any function into a recursion that will apply f until its output and its argument evaluate to the same thing.
-    </para>
-    <para>
-      <literal>The Nix function <literal>fix</literal> is such a recipe. When given a function f, it calls f with its arguments until the arguments and the output are the same. This can be put to good use in Nix as it allows users to define extensible (= modifiable by other users) functions for setting attribute sets. Consider:
+      A fixed point of a function <literal>f</literal> is a value <literal>a</literal> such that <literal>f a == a</literal>. The built-in function <literal>fix</literal> takes any function f it receives as input into its fixed point. In other words, it calls f with its arguments until the arguments and the output evaluate to the same value. It enables Nix users to define extensible (= modifiable by other users) functions for setting attribute sets. Consider:
     </para>
     <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
     <para>
