@@ -127,7 +127,7 @@
     <para>
       The variable <literal>res</literal> contains the result of the function call without
       any override. It's easy to see in the definition of <literal>makeOverridable</literal>.
-      In addition, you can see that new <literal>override</literal> attribute is a function.
+      In addition, you can see that the new <literal>override</literal> attribute is a function.
     </para>
     <para>
       Calling <literal>res.override</literal> with a set will invoke the original function
@@ -136,7 +136,7 @@
     <para>
       This is a good start, but we can't override again! This is because the returned
       set (with <literal>result = 15</literal>) does not have an <literal>override</literal>
-      attribute of it's own. This is bad; it breaks further composition.
+      attribute of its own. This is bad; it breaks further composition.
     </para>
     <para>
       The solution is simple: the <literal>.override</literal> function should make the

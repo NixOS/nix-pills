@@ -8,7 +8,7 @@
 
   <para>
     Welcome to the 11th Nix pill. In the previous
-    <link linkend="developing-with-nix-shell">10th pill</link>, we drew a
+    <link linkend="developing-with-nix-shell">10th pill</link>, we drew
     a parallel between the isolated build environment provided by
     <command>nix-build</command> and the isolated development shell provided by
     <command>nix-shell</command>. Using <command>nix-shell</command> allowed us
@@ -44,7 +44,7 @@
 
     <para>
       Instead of objects, Nix's garbage collection operates on store paths, <link xlink:href="https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html">with the GC roots themselves being store paths</link>.
-.     This approach is much mode principled than traditional package
+.     This approach is much more principled than traditional package
       managers such as <code>dpkg</code> or <code>rpm</code>, which may
       leave around unused packages or dangling files.
     </para>
@@ -52,13 +52,13 @@
     <para>
       The implementation is very simple and transparent to the user. The primary
       GC roots are stored under <filename>/nix/var/nix/gcroots</filename>. If there
-      is a symlink to a store path, then linked store path is a GC root.
+      is a symlink to a store path, then the linked store path is a GC root.
     </para>
 
     <para>
       Nix allows this directory to have subdirectories: it will simply recursively
       traverse the subdirectories in search of symlinks to store paths. When
-      a symlink is encountered, it's target is added to the list of live store
+      a symlink is encountered, its target is added to the list of live store
       paths.
     </para>
 
@@ -90,7 +90,7 @@
 
     <para>
       We now install a new program, <code>bsd-games</code>, inspect its
-      store path, and examine it's GC root. The <command>nix-store -q --roots</command>
+      store path, and examine its GC root. The <command>nix-store -q --roots</command>
       command is used to query the GC roots that refer to a given derivation. In this
       case, our current user environment refers to <code>bsd-games</code>:
     </para>
@@ -131,7 +131,7 @@
       <filename>/nix/var/nix/gcroots</filename>. In addition to the latter,
       Nix treats <filename>/nix/var/nix/profiles</filename> as a GC root.
       This is useful because it means that any profile and its generations
-      are GC roots. Other path are considered GC roots as well; for example,
+      are GC roots. Other paths are considered GC roots as well; for example,
       <filename>/run/booted-system</filename> on NixOS.
       The command <command>nix-store --gc --print-roots</command> prints all
       paths considered as GC roots when running the garbage collector.
@@ -166,14 +166,14 @@
       What is important is that such a symlink exists and points to
       <filename>/home/nix/result</filename>. This is called an
       <emphasis role="bold">indirect GC root</emphasis>. A GC root is
-      considred indirect if it's specification is outside of
+      considered indirect if its specification is outside of
       <filename>/nix/var/nix/gcroots</filename>. In this case, this means
       that the target of the <filename>result</filename> symlink will
       not be garbage collected.
     </para>
 
     <para>
-      To remove a deriviation considered "live" by an indirect GC root,
+      To remove a derivation considered "live" by an indirect GC root,
       there are two possibilities:
     </para>
 
@@ -211,7 +211,7 @@
       The main source of software duplication in the nix store comes from
       GC roots, due to <command>nix-build</command> and profile generations.
       Running <command>nix-build</command> results in a GC root for the build
-      that refers to a specific version of specific libaries, such as
+      that refers to a specific version of specific libraries, such as
       <package>glibc</package>. After an upgrade, we must delete the previous build
       if we want the garbage collector to remove the corresponding derivation,
       as well as if we want old dependencies cleaned up.
@@ -272,7 +272,7 @@
     <title>Conclusion</title>
 
     <para>
-      Garbage collection in Nix is a powerful mechanism to cleanup your system.
+      Garbage collection in Nix is a powerful mechanism to clean up your system.
       The <command>nix-store</command> commands allow us to know why a certain
       derivation is present in the nix store, and whether or not it is eligible
       for garbage collection. We also saw how to conduct more destructive deletion

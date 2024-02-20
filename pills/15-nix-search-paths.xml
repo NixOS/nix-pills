@@ -23,7 +23,7 @@
       In the shell for example, when you execute the command <command>ping</command>, it's being searched in the <varname>PATH</varname> directories. The first one found is the one being used.
     </para>
     <para>
-      In nix it's exactly the same, however the syntax is different. Instead of just typing <command>ping</command> you have to type <literal>&lt;ping&gt;</literal>. Yes, I know... you are already thinking of <literal>&lt;nixpkgs&gt;</literal>. However don't stop reading here, let's keep going.
+      In nix it's exactly the same, however the syntax is different. Instead of just typing <command>ping</command> you have to type <literal>&lt;ping&gt;</literal>. Yes, I know... you are already thinking of <literal>&lt;nixpkgs&gt;</literal>. However, don't stop reading here, let's keep going.
     </para>
     <para>
       What's <varname>NIX_PATH</varname> good for? Nix expressions may refer to an "abstract" path such as <literal>&lt;nixpkgs&gt;</literal>, and it's possible to override it from the command line.
@@ -72,7 +72,7 @@
     </para>
     <screen><xi:include href="./15/mypkgs-path.txt" parse="text" /></screen>
     <para>
-      Yes, <command>nix-build</command> also accepts paths with angular brackets. We first evaluate the whole repository (<filename>default.nix</filename>) and then peek the <package>graphviz</package> attribute.
+      Yes, <command>nix-build</command> also accepts paths with angular brackets. We first evaluate the whole repository (<filename>default.nix</filename>) and then pick the <package>graphviz</package> attribute.
     </para>
   </section>
   <section>
@@ -98,7 +98,7 @@
     </para>
     <screen><xi:include href="./15/mypkgs-query-all.txt" parse="text" /></screen>
     <para>
-      By default <command>nix-env</command> parses all derivations and use the derivation names to interpret the command line. So in this case "graphviz" matched two derivations. Alternatively, like for <command>nix-build</command>, one can use <arg>-A</arg> to specify an attribute name instead of a derivation name:
+      By default <command>nix-env</command> parses all derivations and uses the derivation names to interpret the command line. So in this case "graphviz" matched two derivations. Alternatively, like for <command>nix-build</command>, one can use <arg>-A</arg> to specify an attribute name instead of a derivation name:
     </para>
     <screen><xi:include href="./15/mypkgs-install-attr-graphviz.txt" parse="text" /></screen>
     <para>
@@ -108,7 +108,7 @@
       For completeness: you must install <literal>graphvizCore</literal> with <arg>-A,</arg> since without the <arg>-A</arg> switch it's ambiguous.
     </para>
     <para>
-      In summary, it may happen when playing with nix that <command>nix-env</command> peeks a different derivation than <command>nix-build</command>. In such case you probably specified <varname>NIX_PATH</varname>, but <command>nix-env</command> is instead looking into <filename>~/.nix-defexpr</filename>.
+      In summary, it may happen when playing with nix that <command>nix-env</command> picks a different derivation than <command>nix-build</command>. In that case you probably specified <varname>NIX_PATH</varname>, but <command>nix-env</command> is instead looking into <filename>~/.nix-defexpr</filename>.
     </para>
     <para>
       Why is <command>nix-env</command> having this different behavior? I don't know specifically by myself either, but the answers could be:

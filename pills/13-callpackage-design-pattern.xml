@@ -15,7 +15,7 @@
     The next design pattern we will examine is called the <literal>callPackage</literal>
     pattern. This technique is extensively used in <link
     xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs</link>, and it's the current
-    de facto standard for importing packages in a repository. It's purpose is to reduce
+    de facto standard for importing packages in a repository. Its purpose is to reduce
     the duplication of identifiers between package derivation inputs and repository
     derivations.
   </para>
@@ -35,19 +35,19 @@
     </para>
     <screen><xi:include href="./13/package-derivation.txt" parse="text" /></screen>
     <para>
-      we would likely want to bundle that package derivation into a respository via a
+      we would likely want to bundle that package derivation into a repository via a
       an attribute set defined as something like:
     </para>
     <screen><xi:include href="./13/repository-derivation.txt" parse="text" /></screen>
     <para>
       There are two things to note. First, that inputs often have the same name as
-      attributes in the respository itself. Second, that (due to the <code>rec</code>
+      attributes in the repository itself. Second, that (due to the <code>rec</code>
       keyword), the inputs to a package derivation may be other packages in the
       repository itself.
     </para>
     <para>
       Rather than passing the inputs twice, we would prefer to pass those inputs from
-      the respoistory automatically and allow for manually overriding defaults.
+      the repository automatically and allow for manually overriding defaults.
     </para>
     <para>
       To achieve this, we will define a <literal>callPackage</literal> function with
@@ -113,7 +113,7 @@
       </itemizedlist>
     </para>
     <para>
-      The former is easy: we just have to set our package deriviation's inputs
+      The former is easy: we just have to set our package derivation's inputs
       to be package names in a repository, such as <code>nixpkgs</code>. For
       the latter, Nix provides another builtin function:
     </para>
@@ -249,7 +249,7 @@
     </para>
     <para>
       Writing a repository in Nix is an evolution of writing convenient functions for
-      combining the packages. This pills demonstrates how Nix can be a generic tool
+      combining the packages. This pill demonstrates how Nix can be a generic tool
       to build and deploy software, and how suitable it is to create software
       repositories with our own conventions.
     </para>

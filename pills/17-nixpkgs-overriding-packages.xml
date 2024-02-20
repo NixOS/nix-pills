@@ -27,7 +27,7 @@
       This will build <package>graphviz</package> without X support, it's as simple as that.
     </para>
     <para>
-      However let's say a package <literal>P</literal> depends on <package>graphviz</package>, how do we make <literal>P</literal> depend on the new <package>graphviz</package> without X support?
+      However, let's say a package <literal>P</literal> depends on <package>graphviz</package>, how do we make <literal>P</literal> depend on the new <package>graphviz</package> without X support?
     </para>
 
   </section>
@@ -38,7 +38,7 @@
     </para>
     <screen><xi:include href="./17/p-graphviz-override.txt" parse="text" /></screen>
     <para>
-      Given <literal>pkgs.P</literal> depends on <literal>pkgs.graphviz</literal>, it's easy to build <literal>P</literal> with the replaced <package>graphviz</package>. On a pure functional language it's not that easy because you can assign to variables only once.
+      Given <literal>pkgs.P</literal> depends on <literal>pkgs.graphviz</literal>, it's easy to build <literal>P</literal> with the replaced <package>graphviz</package>. In a pure functional language it's not that easy because you can assign to variables only once.
     </para>
   </section>
   <section>
@@ -79,7 +79,7 @@
       </para>
       <screen><xi:include href="./17/newpkgs-override-set.txt" parse="text" /></screen>
       <para>
-        In the first case we computed pkgs with the overrides, in the second case we also included the overriden attributes in the result.
+        In the first case we computed pkgs with the overrides, in the second case we also included the overridden attributes in the result.
       </para>
     </section>
 
@@ -87,7 +87,7 @@
   <section>
     <title>Overriding nixpkgs packages</title>
     <para>
-      We've seen how to override attributes in a set such that they get recursively picked by dependant attributes. This approach can be used for derivations too, after all <literal>nixpkgs</literal> is a giant set of attributes that depend on each other.
+      We've seen how to override attributes in a set such that they get recursively picked by dependent attributes. This approach can be used for derivations too, after all <literal>nixpkgs</literal> is a giant set of attributes that depend on each other.
     </para>
     <para>
       To do this, <literal>nixpkgs</literal> offers <literal>config.packageOverrides</literal>. So <literal>nixpkgs</literal> returns a fixed point of the package set, and <literal>packageOverrides</literal> is used to inject the overrides.
@@ -134,7 +134,7 @@
   <section>
     <title>Next pill</title>
     <para>
-      ...we will stop diving <literal>nixpkgs</literal> for a moment and talk about store paths. How does Nix compute the path in the store where to place the result of builds? How to add files to the store for which we have an integrity hash?
+      ...we will stop studying <literal>nixpkgs</literal> for a moment and talk about store paths. How does Nix compute the path in the store where to place the result of builds? How to add files to the store for which we have an integrity hash?
     </para>
 
   </section>
