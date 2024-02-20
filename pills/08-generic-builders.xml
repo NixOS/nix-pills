@@ -123,7 +123,7 @@
 
     <para>
       As you can see, there's no reference to "hello" in the builder anymore.
-      It still does several assumptions, but it's certainly more generic.
+      It still makes several assumptions, but it's certainly more generic.
     </para>
 
     <para>
@@ -134,7 +134,7 @@
 
     <para>
       All clear, except that buildInputs. However it's easier than any black
-      magic you are thinking in this moment.
+      magic you are thinking of at this moment.
     </para>
 
     <para>
@@ -162,7 +162,7 @@
     <para>
       We managed to write a builder that can be used for multiple autotools
       projects. But in the hello.nix expression we are specifying tools that
-      are common to more projects; we don't want to pass them everytime.
+      are common to more projects; we don't want to pass them every time.
     </para>
 
     <para>

@@ -16,7 +16,7 @@
       This is a ported version of the <emphasis role="strong">Nix
       Pills</emphasis>, a series of blog posts written by <emphasis
       role="strong">Luca Bruno</emphasis> (aka Lethalman) and
-      orginally published in 2014 and 2015. It provides a tutorial
+      originally published in 2014 and 2015. It provides a tutorial
       introduction into the Nix package manager and Nixpkgs package
       collection, in the form of short chapters called 'pills'.
     </para>

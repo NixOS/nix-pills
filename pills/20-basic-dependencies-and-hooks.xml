@@ -32,7 +32,7 @@
 
     <para>
       For the simplest dependencies where the current package directly needs another, we use the <varname>buildInputs</varname> attribute.
-      This is exactly the pattern in taught with our builder in <link linkend="generic-builders">Pill 8</link>.
+      This is exactly the pattern used in our builder in <link linkend="generic-builders">Pill 8</link>.
       To demo this, let's build GNU Hello, and then another package which provides a shell script that <command>exec</command>s it.
       <screen><xi:include href="./20/two-hellos.nix" parse="text" /></screen>
     </para>
@@ -138,7 +138,7 @@
       As a final convenience, we have environment hooks.
       Recall in <link linkend="inputs-design-pattern">Pill 12</link> how we created <envar>NIX_CFLAGS_COMPILE</envar> for <literal>-I</literal> flags and <envar>NIX_LDFLAGS</envar> for <literal>-L</literal> flags, in a similar manner to how we prepared the <envar>PATH</envar>.
       One point of ugliness was how anti-modular this was.
-      It makes sense to build the <envar>PATH</envar> in generic builder, because the <envar>PATH</envar> is used by the shell, and the generic builder is intrinsically tied to the shell.
+      It makes sense to build the <envar>PATH</envar> in a generic builder, because the <envar>PATH</envar> is used by the shell, and the generic builder is intrinsically tied to the shell.
       But <literal>-I</literal> and <literal>-L</literal> flags are only relevant to the C compiler.
       The stdenv isn't wedded to including a C compiler (though it does by default), and there are other compilers too which may take completely different flags.
     </para>

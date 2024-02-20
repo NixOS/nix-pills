@@ -205,7 +205,7 @@
     <title>Attribute sets</title>
 
     <para>
-      Attribute sets are an association between string keys and a Nix values. Keys
+      An attribute set is an association between string keys and Nix values. Keys
       can only be strings. When writing attribute sets you can also use unquoted identifiers as
       keys.
     </para>

@@ -16,7 +16,7 @@
   <section>
     <title>Repositories in Nix</title>
     <para>
-      Package repositories in Nix arose naturally from the need to organize pacakges.
+      Package repositories in Nix arose naturally from the need to organize packages.
       There is no preset directory structure or packaging policy prescribed by Nix itself;
       Nix, as a full, functional programming language, is powerful enough to support
       multiple different repository formats.
@@ -25,7 +25,7 @@
     <para>
       Over time, the <literal>nixpkgs</literal> repository evolved a particular
       structure. This structure reflects the history of Nix as well as the design
-      patterns adopted by it's users as useful tools in building and organizing
+      patterns adopted by its users as useful tools in building and organizing
       packages. Below, we will examine some of these patterns in detail.
     </para>
   </section>
@@ -33,7 +33,7 @@
     <title>The single repository pattern</title>
     <para>
       Different operating system distributions have different opinions about how
-      package repositories should organized. Systems like Debian scatter packages
+      package repositories should be organized. Systems like Debian scatter packages
       in several small repositories (which tends to make tracking interdependent
       changes more difficult, and hinders contributions to the repositories),
       while systems like Gentoo put all package descriptions in a single repository.
@@ -102,7 +102,7 @@
       The <code>graphviz</code> configuration script uses <command>pkg-config</command>
       to specify which flags are passed to the compiler. Since there is no global location
       for libraries, we need to tell <command>pkg-config</command> where to find
-      it's description files, which tell the configuration script where to find
+      its description files, which tell the configuration script where to find
       headers and libraries.
     </para>
     <para>
@@ -150,7 +150,7 @@
       Now that we have two packages, we want to combine them into a single repository.
       To do so, we'll mimic what <literal>nixpkgs</literal> does: we will create
       a single attribute set containing derivations. This attribute set can
-      then be imported, and deriviations can be selected by accessing the
+      then be imported, and derivations can be selected by accessing the
       top-level attribute set.
     </para>
     <para>
@@ -175,8 +175,8 @@
     <screen><xi:include href="./12/repository-test-nix-build.txt" parse="text" /></screen>
     <para>
       The <filename>default.nix</filename> file is special. When a directory
-      contains a <filename>default.nix</filename> file, it is used as the implict
-      nix expression of the directory. This, for example, allows use to run
+      contains a <filename>default.nix</filename> file, it is used as the implicit
+      nix expression of the directory. This, for example, allows us to run
       <command>nix-build -A hello</command> without specifying
       <filename>default.nix</filename> explicitly.
     </para>
@@ -295,7 +295,7 @@
       <code>gd</code>, it would suffice to pass <literal>gd = ...;</literal>.
     </para>
     <para>
-      If we wanted to change the toolchain, we simply pass a different
+      If we wanted to change the toolchain, we would simply pass a different
       <literal>mkDerivation</literal> function.
     </para>
     <para>

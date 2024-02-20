@@ -102,7 +102,7 @@
       </listitem>
       <listitem>
         <para>
-          For each build dependency <code>.drv</code> and it's relative out path,
+          For each build dependency <code>.drv</code> and its relative out path,
           search the contents of the NAR for this out path.
         </para>
       </listitem>
@@ -146,7 +146,7 @@
     <para>
       Even after reducing the rpath, the <code>hello</code> binary would still
       depend upon <code>gcc</code> because of some debugging information. This
-      unnecesarily increases the size of our runtime
+      unnecessarily increases the size of our runtime
       dependencies. We'll explore how <command><link
       xlink:href="https://linux.die.net/man/1/strip">strip</link>
       </command> can help us with that in the next section.
@@ -218,7 +218,7 @@
     </para>
 
     <para>
-      Now, we rebuild <filename>hello.nix</filename>:nd...:
+      Now, we rebuild <filename>hello.nix</filename>...
     </para>
 
     <screen><xi:include href="./09/build-hello-nix.txt" parse="text" /></screen>
@@ -252,7 +252,7 @@
       We saw some of the tools Nix provides, along with their features.
       In particular, we saw how Nix is able to compute runtime dependencies
       automatically. This is not limited to only shared libraries,
-      but can also referenced executables, scripts, Python libraries, and so
+      but can also reference executables, scripts, Python libraries, and so
       forth.
     </para>
 

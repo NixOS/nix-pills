@@ -81,7 +81,7 @@
   <para>
     Oh oh, what's that? Did it build the derivation? No it didn't, but it
     <emphasis role="strong">did create the .drv file</emphasis>. <literal>nix repl</literal> does
-    not build derivations unless you tell to do so.
+    not build derivations unless you tell it to do so.
   </para>
 
 </section>
@@ -342,7 +342,7 @@
   <screen><xi:include href="./06/coreutils.txt" parse="text" /></screen>
 
   <para>
-    Apart the nixpkgs stuff, just think we added to the scope a series of
+    Apart from the nixpkgs stuff, just think we added to the scope a series of
     variables. One of them is coreutils. It is the derivation of the coreutils
     package you all know of from other Linux distributions. It contains basic
     binaries for GNU/Linux systems (you may have multiple derivations of
@@ -387,7 +387,7 @@
 
 
   <para>
-    <emphasis role="underline">Obvious note</emphasis>: everytime we change the
+    <emphasis role="underline">Obvious note</emphasis>: every time we change the
     derivation, a new hash is created.
   </para>
 

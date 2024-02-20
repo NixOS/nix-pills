@@ -67,7 +67,7 @@
     </para>
 
     <para>
-      This means the we can <command>source</command> our
+      This means that we can <command>source</command> our
       <filename>builder.sh</filename>, and it will build the derivation.
       You may get an error in the installation phase, because your user may
       not have the permission to write to <filename>/nix/store</filename>:
@@ -122,7 +122,7 @@
 
     <para>
       First, when we <command>source</command>d the <filename>builder.sh</filename>
-      file, we obtained the file in the currenty directory. What we really wanted
+      file, we obtained the file in the current directory. What we really wanted
       was the <filename>builder.sh</filename> that is stored in the nix store,
       as this is the file that would be used by <command>nix-build</command>.
       To achieve this, the correct technique is to pass an environment variable
@@ -142,7 +142,7 @@
     </para>
 
     <para>
-      During our refactoring, we ill wrap the build phases in functions to
+      During our refactoring, we will wrap the build phases in functions to
       give more structure to our design. Additionally, we'll move the
       <code>set -e</code> to the builder file instead of the setup file.
       The <code>set -e</code> is annoying in <command>nix-shell</command>,
@@ -214,7 +214,7 @@
       With <command>nix-shell</command> we are able to drop into an isolated
       environment suitable for developing a project. This environment provides the necessary
       dependencies for the development shell, similar to how
-      <command>nix-build</command> providesthe necessary dependencies to a builder.
+      <command>nix-build</command> provides the necessary dependencies to a builder.
       Additionally, we can build and debug the project manually, executing step-by-step
       like we would in any other operating system. Note that we never installed tools
       such <command>gcc</command> or <command>make</command> system-wide; these tools
