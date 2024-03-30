@@ -1,7 +1,8 @@
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   mkDerivation = import ./autotools.nix pkgs;
-in mkDerivation {
+in
+mkDerivation {
   name = "graphviz";
   src = ./graphviz-2.49.3.tar.gz;
   buildInputs = with pkgs; [

@@ -1,6 +1,6 @@
 let
 
-  nixpkgs = import <nixpkgs> {};
+  nixpkgs = import <nixpkgs> { };
 
   inherit (nixpkgs) stdenv fetchurl which;
 
@@ -8,7 +8,7 @@ let
     name = "hello-2.3";
 
     src = fetchurl {
-      url = mirror://gnu/hello/hello-2.3.tar.bz2;
+      url = "mirror://gnu/hello/hello-2.3.tar.bz2";
       sha256 = "0c7vijq8y68bpr7g6dh1gny0bff8qq81vnp4ch8pjzvg56wb3js1";
     };
   };
@@ -16,7 +16,10 @@ let
   wrappedHello = stdenv.mkDerivation {
     name = "hello-wrapper";
 
-    buildInputs = [ actualHello which ];
+    buildInputs = [
+      actualHello
+      which
+    ];
 
     unpackPhase = "true";
 
@@ -27,5 +30,6 @@ let
       chmod 0755 "$out/bin/hello"
     '';
   };
+in
+wrappedHello
 
-in wrappedHello

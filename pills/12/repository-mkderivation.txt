@@ -1,11 +1,25 @@
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   mkDerivation = import ./autotools.nix pkgs;
-in with pkgs; {
+in
+with pkgs;
+{
   hello = import ./hello.nix { inherit mkDerivation; };
-  graphviz = import ./graphviz.nix { inherit mkDerivation lib gd pkg-config; };
+  graphviz = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
+  };
   graphvizCore = import ./graphviz.nix {
-    inherit mkDerivation lib gd pkg-config;
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
     gdSupport = false;
   };
 }
