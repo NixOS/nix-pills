@@ -20,7 +20,31 @@ I remind you, the simplest derivation you can write has a `name`, a `builder` an
 
 Now inspect the .drv to see where is `./myfile` being stored:
 
-\<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-\<emphasis\>foo.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo\" } }, \"inputSrcs\": \[ \"/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile\" \], \"inputDrvs\": {}, \"platform\": \"x86_64-linux\", \"builder\": \"/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile\", \"args\": \[\], \"env\": { \"builder\": \"/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile\", \"name\": \"foo\", \"out\": \"/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo\", \"system\": \"x86_64-linux\" } } }\</computeroutput\>\</screen\>
+```
+$ nix derivation show /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv
+{
+  "/nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo"
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile"
+    ],
+    "inputDrvs": {},
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile",
+    "args": [],
+    "env": {
+      "builder": "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile",
+      "name": "foo",
+      "out": "/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo",
+      "system": "x86_64-linux"
+    }
+  }
+}
+```
 
 Great, how did nix decide to use `xv2iccirbrvklck36f1g7vldn5v58vck` ? Keep looking at the nix comments.
 
@@ -96,7 +120,20 @@ Let\'s say our builder should create a file whose contents is `mycontent`:
 
 Inspect the .drv and see that it also stored the fact that it\'s a fixed-output derivation with sha256 algorithm, compared to the previous examples:
 
-\<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-\<emphasis\>bar.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/a00d5f71k0vp5a6klkls0mvr1f7sx6ch-bar\", \"hashAlgo\": \"sha256\", \"hash\": \"f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb\" } }, \<emphasis\>\[\...\]\</emphasis\> }\</computeroutput\>\</screen\>
+```
+$ nix derivation show /nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv
+{
+  "/nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/a00d5f71k0vp5a6klkls0mvr1f7sx6ch-bar",
+        "hashAlgo": "sha256",
+        "hash": "f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb"
+      }
+    },
+[...]
+}
+```
 
 It doesn\'t matter which input derivations are being used, the final out path must only depend on the declared hash.
 
