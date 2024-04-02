@@ -55,7 +55,29 @@ Note: If your version of nix doesn't have `nix derivation show`, use `nix show-d
 
 </div>
 
-\<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-\<emphasis\>myname.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname\" } }, \"inputSrcs\": \[\], \"inputDrvs\": {}, \"platform\": \"mysystem\", \"builder\": \"mybuilder\", \"args\": \[\], \"env\": { \"builder\": \"mybuilder\", \"name\": \"myname\", \"out\": \"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname\", \"system\": \"mysystem\" } } }\</computeroutput\>\</screen\>
+```
+$ nix derivation show /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+{
+  "/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+      }
+    },
+    "inputSrcs": [],
+    "inputDrvs": {},
+    "platform": "mysystem",
+    "builder": "mybuilder",
+    "args": [],
+    "env": {
+      "builder": "mybuilder",
+      "name": "myname",
+      "out": "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname",
+      "system": "mysystem"
+    }
+  }
+}
+```
 
 Ok, we can see there\'s an out path, but it does not exist yet. We never told Nix to build it, but we know beforehand where the build output will be. Why?
 
@@ -201,7 +223,33 @@ Obvious note: every time we change the derivation, a new hash is created.
 
 Let\'s examine the new `.drv` now that we referred to another derivation:
 
-\<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-\<emphasis\>myname.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname\" } }, \"inputSrcs\": \[\], \"inputDrvs\": { \"/nix/store/hixdnzz2wp75x1jy65cysq06yl74vx7q-coreutils-8.29.drv\": \[ \"out\" \] }, \"platform\": \"x86_64-linux\", \"builder\": \"/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true\", \"args\": \[\], \"env\": { \"builder\": \"/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true\", \"name\": \"myname\", \"out\": \"/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname\", \"system\": \"x86_64-linux\" } } }\</computeroutput\>\</screen\>
+```
+$ nix derivation show /nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv
+{
+  "/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname"
+      }
+    },
+    "inputSrcs": [],
+    "inputDrvs": {
+      "/nix/store/hixdnzz2wp75x1jy65cysq06yl74vx7q-coreutils-8.29.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+    "args": [],
+    "env": {
+      "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+      "name": "myname",
+      "out": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname",
+      "system": "x86_64-linux"
+    }
+  }
+}
+```
 
 Aha! Nix added a dependency to our myname.drv, it\'s the coreutils.drv. Before doing our build, Nix should build the coreutils.drv. But since coreutils is already in our nix store, no build is needed, it\'s already there with out path `/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29`.
 

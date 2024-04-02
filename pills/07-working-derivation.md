@@ -29,13 +29,54 @@ What we have to do is create something in the path `$out`, be it a file or a dir
 
 In addition, we print out the environment variables during the build process. We cannot use env for this, because env is part of coreutils and we don\'t have a dependency to it yet. We only have bash for now.
 
-Like for coreutils in the previous pill, we get a blessed bash for free from our magic nixpkgs stuff: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>nix-repl\> \</prompt\>\<userinput\>:l &lt;nixpkgs\>\</userinput\> \<computeroutput\>Added 3950 variables.\</computeroutput\> \<prompt\>nix-repl\> \</prompt\>\<userinput\>\"\${bash}\"\</userinput\> \<computeroutput\>\"/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-\<emphasis\>bash-4.2-p45\</emphasis\>\"\</computeroutput\> \</screen\> So with the usual trick, we can refer to bin/bash and create our derivation: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>nix-repl\> \</prompt\>\<userinput\>d = derivation { name = \"foo\"; builder = \"\${bash}/bin/bash\"; args = \[ ./builder.sh \]; system = builtins.currentSystem; }\</userinput\> \<prompt\>nix-repl\> \</prompt\>\<userinput\>:b d\</userinput\> \<computeroutput\>\[1 built, 0.0 MiB DL\] this derivation produced the following outputs: out -\> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-\<emphasis\>foo\</emphasis\>\</computeroutput\>\</screen\> We did it! The contents of `/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-foo` is really foo. We\'ve built our first derivation.
+Like for coreutils in the previous pill, we get a blessed bash for free from our magic nixpkgs stuff: 
+
+```
+nix-repl> :l <nixpkgs>
+Added 3950 variables.
+nix-repl> "${bash}"
+"/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-bash-4.2-p45"
+```
+
+So with the usual trick, we can refer to bin/bash and create our derivation:
+
+```
+nix-repl> d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }
+nix-repl> :b d
+[1 built, 0.0 MiB DL]
+
+this derivation produced the following outputs:
+  out -> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo
+```
+
+We did it! The contents of `/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-foo` is really foo. We\'ve built our first derivation.
 
 Note that we used `./builder.sh` and not `"./builder.sh"`. This way, it is parsed as a path, and Nix performs some magic which we will cover later. Try using the string version and you will find that it cannot find `builder.sh`. This is because it tries to find it relative to the temporary build directory.
 
 ## The builder environment
 
-We can use `nix-store --read-log` to see the logs our builder produced: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix-store \--read-log /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-\<emphasis\>foo\</emphasis\>\</userinput\> \<computeroutput\>declare -x HOME=\"/homeless-shelter\" declare -x NIX_BUILD_CORES=\"4\" declare -x NIX_BUILD_TOP=\"/tmp/nix-build-foo.drv-0\" declare -x NIX_LOG_FD=\"2\" declare -x NIX_STORE=\"/nix/store\" declare -x OLDPWD declare -x PATH=\"/path-not-set\" declare -x PWD=\"/tmp/nix-build-foo.drv-0\" declare -x SHLVL=\"1\" declare -x TEMP=\"/tmp/nix-build-foo.drv-0\" declare -x TEMPDIR=\"/tmp/nix-build-foo.drv-0\" declare -x TMP=\"/tmp/nix-build-foo.drv-0\" declare -x TMPDIR=\"/tmp/nix-build-foo.drv-0\" declare -x builder=\"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash\" declare -x name=\"foo\" declare -x out=\"/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo\" declare -x system=\"x86_64-linux\"\</computeroutput\>\</screen\>
+We can use `nix-store --read-log` to see the logs our builder produced:
+
+```
+$ nix-store --read-log /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo
+declare -x HOME="/homeless-shelter"
+declare -x NIX_BUILD_CORES="4"
+declare -x NIX_BUILD_TOP="/tmp/nix-build-foo.drv-0"
+declare -x NIX_LOG_FD="2"
+declare -x NIX_STORE="/nix/store"
+declare -x OLDPWD
+declare -x PATH="/path-not-set"
+declare -x PWD="/tmp/nix-build-foo.drv-0"
+declare -x SHLVL="1"
+declare -x TEMP="/tmp/nix-build-foo.drv-0"
+declare -x TEMPDIR="/tmp/nix-build-foo.drv-0"
+declare -x TMP="/tmp/nix-build-foo.drv-0"
+declare -x TMPDIR="/tmp/nix-build-foo.drv-0"
+declare -x builder="/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash"
+declare -x name="foo"
+declare -x out="/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo"
+declare -x system="x86_64-linux"
+```
 
 Let\'s inspect those environment variables printed during the build process.
 
@@ -55,7 +96,41 @@ In terms of autotools, `$out` will be the `--prefix` path. Yes, not the make `DE
 
 ## The .drv contents
 
-We added something else to the derivation this time: the args attribute. Let\'s see how this changed the .drv compared to the previous pill: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-\<emphasis\>foo.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo\" } }, \"inputSrcs\": \[ \"/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh\" \], \"inputDrvs\": { \"/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv\": \[ \"out\" \] }, \"platform\": \"x86_64-linux\", \"builder\": \"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash\", \"args\": \[ \"/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh\" \], \"env\": { \"builder\": \"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash\", \"name\": \"foo\", \"out\": \"/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo\", \"system\": \"x86_64-linux\" } } }\</computeroutput\>\</screen\> Much like the usual .drv, except that there\'s a list of arguments in there passed to the builder (bash) with `builder.sh`... In the nix store..? Nix automatically copies files or directories needed for the build into the store to ensure that they are not changed during the build process and that the deployment is stateless and independent of the building machine. `builder.sh` is not only in the arguments passed to the builder, it\'s also in the input derivations.
+We added something else to the derivation this time: the args attribute. Let\'s see how this changed the .drv compared to the previous pill:
+
+```
+$ nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv
+{
+  "/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo"
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh"
+    ],
+    "inputDrvs": {
+      "/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+    "args": [
+      "/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh"
+    ],
+    "env": {
+      "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+      "name": "foo",
+      "out": "/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo",
+      "system": "x86_64-linux"
+    }
+  }
+}
+```
+
+Much like the usual .drv, except that there\'s a list of arguments in there passed to the builder (bash) with `builder.sh`... In the nix store..? Nix automatically copies files or directories needed for the build into the store to ensure that they are not changed during the build process and that the deployment is stateless and independent of the building machine. `builder.sh` is not only in the arguments passed to the builder, it\'s also in the input derivations.
 
 Given that `builder.sh` is a plain file, it has no .drv associated with it. The store path is computed based on the filename and on the hash of its contents. Store paths are covered in detail in [a later pill](18-nix-store-paths.md).
 
@@ -73,7 +148,18 @@ And its `simple_builder.sh`:
     mkdir $out
     gcc -o $out/simple $src
 
-Don\'t worry too much about where those variables come from yet; let\'s write the derivation and build it: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>nix-repl\> \</prompt\>\<userinput\>:l &lt;nixpkgs\>\</userinput\> \<prompt\>nix-repl\> \</prompt\>\<userinput\>simple = derivation { name = \"simple\"; builder = \"\${bash}/bin/bash\"; args = \[ ./simple_builder.sh \]; gcc = gcc; coreutils = coreutils; src = ./simple.c; system = builtins.currentSystem; }\</userinput\> \<prompt\>nix-repl\> \</prompt\>\<userinput\>:b simple\</userinput\> \<computeroutput\>this derivation produced the following outputs: out -\> /nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple \</computeroutput\>\</screen\> Now you can run `/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple` in your shell.
+Don\'t worry too much about where those variables come from yet; let\'s write the derivation and build it: 
+
+```
+nix-repl> :l <nixpkgs>
+nix-repl> simple = derivation { name = "simple"; builder = "${bash}/bin/bash"; args = [ ./simple_builder.sh ]; gcc = gcc; coreutils = coreutils; src = ./simple.c; system = builtins.currentSystem; }
+nix-repl> :b simple
+this derivation produced the following outputs:
+
+  out -> /nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple
+```
+
+Now you can run `/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple` in your shell.
 
 ## Explanation
 
