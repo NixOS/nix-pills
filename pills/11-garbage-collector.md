@@ -2,11 +2,11 @@
 
 Welcome to the 11th Nix pill. In the previous [10th pill](10-developing-with-nix-shell.md), we drew a parallel between the isolated build environment provided by `nix-build` and the isolated development shell provided by `nix-shell`. Using `nix-shell` allowed us to debug, modify, and manually build software using an environment that is almost identical to the one provided by `nix-build`.
 
-Today, we will stop focusing on packaging and instead look at a critical component of Nix: the garbage collector. When we use Nix tools, we are often building derivations. This includes `.drv` files as well as out paths. These artifacts go in the Nix store and take up space in our storage. Eventually we may wish to free up some space by removing derivations we no longer need. This is the focus of the 11th pill. By default, Nix takes a relatively conservative approach when automatically deciding which derivations are \"needed\". In this pill, we will also see a technique to conduct more destructive upgrade and deletion operations.
+Today, we will stop focusing on packaging and instead look at a critical component of Nix: the garbage collector. When we use Nix tools, we are often building derivations. This includes `.drv` files as well as out paths. These artifacts go in the Nix store and take up space in our storage. Eventually we may wish to free up some space by removing derivations we no longer need. This is the focus of the 11th pill. By default, Nix takes a relatively conservative approach when automatically deciding which derivations are "needed". In this pill, we will also see a technique to conduct more destructive upgrade and deletion operations.
 
 ## How does garbage collection work?
 
-Programming languages with garbage collectors use the concept of a set of \"garbage collector (or 'GC') roots\" to keep track of \"live\" objects. A GC root is an object that is always considered \"live\" (unless explicitly removed as GC root). The garbage collection process starts from the GC roots and proceeds by recursively marking object references as \"live\". All other objects can be collected and deleted.
+Programming languages with garbage collectors use the concept of a set of "garbage collector (or 'GC') roots" to keep track of "live" objects. A GC root is an object that is always considered "live" (unless explicitly removed as GC root). The garbage collection process starts from the GC roots and proceeds by recursively marking object references as "live". All other objects can be collected and deleted.
 
 Instead of objects, Nix's garbage collection operates on store paths, [with the GC roots themselves being store paths](https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html). . This approach is much more principled than traditional package managers such as `dpkg` or `rpm`, which may leave around unused packages or dangling files.
 
@@ -81,7 +81,7 @@ In fact, `nix-build` automatically adds the `result` symlink as a GC root. Note 
 
 The name of the GC root symlink is not important to us at this time. What is important is that such a symlink exists and points to `/home/nix/result`. This is called an **indirect GC root**. A GC root is considered indirect if its specification is outside of `/nix/var/nix/gcroots`. In this case, this means that the target of the `result` symlink will not be garbage collected.
 
-To remove a derivation considered \"live\" by an indirect GC root, there are two possibilities:
+To remove a derivation considered "live" by an indirect GC root, there are two possibilities:
 
 -   Remove the indirect GC root from `/nix/var/nix/gcroots/auto`.
 
@@ -97,7 +97,7 @@ The main source of software duplication in the nix store comes from GC roots, du
 
 The same holds for profiles. Manipulating the `nix-env` profile will create further generations. Old generations refer to old software, thus increasing duplication in the nix store after an upgrade.
 
-Other systems typically \"forget\" everything about their previous state after an upgrade. With Nix, we can perform this type of upgrade (having Nix remove all old derivations, including old generations), but we do so manually. There are four steps to doing this:
+Other systems typically "forget" everything about their previous state after an upgrade. With Nix, we can perform this type of upgrade (having Nix remove all old derivations, including old generations), but we do so manually. There are four steps to doing this:
 
 -   First, we download a new version of the nixpkgs channel, which holds the description of all the software. This is done via `nix-channel --update`.
 
@@ -120,4 +120,4 @@ Garbage collection in Nix is a powerful mechanism to clean up your system. The `
 
 ## Next pill
 
-In the next pill, we will package another project and introduce the \"inputs\" design pattern. We've only played with a single derivation until now; however we'd like to start organizing a small repository of software. The \"inputs\" pattern is widely used in nixpkgs; it allows us to decouple derivations from the repository itself and increase customization opportunities.
+In the next pill, we will package another project and introduce the "inputs" design pattern. We've only played with a single derivation until now; however we'd like to start organizing a small repository of software. The "inputs" pattern is widely used in nixpkgs; it allows us to decouple derivations from the repository itself and increase customization opportunities.

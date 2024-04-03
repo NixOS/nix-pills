@@ -114,7 +114,7 @@ What do we do here?
 
 6.  Once we're set up, compile and install.
 
-As you can see, there's no reference to \"hello\" in the builder anymore. It still makes several assumptions, but it's certainly more generic.
+As you can see, there's no reference to "hello" in the builder anymore. It still makes several assumptions, but it's certainly more generic.
 
 Now let's rewrite `hello.nix`:
 
@@ -226,7 +226,7 @@ Then we rewrite `hello.nix` as follows:
 
 Finally! We got a very simple description of a package! Below are a couple of remarks that you may find useful as you're continuing to understand the nix language:
 
--   We assigned to pkgs the import that we did in the previous expressions in the \"with\". Don't be afraid, it's that straightforward.
+-   We assigned to pkgs the import that we did in the previous expressions in the "with". Don't be afraid, it's that straightforward.
 
 -   The mkDerivation variable is a nice example of partial application, look at it as (`import ./autotools.nix`) `pkgs`. First we import the expression, then we apply the `pkgs` parameter. That will give us a function that accepts the attribute set `attrs`.
 
@@ -248,4 +248,4 @@ In Nix you create derivations stored in the nix store, and then you compose them
 
 ## Next pill
 
-\...we will talk a little about runtime dependencies. Is the GNU hello world package self-contained? What are its runtime dependencies? We only specified build dependencies by means of using other derivations in the \"hello\" derivation.
+\...we will talk a little about runtime dependencies. Is the GNU hello world package self-contained? What are its runtime dependencies? We only specified build dependencies by means of using other derivations in the "hello" derivation.

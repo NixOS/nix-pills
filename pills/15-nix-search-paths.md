@@ -1,6 +1,6 @@
 # Nix Search Paths
 
-Welcome to the 15th Nix pill. In the previous [14th](14-override-design-pattern.md) pill we have introduced the \"override\" pattern, useful for writing variants of derivations by passing different inputs.
+Welcome to the 15th Nix pill. In the previous [14th](14-override-design-pattern.md) pill we have introduced the "override" pattern, useful for writing variants of derivations by passing different inputs.
 
 Assuming you followed the previous posts, I hope you are now ready to understand `nixpkgs`. But we have to find `nixpkgs` in our system first! So this is the step: introducing some options and environment variables used by nix tools.
 
@@ -14,7 +14,7 @@ In the shell for example, when you execute the command `ping`, it's being search
 
 In nix it's exactly the same, however the syntax is different. Instead of just typing `ping` you have to type `<ping>`. Yes, I know\... you are already thinking of `<nixpkgs>`. However, don't stop reading here, let's keep going.
 
-What's `NIX_PATH` good for? Nix expressions may refer to an \"abstract\" path such as `<nixpkgs>`, and it's possible to override it from the command line.
+What's `NIX_PATH` good for? Nix expressions may refer to an "abstract" path such as `<nixpkgs>`, and it's possible to override it from the command line.
 
 For ease we will use `nix-instantiate --eval` to do our tests. I remind you, [nix-instantiate](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html) is used to evaluate nix expressions and generate the .drv files. Here we are not interested in building derivations, so evaluation is enough. It can be used for one-shot expressions.
 
@@ -31,7 +31,7 @@ It's useless from a nix view point, but I think it's useful for your own underst
 
 Great. At first attempt nix obviously said could not be found anywhere in the search path. Note that the -I option accepts a single directory. Paths added with -I take precedence over `NIX_PATH`.
 
-The `NIX_PATH` also accepts a different yet very handy syntax: \"`somename=somepath`\". That is, instead of searching inside a directory for a name, we specify exactly the value of that name.
+The `NIX_PATH` also accepts a different yet very handy syntax: "`somename=somepath`". That is, instead of searching inside a directory for a name, we specify exactly the value of that name.
 
     $ NIX_PATH="ping=/bin/ping" nix-instantiate --eval -E '<ping>'
     /bin/ping
@@ -82,14 +82,14 @@ In order to specify an alternative to `~/.nix-defexpr` it's possible to use the 
     replacing old `graphviz'
     installing `graphviz'
 
-Oh why did it say there's another derivation named graphviz? Because both `graphviz` and `graphvizCore` attributes in our repository have the name \"graphviz\" for the derivation:
+Oh why did it say there's another derivation named graphviz? Because both `graphviz` and `graphvizCore` attributes in our repository have the name "graphviz" for the derivation:
 
     $ nix-env -f '<mypkgs>' -qaP
     graphviz      graphviz
     graphvizCore  graphviz
     hello         hello
 
-By default `nix-env` parses all derivations and uses the derivation names to interpret the command line. So in this case \"graphviz\" matched two derivations. Alternatively, like for `nix-build`, one can use -A to specify an attribute name instead of a derivation name:
+By default `nix-env` parses all derivations and uses the derivation names to interpret the command line. So in this case "graphviz" matched two derivations. Alternatively, like for `nix-build`, one can use -A to specify an attribute name instead of a derivation name:
 
     $ nix-env -f '<mypkgs>' -i -A graphviz
     replacing old `graphviz'
@@ -113,7 +113,7 @@ It may or may not make sense for you, or it's like that for historical reasons, 
 
 ## Conclusion
 
-The `NIX_PATH` variable is the search path used by nix when using the angular brackets syntax. It's possible to refer to \"abstract\" paths inside nix expressions and define the \"concrete\" path by means of `NIX_PATH`, or the usual -I flag in nix tools.
+The `NIX_PATH` variable is the search path used by nix when using the angular brackets syntax. It's possible to refer to "abstract" paths inside nix expressions and define the "concrete" path by means of `NIX_PATH`, or the usual -I flag in nix tools.
 
 We've also explained some of the uncommon `nix-env` behaviors for newcomers. The `nix-env` tool does not use `NIX_PATH` to search for packages, but rather for `~/.nix-defexpr`. Beware of that!
 

@@ -8,7 +8,7 @@ I remind you how to enter the Nix environment: `source ~/.nix-profile/etc/profil
 
 ## Nameless and single parameter
 
-Functions are anonymous (lambdas), and only have a single parameter. The syntax is extremely simple. Type the parameter name, then \"`:`\", then the body of the function.
+Functions are anonymous (lambdas), and only have a single parameter. The syntax is extremely simple. Type the parameter name, then "`:`", then the body of the function.
 
     nix-repl> x: x*2
     «lambda»
@@ -105,7 +105,7 @@ Also you can allow passing more attributes (**variadic**) than the expected ones
     nix-repl> mul = { a, b, ... }: a*b
     nix-repl> mul { a = 3; b = 4; c = 2; }
 
-However, in the function body you cannot access the \"c\" attribute. The solution is to give a name to the given set with the **@-pattern**:
+However, in the function body you cannot access the "c" attribute. The solution is to give a name to the given set with the **@-pattern**:
 
     nix-repl> mul = s@{ a, b, ... }: a*b*s.c
     nix-repl> mul { a = 3; b = 4; c = 2; }

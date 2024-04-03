@@ -41,7 +41,7 @@ We want `callPackage` to be a function of two arguments, with the following beha
 
 ## Implementing `callPackage`
 
-In this section, we will build up the `callPackages` pattern from scratch. To start, we need a way to obtain the argument names of a function (in this case, the function that takes \"inputs\" and produces a package derivation) at runtime. This is because we want to automatically pass such arguments.
+In this section, we will build up the `callPackages` pattern from scratch. To start, we need a way to obtain the argument names of a function (in this case, the function that takes "inputs" and produces a package derivation) at runtime. This is because we want to automatically pass such arguments.
 
 Nix provides a builtin function to do this:
 
@@ -81,9 +81,9 @@ Let's dissect the above snippet:
 
 -   We define a `callPackage` variable which is a function.
 
--   The first parameter to the `callPackage` function is a set of name-value pairs that may appear in the argument set of the function we wish to \"autocall\".
+-   The first parameter to the `callPackage` function is a set of name-value pairs that may appear in the argument set of the function we wish to "autocall".
 
--   The second parameter is the function to \"autocall\"
+-   The second parameter is the function to "autocall"
 
 -   We take the argument names of the function and intersect with the set of all values.
 
@@ -145,7 +145,7 @@ The reader should notice a magic thing happening. We're defining `pkgs` in terms
 
 ## Conclusion
 
-The \"`callPackage`\" pattern has simplified our repository considerably. We were able to import packages that require named arguments and call them automatically, given the set of all packages sourced from `nixpkgs`.
+The "`callPackage`" pattern has simplified our repository considerably. We were able to import packages that require named arguments and call them automatically, given the set of all packages sourced from `nixpkgs`.
 
 We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, but rather act as tools for packaging. They are documented in the [Nix manual](https://nixos.org/manual/nix/stable/expressions/builtins.html).
 
@@ -153,4 +153,4 @@ Writing a repository in Nix is an evolution of writing convenient functions for 
 
 ## Next pill
 
-In the next pill, we will talk about the \"`override`\" design pattern. The `graphvizCore` seems straightforward. It starts from `graphviz.nix` and builds it without gd. In the next pill, we will consider another point of view: starting from `pkgs.graphviz` and disabling gd?
+In the next pill, we will talk about the "`override`" design pattern. The `graphvizCore` seems straightforward. It starts from `graphviz.nix` and builds it without gd. In the next pill, we will consider another point of view: starting from `pkgs.graphviz` and disabling gd?

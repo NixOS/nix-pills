@@ -87,7 +87,7 @@ Important: the hash of the out path is based solely on the input derivations in 
 
 Many things are empty in that `.drv`, however I'll write a summary of the [.drv format](http://nixos.org/~eelco/pubs/phd-thesis.pdf) for you:
 
-1.  The output paths (there can be multiple ones). By default nix creates one out path called \"out\".
+1.  The output paths (there can be multiple ones). By default nix creates one out path called "out".
 
 2.  The list of input derivations. It's empty because we are not referring to any other derivation. Otherwise, there would be a list of other .drv files.
 
@@ -174,7 +174,7 @@ Just like dependencies in other package managers, how do we refer to other packa
     nix-repl> builtins.toString d
     "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
 
-Nix does the \"set to string conversion\" as long as there is the `outPath` attribute (much like a toString method in other languages):
+Nix does the "set to string conversion" as long as there is the `outPath` attribute (much like a toString method in other languages):
 
     nix-repl> builtins.toString { outPath = "foo"; }
     "foo"
@@ -255,7 +255,7 @@ Aha! Nix added a dependency to our myname.drv, it's the coreutils.drv. Before do
 
 ## When is the derivation built
 
-Nix does not build derivations **during evaluation** of Nix expressions. In fact, that's why we have to do \":b drv\" in `nix repl`, or use nix-store -r in the first place.
+Nix does not build derivations **during evaluation** of Nix expressions. In fact, that's why we have to do ":b drv" in `nix repl`, or use nix-store -r in the first place.
 
 An important separation is made in Nix:
 
@@ -275,8 +275,8 @@ We're walking through the fundamentals of Nix derivations, to understand how the
 
 With the derivation function we provide a set of information on how to build a package, and we get back the information about where the package was built. Nix converts a set to a string when there's an `outPath`; that's very convenient. With that, it's easy to refer to other derivations.
 
-When Nix builds a derivation, it first creates a .drv file from a derivation expression, and uses it to build the output. It does so recursively for all the dependencies (inputs). It \"executes\" the .drv files like a machine. Not much magic after all.
+When Nix builds a derivation, it first creates a .drv file from a derivation expression, and uses it to build the output. It does so recursively for all the dependencies (inputs). It "executes" the .drv files like a machine. Not much magic after all.
 
 ## Next pill
 
-\...we will finally write our first **working** derivation. Yes, this post is about \"our first derivation\", but I never said it was a working one ;)
+\...we will finally write our first **working** derivation. Yes, this post is about "our first derivation", but I never said it was a working one ;)
