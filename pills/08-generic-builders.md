@@ -248,4 +248,4 @@ In Nix you create derivations stored in the nix store, and then you compose them
 
 ## Next pill
 
-\...we will talk a little about runtime dependencies. Is the GNU hello world package self-contained? What are its runtime dependencies? We only specified build dependencies by means of using other derivations in the "hello" derivation.
+...we will talk a little about runtime dependencies. Is the GNU hello world package self-contained? What are its runtime dependencies? We only specified build dependencies by means of using other derivations in the "hello" derivation.

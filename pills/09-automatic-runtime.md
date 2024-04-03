@@ -96,7 +96,7 @@ That is, for each file we run `patchelf --shrink-rpath` and `strip`. Note that w
 
 **Exercise:** Add `findutils` and `patchelf` to the `baseInputs` of `autotools.nix`.
 
-Now, we rebuild `hello.nix`\...
+Now, we rebuild `hello.nix`...
 
     $ nix-build hello.nix
     [...]

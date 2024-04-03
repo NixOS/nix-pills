@@ -20,7 +20,7 @@ The `all-packages.nix` is a bit contrived. First of all, it's a function. It acc
 
 -   `config`: defaults to null
 
--   others\...
+-   others...
 
 The **system** parameter, as per comment in the expression, it's the system for which the packages will be built. It allows for example to install i686 packages on amd64 machines.
 
@@ -97,4 +97,4 @@ Lately I'm a little busy with the NixOS 14.11 release and other stuff, and I'm a
 
 ## Next pill
 
-\...we will talk about overriding packages in the `nixpkgs` repository. What if you want to change some options of a library and let all other packages pick the new library? One possibility is to use, like described above, the `config` parameter when applicable. The other possibility is to override derivations.
+...we will talk about overriding packages in the `nixpkgs` repository. What if you want to change some options of a library and let all other packages pick the new library? One possibility is to use, like described above, the `config` parameter when applicable. The other possibility is to override derivations.

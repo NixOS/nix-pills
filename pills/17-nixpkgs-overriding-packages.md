@@ -21,9 +21,9 @@ This will build graphviz without X support, it's as simple as that.
 
 However, let's say a package `P` depends on graphviz, how do we make `P` depend on the new graphviz without X support?
 
-## In an imperative world\...
+## In an imperative world...
 
-\...you could do something like this:
+...you could do something like this:
 
     pkgs = import <nixpkgs> {};
     pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
@@ -124,4 +124,4 @@ The newly built asciidoc will depend on the new graphviz, and old asciidoc will 
 
 ## Next pill
 
-\...we will stop studying `nixpkgs` for a moment and talk about store paths. How does Nix compute the path in the store where to place the result of builds? How to add files to the store for which we have an integrity hash?
+...we will stop studying `nixpkgs` for a moment and talk about store paths. How does Nix compute the path in the store where to place the result of builds? How to add files to the store for which we have an integrity hash?
