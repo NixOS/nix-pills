@@ -52,13 +52,13 @@ We would like to avoid specifying the nix expression again. Instead, we would li
 
 The difference is obvious, as well as the advantages of this approach.
 
-Note: that `.override` is not a \"method\" in the OO sense as you may think. Nix is a functional language. The`.override` is simply an attribute of a set.
+Note: that `.override` is not a "method" in the OO sense as you may think. Nix is a functional language. The`.override` is simply an attribute of a set.
 
 ## The override implementation
 
-Recall that the graphviz attribute in the repository is the derivation returned by the function imported from `graphviz.nix`. We would like to add a further attribute named \"`override`\" to the returned set.
+Recall that the graphviz attribute in the repository is the derivation returned by the function imported from `graphviz.nix`. We would like to add a further attribute named "`override`" to the returned set.
 
-Let's start by first creating a function \"`makeOverridable`\". This function will take two arguments: a function (that must return a set) and the set of original arguments to be passed to the function.
+Let's start by first creating a function "`makeOverridable`". This function will take two arguments: a function (that must return a set) and the set of original arguments to be passed to the function.
 
 We will put this function in a `lib.nix`:
 
@@ -128,7 +128,7 @@ Now it would be nice if `callPackage` made our derivations overridable. This is 
 
 ## Conclusion
 
-The \"`override`\" pattern simplifies the way we customize packages starting from an existing set of packages. This opens a world of possibilities for using a central repository like `nixpkgs` and defining overrides on our local machine without modifying the original package.
+The "`override`" pattern simplifies the way we customize packages starting from an existing set of packages. This opens a world of possibilities for using a central repository like `nixpkgs` and defining overrides on our local machine without modifying the original package.
 
 We can dream of a custom, isolated `nix-shell` environment for testing graphviz with a custom gd:
 
@@ -140,4 +140,4 @@ The key in Nix is to find powerful yet simple abstractions in order to let the u
 
 ## Next pill
 
-In the next pill, we will talk about Nix search paths. By \"search path\", we mean a place in the file system where Nix looks for expressions. This answers the question of where `<nixpkgs>` comes from.
+In the next pill, we will talk about Nix search paths. By "search path", we mean a place in the file system where Nix looks for expressions. This answers the question of where `<nixpkgs>` comes from.

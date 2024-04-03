@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the first post of the \"[Nix](https://nixos.org/nix) in pills\" series. Nix is a purely functional package manager and deployment system for POSIX.
+Welcome to the first post of the "[Nix](https://nixos.org/nix) in pills" series. Nix is a purely functional package manager and deployment system for POSIX.
 
 There's a lot of documentation that describes what Nix, [NixOS](https://nixos.org/nixos) and related projects are. But the purpose of this post is to convince you to give Nix a try. Installing NixOS is not required, but sometimes I may refer to NixOS as a real world example of Nix usage for building a whole operating system.
 

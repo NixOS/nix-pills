@@ -14,7 +14,7 @@ Over time, the `nixpkgs` repository evolved a particular structure. This structu
 
 Different operating system distributions have different opinions about how package repositories should be organized. Systems like Debian scatter packages in several small repositories (which tends to make tracking interdependent changes more difficult, and hinders contributions to the repositories), while systems like Gentoo put all package descriptions in a single repository.
 
-Nix follows the \"single repository\" pattern by placing all descriptions of all packages into [nixpkgs](https://github.com/NixOS/nixpkgs). This approach has proven natural and attractive for new contributions.
+Nix follows the "single repository" pattern by placing all descriptions of all packages into [nixpkgs](https://github.com/NixOS/nixpkgs). This approach has proven natural and attractive for new contributions.
 
 For the rest of this pill, we will adopt the single repository pattern. The natural implementation in Nix is to create a top-level Nix expression, followed by one expression for each package. The top-level expression imports and combines all package expressions in an attribute set mapping names to packages.
 
@@ -129,7 +129,7 @@ Taking a closer look at the above command, we see the following options:
 
 -   The -f option is used to specify the expression to use. In this case, the expression is the `./default.nix` of the current directory.
 
--   The -i option stands for \"installation\".
+-   The -i option stands for "installation".
 
 -   The -A is the same as above for `nix-build`.
 
@@ -147,7 +147,7 @@ The approach we've taken so far has a few problems:
 
 Until now, our approach to addressing the above problems has been inadequate and required changing the nix expression to match our needs. With the `inputs` pattern, we provide another answer: let the user change the `inputs` of the expression.
 
-When we talk about \"the inputs of an expression\", we are referring to the set of derivations needed to build that expression. In this case:
+When we talk about "the inputs of an expression", we are referring to the set of derivations needed to build that expression. In this case:
 
 -   `mkDerivation` from `autotools`. Recall that `mkDerivation` has an implicit dependency on the toolchain.
 
@@ -172,7 +172,7 @@ Our goal is to make package expressions independent of the repository. To achiev
           else [];
     }
 
-Recall that \"`{...}: ...`\" is the syntax for defining functions accepting an attribute set as argument; the above snippet just defines a function.
+Recall that "`{...}: ...`" is the syntax for defining functions accepting an attribute set as argument; the above snippet just defines a function.
 
 We made `gd` and its dependencies optional. If `gdSupport` is true (which it is by default), we will fill `buildInputs` and `graphviz` will be built with `gd` support. Otherwise, if an attribute set is passed with `gdSupport = false;`, the build will be completed without `gd` support.
 
@@ -214,22 +214,22 @@ Let's talk a closer look at the snippet and dissect the syntax:
 
 -   The entire expression in `default.nix` returns an attribute set with the keys `hello`, `graphviz`, and `graphvizCore`.
 
--   With \"`let`\", we define some local variables.
+-   With "`let`", we define some local variables.
 
--   We bring `pkgs` into the scope when defining the package set. This saves us from having to type `pkgs`\" repeatedly.
+-   We bring `pkgs` into the scope when defining the package set. This saves us from having to type `pkgs`" repeatedly.
 
 -   We import `hello.nix` and `graphviz.nix`, which each return a function. We call the functions with a set of inputs to get back the derivation.
 
--   The \"`inherit x`\" syntax is equivalent to \"`x = x`\". This means that the \"`inherit gd`\" here, combined with the above \"`with pkgs;`\", is equivalent to \"`gd = pkgs.gd`\".
+-   The "`inherit x`" syntax is equivalent to "`x = x`". This means that the "`inherit gd`" here, combined with the above "`with pkgs;`", is equivalent to "`gd = pkgs.gd`".
 
 The entire repository of this can be found at the [pill 12](https://gist.github.com/tfc/ca800a444b029e85a14e530c25f8e872) gist.
 
 ## Conclusion
 
-The \"`inputs`\" pattern allows our expressions to be easily customizable through a set of arguments. These arguments could be flags, derivations, or any other customizations enabled by the nix language. Our package expressions are simply functions: there is no extra magic present.
+The "`inputs`" pattern allows our expressions to be easily customizable through a set of arguments. These arguments could be flags, derivations, or any other customizations enabled by the nix language. Our package expressions are simply functions: there is no extra magic present.
 
-The \"`inputs`\" pattern also makes the expressions independent of the repository. Given that we pass all needed information through arguments, it is possible to use these expressions in any other context.
+The "`inputs`" pattern also makes the expressions independent of the repository. Given that we pass all needed information through arguments, it is possible to use these expressions in any other context.
 
 ## Next pill
 
-In the next pill, we will talk about the \"`callPackage`\" design pattern. This removes the tedium of specifying the names of the inputs twice: once in the top-level `default.nix`, and once in the package expression. With `callPackage`, we will implicitly pass the necessary inputs from the top-level expression.
+In the next pill, we will talk about the "`callPackage`" design pattern. This removes the tedium of specifying the names of the inputs twice: once in the top-level `default.nix`, and once in the package expression. With `callPackage`, we will implicitly pass the necessary inputs from the top-level expression.

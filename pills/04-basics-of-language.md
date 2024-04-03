@@ -97,7 +97,7 @@ As said previously, you cannot mix integers and strings. You need to explicitly 
 Using the syntax with two single quotes is useful for writing double quotes inside strings without needing to escape them:
 
     nix-repl> ''test " test''
-    "test \" test"
+    "test " test"
     nix-repl> ''${foo}''
     "strval"
 

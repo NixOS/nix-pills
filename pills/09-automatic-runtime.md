@@ -30,7 +30,7 @@ Why are we looking at `.drv` files? Because the `hello.drv` file is the represen
 
 ## Digression about NAR files
 
-The `NAR` format is the \"Nix ARchive\". This format was designed due to existing archive formats, such as `tar`, being insufficient. Nix benefits from deterministic build tools, but commonly used archivers lack this property: they add padding, they do not sort files, they add timestamps, and so on. This can result in directories containing bit-identical files turning into non-bit-identical archives, which leads to different hashes.
+The `NAR` format is the "Nix ARchive". This format was designed due to existing archive formats, such as `tar`, being insufficient. Nix benefits from deterministic build tools, but commonly used archivers lack this property: they add padding, they do not sort files, they add timestamps, and so on. This can result in directories containing bit-identical files turning into non-bit-identical archives, which leads to different hashes.
 
 Thus the `NAR` format was developed as a simple, deterministic archive format. `NAR`s are used extensively within Nix, as we will see below.
 
@@ -76,19 +76,19 @@ Even after reducing the rpath, the `hello` binary would still depend upon `gcc` 
 
 We will add a new phase to our autotools builder. The builder has six phases already:
 
-1.  The \"environment setup\" phase
+1.  The "environment setup" phase
 
-2.  The \"unpack phase\": we unpack the sources in the current directory (remember, Nix changes to a temporary directory first)
+2.  The "unpack phase": we unpack the sources in the current directory (remember, Nix changes to a temporary directory first)
 
-3.  The \"change directory\" phase, where we change source root to the directory that has been unpacked
+3.  The "change directory" phase, where we change source root to the directory that has been unpacked
 
-4.  The \"configure\" phase: `./configure`
+4.  The "configure" phase: `./configure`
 
-5.  The \"build\" phase: `make`
+5.  The "build" phase: `make`
 
-6.  The \"install\" phase: `make install`
+6.  The "install" phase: `make install`
 
-Now we will add a new phase after the installation phase, which we call the \"fixup\" phase. At the end of the `builder.sh`, we append:
+Now we will add a new phase after the installation phase, which we call the "fixup" phase. At the end of the `builder.sh`, we append:
 
     find $out -type f -exec patchelf --shrink-rpath '{}' \; -exec strip '{}' \; 2>/dev/null
 

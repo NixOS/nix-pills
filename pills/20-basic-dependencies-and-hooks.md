@@ -192,9 +192,9 @@ This demonstrates an important point. For the *current* package alone, it doesn'
 
 ## Setup Hooks
 
-As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just *being* a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively \"injecting\" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. *Arbitrary* is the key word here. We could teach `setup.sh` things about upstream packages like `pkg/nix-support/propagated-build-inputs`, but not arbitrary interactions.
+As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just *being* a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively "injecting" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. *Arbitrary* is the key word here. We could teach `setup.sh` things about upstream packages like `pkg/nix-support/propagated-build-inputs`, but not arbitrary interactions.
 
-Setup hooks are the basic building block we have for this. In nixpkgs, a \"hook\" is basically a bash callback, and a setup hook is no exception. Let's look at the last part of `findInputs` we haven't covered:
+Setup hooks are the basic building block we have for this. In nixpkgs, a "hook" is basically a bash callback, and a setup hook is no exception. Let's look at the last part of `findInputs` we haven't covered:
 
     findInputs() {
         local pkg=$1
@@ -237,7 +237,7 @@ Functions listed in `envHooks` are applied to every package passed to `addToEnv`
     anEnvHook() {
         local pkg=$1
 
-        echo "I'm depending on \"$pkg\""
+        echo "I'm depending on "$pkg""
     }
 
     envHooks+=(anEnvHook)
