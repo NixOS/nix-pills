@@ -199,4 +199,4 @@ A quick analogy with programming languages: you have the heap with all the objec
 
 ## Next pill
 
-\...we will learn the basics of the Nix language. The Nix language is used to describe how to build derivations, and it's the basis for everything else, including NixOS. Therefore it's very important to understand both the syntax and the semantics of the language.
+...we will learn the basics of the Nix language. The Nix language is used to describe how to build derivations, and it's the basis for everything else, including NixOS. Therefore it's very important to understand both the syntax and the semantics of the language.

@@ -223,4 +223,4 @@ Since `a` is not needed, there's no error about division by zero, because the ex
 
 ## Next pill
 
-\...we will talk about functions and imports. In this pill I've tried to avoid function calls as much as possible, otherwise the post would have been too long.
+...we will talk about functions and imports. In this pill I've tried to avoid function calls as much as possible, otherwise the post would have been too long.

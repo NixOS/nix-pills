@@ -12,7 +12,7 @@ Who uses `NIX_PATH`? The nix expressions! Yes, `NIX_PATH` is not of much use by 
 
 In the shell for example, when you execute the command `ping`, it's being searched in the `PATH` directories. The first one found is the one being used.
 
-In nix it's exactly the same, however the syntax is different. Instead of just typing `ping` you have to type `<ping>`. Yes, I know\... you are already thinking of `<nixpkgs>`. However, don't stop reading here, let's keep going.
+In nix it's exactly the same, however the syntax is different. Instead of just typing `ping` you have to type `<ping>`. Yes, I know... you are already thinking of `<nixpkgs>`. However, don't stop reading here, let's keep going.
 
 What's `NIX_PATH` good for? Nix expressions may refer to an "abstract" path such as `<nixpkgs>`, and it's possible to override it from the command line.
 
@@ -121,4 +121,4 @@ In general do not abuse `NIX_PATH`, when possible use relative paths when writin
 
 ## Next pill
 
-\...we will finally dive into `nixpkgs`. Most of the techniques we have developed in this series are already in `nixpkgs`, like `mkDerivation`, `callPackage`, `override`, etc., but of course better. With time, those base utilities get enhanced by the community with more features in order to handle more and more use cases and in a more general way.
+...we will finally dive into `nixpkgs`. Most of the techniques we have developed in this series are already in `nixpkgs`, like `mkDerivation`, `callPackage`, `override`, etc., but of course better. With time, those base utilities get enhanced by the community with more features in order to handle more and more use cases and in a more general way.

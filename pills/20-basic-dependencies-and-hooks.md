@@ -244,9 +244,9 @@ Functions listed in `envHooks` are applied to every package passed to `addToEnv`
 
 and if one dependency has that setup hook then all of them will be so `echo`ed. Allowing dependencies to learn about their *sibling* dependencies is exactly what compilers need.
 
-## Next pill\...
+## Next pill...
 
-\...I'm not sure! We could talk about the additional dependency types and hooks which cross compilation necessitates, building on our knowledge here to cover stdenv as it works today. We could talk about how nixpkgs is bootstrapped. Or we could talk about how `localSystem` and `crossSystem` are elaborated into the `buildPlatform`, `hostPlatform`, and `targetPlatform` each bootstrapping stage receives. Let us know which most interests you!
+...I'm not sure! We could talk about the additional dependency types and hooks which cross compilation necessitates, building on our knowledge here to cover stdenv as it works today. We could talk about how nixpkgs is bootstrapped. Or we could talk about how `localSystem` and `crossSystem` are elaborated into the `buildPlatform`, `hostPlatform`, and `targetPlatform` each bootstrapping stage receives. Let us know which most interests you!
 
 [^1]: We can now be precise and consider what `addToEnv` does alone the minimal treatment of a dependency: i.e. a package that is *just* a dependency would *only* have `addToEnv` applied to it.
 

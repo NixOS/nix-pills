@@ -16,7 +16,7 @@ The following is a description of Nix. Just as with pills, I'll try to be as sho
 
 ## Not being purely functional
 
-Most, if not all, widely used package managers ([dpkg](https://wiki.debian.org/dpkg), [rpm](http://www.rpm.org/), \...) mutate the global state of the system. If a package `foo-1.0` installs a program to `/usr/bin/foo`, you cannot install `foo-1.1` as well, unless you change the installation paths or the binary name. But changing the binary names means breaking users of that binary.
+Most, if not all, widely used package managers ([dpkg](https://wiki.debian.org/dpkg), [rpm](http://www.rpm.org/), ...) mutate the global state of the system. If a package `foo-1.0` installs a program to `/usr/bin/foo`, you cannot install `foo-1.1` as well, unless you change the installation paths or the binary name. But changing the binary names means breaking users of that binary.
 
 There are some attempts to mitigate this problem. Debian, for example, partially solves the problem with the [alternatives](https://wiki.debian.org/DebianAlternatives) system.
 
@@ -91,6 +91,6 @@ That may sound scary, however after running NixOS on both a server and a laptop 
 
 Considering [Nixpkgs](https://nixos.org/nixpkgs/) ([github link](https://github.com/NixOS/nixpkgs)) is a completely new repository of all the existing software, with a completely fresh concept, and with few core developers but overall year-over-year increasing contributions, the current state is more than acceptable and beyond the experimental stage. In other words, it's worth your investment.
 
-## Next pill\...
+## Next pill...
 
-\...we will install Nix on top of your current system (I assume GNU/Linux, but we also have OSX users) and start inspecting the installed software.
+...we will install Nix on top of your current system (I assume GNU/Linux, but we also have OSX users) and start inspecting the installed software.
