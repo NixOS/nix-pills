@@ -2,9 +2,9 @@
 
 Welcome to the fourth Nix pill. In the [previous article](03-enter-environment.md) we learned about Nix environments. We installed software as a user, managed their profile, switched between generations, and queried the Nix store. Those are the very basics of system administration using Nix.
 
-The [Nix language](https://nixos.org/manual/nix/stable/expressions/expression-language.html) is used to write expressions that produce derivations. The [nix-build](https://nixos.org/manual/nix/stable/command-ref/nix-build.html) tool is used to build derivations from an expression. Even as a system administrator that wants to customize the installation, it\'s necessary to master Nix. Using Nix for your jobs means you get the features we saw in the previous articles for free.
+The [Nix language](https://nixos.org/manual/nix/stable/expressions/expression-language.html) is used to write expressions that produce derivations. The [nix-build](https://nixos.org/manual/nix/stable/command-ref/nix-build.html) tool is used to build derivations from an expression. Even as a system administrator that wants to customize the installation, it's necessary to master Nix. Using Nix for your jobs means you get the features we saw in the previous articles for free.
 
-The syntax of Nix is quite unfamiliar, so looking at existing examples may lead you to think that there\'s a lot of magic happening. In reality, it\'s mostly about writing utility functions to make things convenient.
+The syntax of Nix is quite unfamiliar, so looking at existing examples may lead you to think that there's a lot of magic happening. In reality, it's mostly about writing utility functions to make things convenient.
 
 On the other hand, the same syntax is great for describing packages, so learning the language itself will pay off when writing package expressions.
 
@@ -22,7 +22,7 @@ Important: Values in Nix are immutable.
 
 ## Value types
 
-Nix 2.0 contains a command named `nix repl` which is a simple command line tool for playing with the Nix language. In fact, Nix is a [pure, lazy, functional language](https://nixos.org/manual/nix/stable/expressions/expression-language.html), not only a set of tools to manage derivations. The `nix repl` syntax is slightly different to Nix syntax when it comes to assigning variables, but it shouldn\'t be confusing so long as you bear it in mind. I prefer to start with `nix repl` before cluttering your mind with more complex expressions.
+Nix 2.0 contains a command named `nix repl` which is a simple command line tool for playing with the Nix language. In fact, Nix is a [pure, lazy, functional language](https://nixos.org/manual/nix/stable/expressions/expression-language.html), not only a set of tools to manage derivations. The `nix repl` syntax is slightly different to Nix syntax when it comes to assigning variables, but it shouldn't be confusing so long as you bear it in mind. I prefer to start with `nix repl` before cluttering your mind with more complex expressions.
 
 Launch `nix repl`. First of all, Nix supports basic arithmetic operations: `+`, `-`, `*` and `/`. (To exit `nix repl`, use the command `:q`. Help is available through the `:?` command.)
 
@@ -40,7 +40,7 @@ Attempting to perform division in Nix can lead to some surprises.
     nix-repl> 6/3
     /home/nix/6/3
 
-What happened? Recall that Nix is not a general purpose language, it\'s a domain-specific language for writing packages. Integer division isn\'t actually that useful when writing package expressions. Nix parsed `6/3` as a relative path to the current directory. To get Nix to perform division instead, leave a space after the `/`. Alternatively, you can use `builtins.div`.
+What happened? Recall that Nix is not a general purpose language, it's a domain-specific language for writing packages. Integer division isn't actually that useful when writing package expressions. Nix parsed `6/3` as a relative path to the current directory. To get Nix to perform division instead, leave a space after the `/`. Alternatively, you can use `builtins.div`.
 
     nix-repl> 6/ 3
     2
@@ -52,15 +52,15 @@ Other operators are `||`, `&&` and `!` for booleans, and relational operators su
 
 Nix has integer, floating point, string, path, boolean and null [simple](https://nixos.org/manual/nix/stable/expressions/language-values.html) types. Then there are also lists, sets and functions. These types are enough to build an operating system.
 
-Nix is strongly typed, but it\'s not statically typed. That is, you cannot mix strings and integers, you must first do the conversion.
+Nix is strongly typed, but it's not statically typed. That is, you cannot mix strings and integers, you must first do the conversion.
 
-As demonstrated above, expressions will be parsed as paths as long as there\'s a slash not followed by a space. Therefore to specify the current directory, use `./.` In addition, Nix also parses urls specially.
+As demonstrated above, expressions will be parsed as paths as long as there's a slash not followed by a space. Therefore to specify the current directory, use `./.` In addition, Nix also parses urls specially.
 
-Not all urls or paths can be parsed this way. If a syntax error occurs, it\'s still possible to fallback to plain strings. Literal urls and paths are convenient for additional safety.
+Not all urls or paths can be parsed this way. If a syntax error occurs, it's still possible to fallback to plain strings. Literal urls and paths are convenient for additional safety.
 
 ## Identifier
 
-There\'s not much to say here, except that dash (`-`) is allowed in identifiers. That\'s convenient since many packages use dash in their names. In fact:
+There's not much to say here, except that dash (`-`) is allowed in identifiers. That's convenient since many packages use dash in their names. In fact:
 
     nix-repl> a-b
     error: undefined variable `a-b' at (string):1:1
@@ -71,7 +71,7 @@ As you can see, `a-b` is parsed as identifier, not as a subtraction.
 
 ## Strings
 
-It\'s important to understand the syntax for strings. When learning to read Nix expressions, you may find dollars (`$`) ambiguous, but they are very important . Strings are enclosed by double quotes (`"`), or two single quotes (`''`).
+It's important to understand the syntax for strings. When learning to read Nix expressions, you may find dollars (`$`) ambiguous, but they are very important . Strings are enclosed by double quotes (`"`), or two single quotes (`''`).
 
     nix-repl> "foo"
     "foo"
@@ -80,7 +80,7 @@ It\'s important to understand the syntax for strings. When learning to read Nix 
 
 In other languages like Python you can also use single quotes for strings (e.g. `'foo'`), but not in Nix.
 
-It\'s possible to [interpolate](https://nixos.org/manual/nix/stable/expressions/language-values.html) whole Nix expressions inside strings with the `${...}` syntax and only that syntax, not `$foo` or `{$foo}` or anything else.
+It's possible to [interpolate](https://nixos.org/manual/nix/stable/expressions/language-values.html) whole Nix expressions inside strings with the `${...}` syntax and only that syntax, not `$foo` or `{$foo}` or anything else.
 
     nix-repl> foo = "strval"
     nix-repl> "$foo"
@@ -92,7 +92,7 @@ It\'s possible to [interpolate](https://nixos.org/manual/nix/stable/expressions/
 
 Note: ignore the `foo = "strval"` assignment, special syntax in `nix repl`.
 
-As said previously, you cannot mix integers and strings. You need to explicitly include conversions. We\'ll see this later: function calls are another story.
+As said previously, you cannot mix integers and strings. You need to explicitly include conversions. We'll see this later: function calls are another story.
 
 Using the syntax with two single quotes is useful for writing double quotes inside strings without needing to escape them:
 
@@ -101,7 +101,7 @@ Using the syntax with two single quotes is useful for writing double quotes insi
     nix-repl> ''${foo}''
     "strval"
 
-Escaping `${...}` within double quoted strings is done with the backslash. Within two single quotes, it\'s done with `''`:
+Escaping `${...}` within double quoted strings is done with the backslash. Within two single quotes, it's done with `''`:
 
     nix-repl> "\${foo}"
     "${foo}"
@@ -134,7 +134,7 @@ To access elements in the attribute set:
     nix-repl> s."123"
     "num"
 
-Yes, you can use strings to address keys which aren\'t valid identifiers.
+Yes, you can use strings to address keys which aren't valid identifiers.
 
 Inside an attribute set you cannot normally refer to elements of the same attribute set:
 
@@ -157,7 +157,7 @@ These are expressions, not statements.
     nix-repl> if a > b then "yes" else "no"
     "no"
 
-You can\'t have only the `then` branch, you must specify also the `else` branch, because an expression must have a value in all cases.
+You can't have only the `then` branch, you must specify also the `else` branch, because an expression must have a value in all cases.
 
 ## Let expressions
 
@@ -171,7 +171,7 @@ The syntax is: first assign variables, then `in`, then an expression which can u
     nix-repl> let a = 3; b = 4; in a + b
     7
 
-Let\'s write two `let` expressions, one inside the other:
+Let's write two `let` expressions, one inside the other:
 
     nix-repl> let a = 3; in let b = 4; in a + b
     7
@@ -193,7 +193,7 @@ You can refer to variables in the `let` expression when assigning variables, lik
     nix-repl> let a = 4; b = a + 5; in b
     9
 
-So beware when you want to refer to a variable from the outer scope, but it\'s also defined in the current let expression. The same applies to recursive attribute sets.
+So beware when you want to refer to a variable from the outer scope, but it's also defined in the current let expression. The same applies to recursive attribute sets.
 
 ## With expression
 
@@ -205,7 +205,7 @@ This kind of expression is something you rarely see in other languages. You can 
     nix-repl> with longName; a + b
     7
 
-That\'s it, it takes an attribute set and includes symbols from it in the scope of the inner expression. Of course, only valid identifiers from the keys of the set will be included. If a symbol exists in the outer scope and would also be introduced by the `with`, it will *not* be shadowed. You can however still refer to the attribute set:
+That's it, it takes an attribute set and includes symbols from it in the scope of the inner expression. Of course, only valid identifiers from the keys of the set will be included. If a symbol exists in the outer scope and would also be introduced by the `with`, it will *not* be shadowed. You can however still refer to the attribute set:
 
     nix-repl> let a = 10; in with longName; a + b
     14
@@ -219,8 +219,8 @@ Nix evaluates expressions only when needed. This is a great feature when working
     nix-repl> let a = builtins.div 4 0; b = 6; in b
     6
 
-Since `a` is not needed, there\'s no error about division by zero, because the expression is not in need to be evaluated. That\'s why we can have all the packages defined on demand, yet have access to specific packages very quickly.
+Since `a` is not needed, there's no error about division by zero, because the expression is not in need to be evaluated. That's why we can have all the packages defined on demand, yet have access to specific packages very quickly.
 
 ## Next pill
 
-\...we will talk about functions and imports. In this pill I\'ve tried to avoid function calls as much as possible, otherwise the post would have been too long.
+\...we will talk about functions and imports. In this pill I've tried to avoid function calls as much as possible, otherwise the post would have been too long.

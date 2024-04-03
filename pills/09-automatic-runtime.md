@@ -6,7 +6,7 @@ Today we stop by the GNU `hello` program to analyze build and runtime dependenci
 
 ## Build dependencies
 
-Let\'s start analyzing build dependencies for our GNU `hello` package:
+Let's start analyzing build dependencies for our GNU `hello` package:
 
     $ nix-instantiate hello.nix
     /nix/store/z77vn965a59irqnrrjvbspiyl2rph0jp-hello.drv
@@ -34,7 +34,7 @@ The `NAR` format is the \"Nix ARchive\". This format was designed due to existin
 
 Thus the `NAR` format was developed as a simple, deterministic archive format. `NAR`s are used extensively within Nix, as we will see below.
 
-For more rationale and implementation details behind `NAR` see [Dolstra\'s PhD Thesis](http://nixos.org/~eelco/pubs/phd-thesis.pdf).
+For more rationale and implementation details behind `NAR` see [Dolstra's PhD Thesis](http://nixos.org/~eelco/pubs/phd-thesis.pdf).
 
 To create NAR archives from store paths, we can use `nix-store --dump` and `nix-store --restore`.
 
@@ -48,7 +48,7 @@ Nix handles runtime dependencies for us automatically. The technique it uses to 
 
 2.  For each build dependency `.drv` and its relative out path, search the contents of the NAR for this out path.
 
-3.  If the path is found, then it\'s a runtime dependency.
+3.  If the path is found, then it's a runtime dependency.
 
 The snippet below shows the dependencies for `hello`.
 
@@ -61,16 +61,16 @@ The snippet below shows the dependencies for `hello`.
     /nix/store/8jm0wksask7cpf85miyakihyfch1y21q-gcc-4.8.3
     /nix/store/a42k52zwv6idmf50r9lps1nzwq9khvpf-hello
 
-We see that `glibc` and `gcc` are runtime dependencies. Intuitively, `gcc` shouldn\'t be in this list! Displaying the printable strings in the `hello` binary shows that the out path of `gcc` does indeed appear:
+We see that `glibc` and `gcc` are runtime dependencies. Intuitively, `gcc` shouldn't be in this list! Displaying the printable strings in the `hello` binary shows that the out path of `gcc` does indeed appear:
 
     $ strings result/bin/hello|grep gcc
     /nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19/lib:/nix/store/8jm0wksask7cpf85miyakihyfch1y21q-gcc-4.8.3/lib64
 
 This is why Nix added `gcc`. But why is that path present in the first place? The answer is that it is the [ld rpath](http://en.wikipedia.org/wiki/Rpath): the list of directories where libraries can be found at runtime. In other distributions, this is usually not abused. But in Nix, we have to refer to particular versions of libraries, and thus the rpath has an important role.
 
-The build process adds the `gcc` lib path thinking it may be useful at runtime, but this isn\'t necessary. To address issues like these, Nix provides a tool called [patchelf](https://nixos.org/patchelf.html), which reduces the rpath to the paths that are actually used by the binary.
+The build process adds the `gcc` lib path thinking it may be useful at runtime, but this isn't necessary. To address issues like these, Nix provides a tool called [patchelf](https://nixos.org/patchelf.html), which reduces the rpath to the paths that are actually used by the binary.
 
-Even after reducing the rpath, the `hello` binary would still depend upon `gcc` because of some debugging information. This unnecessarily increases the size of our runtime dependencies. We\'ll explore how `strip` can help us with that in the next section.
+Even after reducing the rpath, the `hello` binary would still depend upon `gcc` because of some debugging information. This unnecessarily increases the size of our runtime dependencies. We'll explore how `strip` can help us with that in the next section.
 
 ## Another phase in the builder
 
@@ -123,4 +123,4 @@ Approaching builds in this way makes packages self-contained, ensuring (apart fr
 
 ## Next pill
 
-The next pill will introduce `nix-shell`. With `nix-build`, we\'ve always built derivations from scratch: the source gets unpacked, configured, built, and installed. But this can take a long time for large packages. What if we want to apply some small changes and compile incrementally instead, yet still want to keep a self-contained environment similar to `nix-build`? `nix-shell` enables this.
+The next pill will introduce `nix-shell`. With `nix-build`, we've always built derivations from scratch: the source gets unpacked, configured, built, and installed. But this can take a long time for large packages. What if we want to apply some small changes and compile incrementally instead, yet still want to keep a self-contained environment similar to `nix-build`? `nix-shell` enables this.

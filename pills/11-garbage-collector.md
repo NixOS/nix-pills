@@ -6,9 +6,9 @@ Today, we will stop focusing on packaging and instead look at a critical compone
 
 ## How does garbage collection work?
 
-Programming languages with garbage collectors use the concept of a set of \"garbage collector (or \'GC\') roots\" to keep track of \"live\" objects. A GC root is an object that is always considered \"live\" (unless explicitly removed as GC root). The garbage collection process starts from the GC roots and proceeds by recursively marking object references as \"live\". All other objects can be collected and deleted.
+Programming languages with garbage collectors use the concept of a set of \"garbage collector (or 'GC') roots\" to keep track of \"live\" objects. A GC root is an object that is always considered \"live\" (unless explicitly removed as GC root). The garbage collection process starts from the GC roots and proceeds by recursively marking object references as \"live\". All other objects can be collected and deleted.
 
-Instead of objects, Nix\'s garbage collection operates on store paths, [with the GC roots themselves being store paths](https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html). . This approach is much more principled than traditional package managers such as `dpkg` or `rpm`, which may leave around unused packages or dangling files.
+Instead of objects, Nix's garbage collection operates on store paths, [with the GC roots themselves being store paths](https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html). . This approach is much more principled than traditional package managers such as `dpkg` or `rpm`, which may leave around unused packages or dangling files.
 
 The implementation is very simple and transparent to the user. The primary GC roots are stored under `/nix/var/nix/gcroots`. If there is a symlink to a store path, then the linked store path is a GC root.
 
@@ -27,7 +27,7 @@ Before we begin we first run the [nix garbage collector](https://nixos.org/manua
     note: currently hard linking saves -0.00 MiB
     1169 store paths deleted, 228.43 MiB freed
 
-If we run the garbage collector again it won\'t find anything new to delete, as we expect. After running the garbage collector, the nix store only contains paths with references from the GC roots.
+If we run the garbage collector again it won't find anything new to delete, as we expect. After running the garbage collector, the nix store only contains paths with references from the GC roots.
 
 We now install a new program, `bsd-games`, inspect its store path, and examine its GC root. The `nix-store -q --roots` command is used to query the GC roots that refer to a given derivation. In this case, our current user environment refers to `bsd-games`:
 
@@ -120,4 +120,4 @@ Garbage collection in Nix is a powerful mechanism to clean up your system. The `
 
 ## Next pill
 
-In the next pill, we will package another project and introduce the \"inputs\" design pattern. We\'ve only played with a single derivation until now; however we\'d like to start organizing a small repository of software. The \"inputs\" pattern is widely used in nixpkgs; it allows us to decouple derivations from the repository itself and increase customization opportunities.
+In the next pill, we will package another project and introduce the \"inputs\" design pattern. We've only played with a single derivation until now; however we'd like to start organizing a small repository of software. The \"inputs\" pattern is widely used in nixpkgs; it allows us to decouple derivations from the repository itself and increase customization opportunities.

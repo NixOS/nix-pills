@@ -6,11 +6,11 @@ In this post, we will generalize the builder script, write a Nix expression for 
 
 ## Packaging GNU hello world
 
-In the previous pill we packaged a simple .c file, which was being compiled with a raw gcc call. That\'s not a good example of a project. Many use autotools, and since we\'re going to generalize our builder, it would be better to do it with the most used build system.
+In the previous pill we packaged a simple .c file, which was being compiled with a raw gcc call. That's not a good example of a project. Many use autotools, and since we're going to generalize our builder, it would be better to do it with the most used build system.
 
 [GNU hello world](https://www.gnu.org/software/hello/), despite its name, is a simple yet complete project which uses autotools. Fetch the latest tarball here: <https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz>.
 
-Let\'s create a builder script for GNU hello world, hello_builder.sh:
+Let's create a builder script for GNU hello world, hello_builder.sh:
 
     export PATH="$gnutar/bin:$gcc/bin:$gnumake/bin:$coreutils/bin:$gawk/bin:$gzip/bin:$gnugrep/bin:$gnused/bin:$bintools/bin"
     tar -xzf $src
@@ -79,7 +79,7 @@ Please note the `--prefix=$out` we were talking about in the [previous pill](07-
 
 ## A generic builder
 
-Let\'s create a generic `builder.sh` for autotools projects:
+Let's create a generic `builder.sh` for autotools projects:
 
     set -e
     unset PATH
@@ -104,19 +104,19 @@ What do we do here?
 
 1.  Exit the build on any error with `set -e`.
 
-2.  First `unset PATH`, because it\'s initially set to a non-existent path.
+2.  First `unset PATH`, because it's initially set to a non-existent path.
 
-3.  We\'ll see this below in detail, however for each path in `$buildInputs`, we append `bin` to `PATH`.
+3.  We'll see this below in detail, however for each path in `$buildInputs`, we append `bin` to `PATH`.
 
 4.  Unpack the source.
 
 5.  Find a directory where the source has been unpacked and `cd` into it.
 
-6.  Once we\'re set up, compile and install.
+6.  Once we're set up, compile and install.
 
-As you can see, there\'s no reference to \"hello\" in the builder anymore. It still makes several assumptions, but it\'s certainly more generic.
+As you can see, there's no reference to \"hello\" in the builder anymore. It still makes several assumptions, but it's certainly more generic.
 
-Now let\'s rewrite `hello.nix`:
+Now let's rewrite `hello.nix`:
 
     let
       pkgs = import <nixpkgs> { };
@@ -140,7 +140,7 @@ Now let\'s rewrite `hello.nix`:
       system = builtins.currentSystem;
     }
 
-All clear, except that buildInputs. However it\'s easier than any black magic you are thinking of at this moment.
+All clear, except that buildInputs. However it's easier than any black magic you are thinking of at this moment.
 
 Nix is able to convert a list to a string. It first converts the elements to strings, and then concatenates them separated by a space:
 
@@ -162,7 +162,7 @@ Simple! The buildInputs variable is a string with out paths separated by space, 
 
 ## A more convenient derivation function
 
-We managed to write a builder that can be used for multiple autotools projects. But in the hello.nix expression we are specifying tools that are common to more projects; we don\'t want to pass them every time.
+We managed to write a builder that can be used for multiple autotools projects. But in the hello.nix expression we are specifying tools that are common to more projects; we don't want to pass them every time.
 
 A natural approach would be to create a function that accepts an attribute set, similar to the one used by the derivation function, and merge it with another attribute set containing values common to many projects.
 
@@ -224,15 +224,15 @@ Then we rewrite `hello.nix` as follows:
       src = ./hello-2.12.1.tar.gz;
     }
 
-Finally! We got a very simple description of a package! Below are a couple of remarks that you may find useful as you\'re continuing to understand the nix language:
+Finally! We got a very simple description of a package! Below are a couple of remarks that you may find useful as you're continuing to understand the nix language:
 
--   We assigned to pkgs the import that we did in the previous expressions in the \"with\". Don\'t be afraid, it\'s that straightforward.
+-   We assigned to pkgs the import that we did in the previous expressions in the \"with\". Don't be afraid, it's that straightforward.
 
 -   The mkDerivation variable is a nice example of partial application, look at it as (`import ./autotools.nix`) `pkgs`. First we import the expression, then we apply the `pkgs` parameter. That will give us a function that accepts the attribute set `attrs`.
 
 -   We create the derivation specifying only name and src. If the project eventually needed other dependencies to be in PATH, then we would simply add those to buildInputs (not specified in hello.nix because empty).
 
-Note we didn\'t use any other library. Special C flags may be needed to find include files of other libraries at compile time, and ld flags at link time.
+Note we didn't use any other library. Special C flags may be needed to find include files of other libraries at compile time, and ld flags at link time.
 
 ## Conclusion
 
@@ -240,7 +240,7 @@ Nix gives us the bare metal tools for creating derivations, setting up a build e
 
 Out of this pill we managed to create a generic builder for autotools projects, and a function `mkDerivation` that composes by default the common components used in autotools projects instead of repeating them in all the packages we would write.
 
-We are familiarizing ourselves with the way a Nix system grows up: it\'s about creating and composing derivations with the Nix language.
+We are familiarizing ourselves with the way a Nix system grows up: it's about creating and composing derivations with the Nix language.
 
 Analogy: in C you create objects in the heap, and then you compose them inside new objects. Pointers are used to refer to other objects.
 

@@ -2,7 +2,7 @@
 
 Welcome to the 13th Nix pill. In the previous [12th pill](12-inputs-design-pattern.md), we introduced the first basic design pattern for organizing a repository of software. In addition, we packaged graphviz so that we had two packages to bundle into an example repository.
 
-The next design pattern we will examine is called the `callPackage` pattern. This technique is extensively used in [nixpkgs](https://github.com/NixOS/nixpkgs), and it\'s the current de facto standard for importing packages in a repository. Its purpose is to reduce the duplication of identifiers between package derivation inputs and repository derivations.
+The next design pattern we will examine is called the `callPackage` pattern. This technique is extensively used in [nixpkgs](https://github.com/NixOS/nixpkgs), and it's the current de facto standard for importing packages in a repository. Its purpose is to reduce the duplication of identifiers between package derivation inputs and repository derivations.
 
 ## The callPackage convenience
 
@@ -51,15 +51,15 @@ Nix provides a builtin function to do this:
 
 In addition to returning the argument names, the attribute set returned by `functionArgs` indicates whether or not the argument has a default value. For our purposes, we are only interested in the argument names; we do not care about the default values right now.
 
-The next step is to make `callPackage` automatically pass inputs to our package derivations based on the argument names we\'ve just obtained with `functionArgs`.
+The next step is to make `callPackage` automatically pass inputs to our package derivations based on the argument names we've just obtained with `functionArgs`.
 
 To do this, we need two things:
 
--   A package repository set containing package derivations that match the arguments names we\'ve obtained
+-   A package repository set containing package derivations that match the arguments names we've obtained
 
 -   A way to obtain an auto-populated attribute set combining the package repository and the return value of `functionArgs`.
 
-The former is easy: we just have to set our package derivation\'s inputs to be package names in a repository, such as `nixpkgs`. For the latter, Nix provides another builtin function:
+The former is easy: we just have to set our package derivation's inputs to be package names in a repository, such as `nixpkgs`. For the latter, Nix provides another builtin function:
 
     nix-repl> values = { a = 3; b = 5; c = 10; }
     nix-repl> builtins.intersectAttrs values (builtins.functionArgs add)
@@ -67,7 +67,7 @@ The former is easy: we just have to set our package derivation\'s inputs to be p
     nix-repl> builtins.intersectAttrs (builtins.functionArgs add) values
     { a = 3; b = 5; }
 
-The `intersectAttrs` returns an attribute set whose names are the intersection of both arguments\' attribute names, with the attribute values taken from the second argument.
+The `intersectAttrs` returns an attribute set whose names are the intersection of both arguments' attribute names, with the attribute values taken from the second argument.
 
 This is all we need to do: we have obtained the argument names from a function, and populated these with an existing set of attributes. This is our simple implementation of `callPackage`:
 
@@ -77,7 +77,7 @@ This is all we need to do: we have obtained the argument names from a function, 
     nix-repl> with values; add { inherit a b; }
     8
 
-Let\'s dissect the above snippet:
+Let's dissect the above snippet:
 
 -   We define a `callPackage` variable which is a function.
 
@@ -89,7 +89,7 @@ Let\'s dissect the above snippet:
 
 -   Finally, we call the passed function `f` with the resulting intersection.
 
-In the snippet above, we\'ve also demonstrated that the `callPackage` call is equivalent to directly calling `add a b`.
+In the snippet above, we've also demonstrated that the `callPackage` call is equivalent to directly calling `add a b`.
 
 We achieved most of what we wanted: to automatically call functions given a set of possible arguments. If an argument is not found within the set we used to call the function, then we receive an error (unless the function has variadic arguments denoted with `...`, as explained in the [5th pill](05-functions-and-imports.md)).
 
@@ -125,7 +125,7 @@ Given our `callPackages`, we can simplify the repository expression in `default.
     in
     pkgs
 
-Let\'s examine this in detail:
+Let's examine this in detail:
 
 -   The expression above defines our own package repository, which we call `pkgs`, that contains `hello` along with our two variants of `graphviz`.
 
@@ -141,13 +141,13 @@ Let\'s examine this in detail:
 
 Note how easily we overrode arguments in the case of `graphviz` without `gd`. In addition, note how easy it was to merge two repositories: `nixpkgs` and our `pkgs`!
 
-The reader should notice a magic thing happening. We\'re defining `pkgs` in terms of `callPackage`, and `callPackage` in terms of `pkgs`. That magic is possible thanks to lazy evaluation: `builtins.intersectAttrs` doesn\'t need to know the values in `allPkgs` in order to perform intersection, only the keys that do not require `callPackage` evaluation.
+The reader should notice a magic thing happening. We're defining `pkgs` in terms of `callPackage`, and `callPackage` in terms of `pkgs`. That magic is possible thanks to lazy evaluation: `builtins.intersectAttrs` doesn't need to know the values in `allPkgs` in order to perform intersection, only the keys that do not require `callPackage` evaluation.
 
 ## Conclusion
 
 The \"`callPackage`\" pattern has simplified our repository considerably. We were able to import packages that require named arguments and call them automatically, given the set of all packages sourced from `nixpkgs`.
 
-We\'ve also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, but rather act as tools for packaging. They are documented in the [Nix manual](https://nixos.org/manual/nix/stable/expressions/builtins.html).
+We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, but rather act as tools for packaging. They are documented in the [Nix manual](https://nixos.org/manual/nix/stable/expressions/builtins.html).
 
 Writing a repository in Nix is an evolution of writing convenient functions for combining the packages. This pill demonstrates how Nix can be a generic tool to build and deploy software, and how suitable it is to create software repositories with our own conventions.
 
