@@ -8,9 +8,9 @@ The next design pattern is less necessary, but is useful in many cases and is a 
 
 Functional languages are known for being able to compose functions. In particular, these languages gain expressivity from functions that manipulate an original value into a new value having the same structure. This allows us to compose multiple functions to perform the desired modifications.
 
-In Nix, we mostly talk about **functions** that accept inputs in order to return **derivations**. In our world, we want utility functions that are able to manipulate those structures. These utilities add some useful properties to the original value, and we\'d like to be able to apply more utilities on top of the result.
+In Nix, we mostly talk about **functions** that accept inputs in order to return **derivations**. In our world, we want utility functions that are able to manipulate those structures. These utilities add some useful properties to the original value, and we'd like to be able to apply more utilities on top of the result.
 
-For example, let\'s say we have an initial derivation `drv` and we want to transform it into a `drv` with debugging information and custom patches:
+For example, let's say we have an initial derivation `drv` and we want to transform it into a `drv` with debugging information and custom patches:
 
     debugVersion (applyPatches [ ./patch1.patch ./patch2.patch ] drv)
 
@@ -22,7 +22,7 @@ Designing such utilities is not trivial in a functional language without static 
 
 In [pill 12](12-inputs-design-pattern.md) we introduced the inputs design pattern. We do not return a derivation picking dependencies directly from the repository; rather we declare the inputs and let the callers pass the necessary arguments.
 
-In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let\'s take for example the graphviz attribute:
+In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let's take for example the graphviz attribute:
 
     graphviz = import ./graphviz.nix { inherit mkDerivation gd fontconfig libjpeg bzip2; };
 
@@ -40,7 +40,7 @@ If we wanted to produce a derivation of graphviz with a customized gd version, w
       };
     }
 
-That\'s hard to maintain. Using `callPackage` would be easier:
+That's hard to maintain. Using `callPackage` would be easier:
 
     mygraphviz = callPackage ./graphviz.nix { gd = customgd; };
 
@@ -58,7 +58,7 @@ Note: that `.override` is not a \"method\" in the OO sense as you may think. Nix
 
 Recall that the graphviz attribute in the repository is the derivation returned by the function imported from `graphviz.nix`. We would like to add a further attribute named \"`override`\" to the returned set.
 
-Let\'s start by first creating a function \"`makeOverridable`\". This function will take two arguments: a function (that must return a set) and the set of original arguments to be passed to the function.
+Let's start by first creating a function \"`makeOverridable`\". This function will take two arguments: a function (that must return a set) and the set of original arguments to be passed to the function.
 
 We will put this function in a `lib.nix`:
 
@@ -75,7 +75,7 @@ We will put this function in a `lib.nix`:
 
 This `override` attribute is a function taking a set of new arguments, and returns the result of the original function called with the original arguments unified with the new arguments. This is admittedly somewhat confusing, but the examples below should make it clear.
 
-Let\'s try it with `nix repl`:
+Let's try it with `nix repl`:
 
     $ nix repl
     nix-repl> :l lib.nix
@@ -91,11 +91,11 @@ Let\'s try it with `nix repl`:
 
 Note that, as we specified above, the function `f` does not return the plain sum. Instead, it returns a set with the sum bound to the name `result`.
 
-The variable `res` contains the result of the function call without any override. It\'s easy to see in the definition of `makeOverridable`. In addition, you can see that the new `override` attribute is a function.
+The variable `res` contains the result of the function call without any override. It's easy to see in the definition of `makeOverridable`. In addition, you can see that the new `override` attribute is a function.
 
 Calling `res.override` with a set will invoke the original function with the overrides, as expected.
 
-This is a good start, but we can\'t override again! This is because the returned set (with `result = 15`) does not have an `override` attribute of its own. This is bad; it breaks further composition.
+This is a good start, but we can't override again! This is because the returned set (with `result = 15`) does not have an `override` attribute of its own. This is bad; it breaks further composition.
 
 The solution is simple: the `.override` function should make the result overridable again:
 
@@ -108,9 +108,9 @@ The solution is simple: the `.override` function should make the result overrida
         origRes // { override = newArgs: makeOverridable f (origArgs // newArgs); };
     }
 
-Please note the `rec` keyword. It\'s necessary so that we can refer to `makeOverridable` from `makeOverridable` itself.
+Please note the `rec` keyword. It's necessary so that we can refer to `makeOverridable` from `makeOverridable` itself.
 
-Now let\'s try overriding twice:
+Now let's try overriding twice:
 
     nix-repl> :l lib.nix
     Added 1 variables.

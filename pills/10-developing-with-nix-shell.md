@@ -10,9 +10,9 @@ Finally, we will modify our builder to work more ergonomically with a `nix-shell
 
 The [nix-shell](https://nixos.org/manual/nix/stable/command-ref/nix-shell.html) tool drops us in a shell after setting up the environment variables necessary to hack on a derivation. It does not build the derivation; it only serves as a preparation so that we can run the build steps manually.
 
-Recall that in a nix environment, we don\'t have access to libraries or programs unless they have been installed with `nix-env`. However, installing libraries with `nix-env` is not good practice. We prefer to have isolated environments for development, which `nix-shell` provides for us.
+Recall that in a nix environment, we don't have access to libraries or programs unless they have been installed with `nix-env`. However, installing libraries with `nix-env` is not good practice. We prefer to have isolated environments for development, which `nix-shell` provides for us.
 
-We can call `nix-shell` on any Nix expression which returns a derivation, but the resulting `bash` shell\'s `PATH` does not have the utilities we want:
+We can call `nix-shell` on any Nix expression which returns a derivation, but the resulting `bash` shell's `PATH` does not have the utilities we want:
 
     $ nix-shell hello.nix
     [nix-shell]$ make
@@ -29,7 +29,7 @@ This means that we can `source` our `builder.sh`, and it will build the derivati
     [nix-shell]$ source builder.sh
     ...
 
-The derivation didn\'t install, but it did build. Note the following:
+The derivation didn't install, but it did build. Note the following:
 
 -   We sourced `builder.sh` and it ran all of the build steps, including setting up the `PATH` for us.
 
@@ -47,9 +47,9 @@ There are a few things that we would like to change.
 
 First, when we `source`d the `builder.sh` file, we obtained the file in the current directory. What we really wanted was the `builder.sh` that is stored in the nix store, as this is the file that would be used by `nix-build`. To achieve this, the correct technique is to pass an environment variable through the derivation. (Note that `$builder` is already defined, but it points to the bash executable rather than our `builder.sh`. Our `builder.sh` is passed as an argument to bash.)
 
-Second, we don\'t want to run the whole builder: we only want to setup the necessary environment for manually building the project. Thus, we can break `builder.sh` into two files: a `setup.sh` for setting up the environment, and the real `builder.sh` that `nix-build` expects.
+Second, we don't want to run the whole builder: we only want to setup the necessary environment for manually building the project. Thus, we can break `builder.sh` into two files: a `setup.sh` for setting up the environment, and the real `builder.sh` that `nix-build` expects.
 
-During our refactoring, we will wrap the build phases in functions to give more structure to our design. Additionally, we\'ll move the `set -e` to the builder file instead of the setup file. The `set -e` is annoying in `nix-shell`, as it will terminate the shell if an error is encountered (such as a mistyped command.)
+During our refactoring, we will wrap the build phases in functions to give more structure to our design. Additionally, we'll move the `set -e` to the builder file instead of the setup file. The `set -e` is annoying in `nix-shell`, as it will terminate the shell if an error is encountered (such as a mistyped command.)
 
 Here is our modified `autotools.nix`. Noteworthy is the `setup = ./setup.sh;` attribute in the derivation, which adds `setup.sh` to the nix store and correspondingly adds a `$setup` environment variable in the builder.
 
@@ -155,4 +155,4 @@ With `nix-shell` we are able to drop into an isolated environment suitable for d
 
 ## Next pill
 
-In the next pill, we will clean up the nix store. We have written and built derivations which add to the nix store, but until now we haven\'t worried about cleaning up the used space in the store.
+In the next pill, we will clean up the nix store. We have written and built derivations which add to the nix store, but until now we haven't worried about cleaning up the used space in the store.
