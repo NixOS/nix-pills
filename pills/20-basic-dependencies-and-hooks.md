@@ -188,11 +188,11 @@ We actually simplified the `findInputs` call site from before; `propagatedBuildI
         findInputs $i
     done
 
-This demonstrates an important point. For the *current* package alone, it doesn't matter whether a dependency is propagated or not. It will be processed the same way: called with `findInputs` and `addToEnv`. (The packages discovered by `findInputs`, which are also accumulated in `pkgs` and passed to `addToEnv`, are also the same in both cases.) Downstream however, it certainly does matter because only the propagated immediate dependencies are put in the `$out/nix-support/propagated-build-inputs`.
+This demonstrates an important point. For the _current_ package alone, it doesn't matter whether a dependency is propagated or not. It will be processed the same way: called with `findInputs` and `addToEnv`. (The packages discovered by `findInputs`, which are also accumulated in `pkgs` and passed to `addToEnv`, are also the same in both cases.) Downstream however, it certainly does matter because only the propagated immediate dependencies are put in the `$out/nix-support/propagated-build-inputs`.
 
 ## Setup Hooks
 
-As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just *being* a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively "injecting" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. *Arbitrary* is the key word here. We could teach `setup.sh` things about upstream packages like `pkg/nix-support/propagated-build-inputs`, but not arbitrary interactions.
+As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just _being_ a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively "injecting" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. _Arbitrary_ is the key word here. We could teach `setup.sh` things about upstream packages like `pkg/nix-support/propagated-build-inputs`, but not arbitrary interactions.
 
 Setup hooks are the basic building block we have for this. In nixpkgs, a "hook" is basically a bash callback, and a setup hook is no exception. Let's look at the last part of `findInputs` we haven't covered:
 
@@ -211,7 +211,7 @@ Setup hooks are the basic building block we have for this. In nixpkgs, a "hook" 
 
 If a package includes the path `pkg/nix-support/setup-hook`, it will be sourced by any stdenv-based build including that as a dependency.
 
-This is strictly more general than any of the other mechanisms introduced in this chapter. For example, try writing a setup hook that has the same effect as a *propagatedBuildInputs* entry. One can almost think of this as an escape hatch around Nix's normal isolation guarantees, and the principle that dependencies are immutable and inert. We're not actually doing something unsafe or modifying dependencies, but we are allowing arbitrary ad-hoc behavior. For this reason, setup-hooks should only be used as a last resort.
+This is strictly more general than any of the other mechanisms introduced in this chapter. For example, try writing a setup hook that has the same effect as a _propagatedBuildInputs_ entry. One can almost think of this as an escape hatch around Nix's normal isolation guarantees, and the principle that dependencies are immutable and inert. We're not actually doing something unsafe or modifying dependencies, but we are allowing arbitrary ad-hoc behavior. For this reason, setup-hooks should only be used as a last resort.
 
 ## Environment Hooks
 
@@ -242,12 +242,11 @@ Functions listed in `envHooks` are applied to every package passed to `addToEnv`
 
     envHooks+=(anEnvHook)
 
-and if one dependency has that setup hook then all of them will be so `echo`ed. Allowing dependencies to learn about their *sibling* dependencies is exactly what compilers need.
+and if one dependency has that setup hook then all of them will be so `echo`ed. Allowing dependencies to learn about their _sibling_ dependencies is exactly what compilers need.
 
 ## Next pill...
 
 ...I'm not sure! We could talk about the additional dependency types and hooks which cross compilation necessitates, building on our knowledge here to cover stdenv as it works today. We could talk about how nixpkgs is bootstrapped. Or we could talk about how `localSystem` and `crossSystem` are elaborated into the `buildPlatform`, `hostPlatform`, and `targetPlatform` each bootstrapping stage receives. Let us know which most interests you!
 
-[^1]: We can now be precise and consider what `addToEnv` does alone the minimal treatment of a dependency: i.e. a package that is *just* a dependency would *only* have `addToEnv` applied to it.
-
+[^1]: We can now be precise and consider what `addToEnv` does alone the minimal treatment of a dependency: i.e. a package that is _just_ a dependency would _only_ have `addToEnv` applied to it.
 [^2]: It was called [GCC Wrapper](https://github.com/NixOS/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/build-support/gcc-wrapper) in the version of nixpkgs suggested for following along in this pill; Darwin and Clang support hadn't yet motivated the rename.

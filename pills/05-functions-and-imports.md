@@ -115,13 +115,13 @@ That's it, you give a name to the whole parameter with name@ before the set patt
 
 Advantages of using argument sets:
 
--   Named unordered arguments: you don't have to remember the order of the arguments.
+- Named unordered arguments: you don't have to remember the order of the arguments.
 
--   You can pass sets, that adds a whole new layer of flexibility and convenience.
+- You can pass sets, that adds a whole new layer of flexibility and convenience.
 
 Disadvantages:
 
--   Partial application does not work with argument sets. You have to specify the whole attribute set, not part of it.
+- Partial application does not work with argument sets. You have to specify the whole attribute set, not part of it.
 
 You may find similarities with [Python \*\*kwargs](https://docs.python.org/3/faq/programming.html#how-can-i-pass-optional-or-keyword-parameters-from-one-function-to-another).
 
@@ -173,11 +173,11 @@ So how do we pass information to the module? Use functions, like we did with `mu
 
 Explaining:
 
--   In `test.nix` we return a function. It accepts a set, with default attributes `b`, `trueMsg` and `falseMsg`.
+- In `test.nix` we return a function. It accepts a set, with default attributes `b`, `trueMsg` and `falseMsg`.
 
--   `builtins.trace` is a [built-in function](https://nixos.org/manual/nix/stable/expressions/builtins.html) that takes two arguments. The first is the message to display, the second is the value to return. It's usually used for debugging purposes.
+- `builtins.trace` is a [built-in function](https://nixos.org/manual/nix/stable/expressions/builtins.html) that takes two arguments. The first is the message to display, the second is the value to return. It's usually used for debugging purposes.
 
--   Then we import `test.nix`, and call the function with that set.
+- Then we import `test.nix`, and call the function with that set.
 
 So when is the message shown? Only when it needs to be evaluated.
 

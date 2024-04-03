@@ -8,7 +8,7 @@ For installation instructions, please refer to the Nix Reference Manual on [ Ins
 
 ## Installation
 
-These articles are not a tutorial on *using* Nix. Instead, we're going to walk through the Nix system to understand the fundamentals.
+These articles are not a tutorial on _using_ Nix. Instead, we're going to walk through the Nix system to understand the fundamentals.
 
 The first thing to note: derivations in the Nix store refer to other derivations which are themselves in the Nix store. They don't use `libc` from our system or anywhere else. It's a self-contained store of all the software we need to bootstrap up to any particular package.
 
@@ -50,7 +50,7 @@ Note: If this is the first time you're using Nix after the initial installation,
 
 <div class="warning">
 
-Important: Never change `/nix/store` manually. If you do, then it will no longer be in sync with the sqlite db, unless you *really* know what you are doing.
+Important: Never change `/nix/store` manually. If you do, then it will no longer be in sync with the sqlite db, unless you _really_ know what you are doing.
 
 </div>
 
@@ -124,11 +124,11 @@ You can see for yourself, don't worry if you see multiple bash derivations:
 
 Keeping the store in `/nix` means we can grab the binary cache from nixos.org (just like you grab packages from debian mirrors) otherwise:
 
--   glibc would be installed under `/foo/store`
+- glibc would be installed under `/foo/store`
 
--   Thus bash would need to point to glibc under `/foo/store`, instead of under `/nix/store`
+- Thus bash would need to point to glibc under `/foo/store`, instead of under `/nix/store`
 
--   So the binary cache can't help, because we need a *different* bash, and so we'd have to recompile everything ourselves.
+- So the binary cache can't help, because we need a _different_ bash, and so we'd have to recompile everything ourselves.
 
 After all `/nix` is a sensible place for the store.
 

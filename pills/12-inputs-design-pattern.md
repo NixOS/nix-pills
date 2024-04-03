@@ -127,11 +127,11 @@ We can now use `nix-env` to install the package into our user environment:
 
 Taking a closer look at the above command, we see the following options:
 
--   The -f option is used to specify the expression to use. In this case, the expression is the `./default.nix` of the current directory.
+- The -f option is used to specify the expression to use. In this case, the expression is the `./default.nix` of the current directory.
 
--   The -i option stands for "installation".
+- The -i option stands for "installation".
 
--   The -A is the same as above for `nix-build`.
+- The -A is the same as above for `nix-build`.
 
 We reproduced the very basic behavior of `nixpkgs`: combining multiple derivations into a single, top-level attribute set.
 
@@ -139,19 +139,19 @@ We reproduced the very basic behavior of `nixpkgs`: combining multiple derivatio
 
 The approach we've taken so far has a few problems:
 
--   First, `hello.nix` and `graphviz.nix` are dependent on `nixpkgs`, which they import directly. A better approach would be to pass in `nixpkgs` as an argument, as we did in `autotools.nix`.
+- First, `hello.nix` and `graphviz.nix` are dependent on `nixpkgs`, which they import directly. A better approach would be to pass in `nixpkgs` as an argument, as we did in `autotools.nix`.
 
--   Second, we don't have a straightforward way to compile different variants of the same software, such as `graphviz` with or without `libgd` support.
+- Second, we don't have a straightforward way to compile different variants of the same software, such as `graphviz` with or without `libgd` support.
 
--   Third, we don't have a way to test `graphviz` with a particular `libgd` version.
+- Third, we don't have a way to test `graphviz` with a particular `libgd` version.
 
 Until now, our approach to addressing the above problems has been inadequate and required changing the nix expression to match our needs. With the `inputs` pattern, we provide another answer: let the user change the `inputs` of the expression.
 
 When we talk about "the inputs of an expression", we are referring to the set of derivations needed to build that expression. In this case:
 
--   `mkDerivation` from `autotools`. Recall that `mkDerivation` has an implicit dependency on the toolchain.
+- `mkDerivation` from `autotools`. Recall that `mkDerivation` has an implicit dependency on the toolchain.
 
--   `libgd` and its dependencies.
+- `libgd` and its dependencies.
 
 The `./src` directory is also an input, but we wouldn't change the source from the caller. In `nixpkgs` we prefer to write another expression for version bumps (e.g. because patches or different inputs are needed).
 
@@ -212,15 +212,15 @@ If we wanted to change the toolchain, we would simply pass a different `mkDeriva
 
 Let's talk a closer look at the snippet and dissect the syntax:
 
--   The entire expression in `default.nix` returns an attribute set with the keys `hello`, `graphviz`, and `graphvizCore`.
+- The entire expression in `default.nix` returns an attribute set with the keys `hello`, `graphviz`, and `graphvizCore`.
 
--   With "`let`", we define some local variables.
+- With "`let`", we define some local variables.
 
--   We bring `pkgs` into the scope when defining the package set. This saves us from having to type `pkgs`" repeatedly.
+- We bring `pkgs` into the scope when defining the package set. This saves us from having to type `pkgs`" repeatedly.
 
--   We import `hello.nix` and `graphviz.nix`, which each return a function. We call the functions with a set of inputs to get back the derivation.
+- We import `hello.nix` and `graphviz.nix`, which each return a function. We call the functions with a set of inputs to get back the derivation.
 
--   The "`inherit x`" syntax is equivalent to "`x = x`". This means that the "`inherit gd`" here, combined with the above "`with pkgs;`", is equivalent to "`gd = pkgs.gd`".
+- The "`inherit x`" syntax is equivalent to "`x = x`". This means that the "`inherit gd`" here, combined with the above "`with pkgs;`", is equivalent to "`gd = pkgs.gd`".
 
 The entire repository of this can be found at the [pill 12](https://gist.github.com/tfc/ca800a444b029e85a14e530c25f8e872) gist.
 

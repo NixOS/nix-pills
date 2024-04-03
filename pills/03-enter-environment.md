@@ -28,13 +28,13 @@ Back to the installation:
 
 Now you can run `hello`. Things to notice:
 
--   We installed software as a user, and only for the Nix user.
+- We installed software as a user, and only for the Nix user.
 
--   It created a new user environment. That's a new generation of our Nix user profile.
+- It created a new user environment. That's a new generation of our Nix user profile.
 
--   The [nix-env](https://nixos.org/manual/nix/stable/command-ref/nix-env.html) tool manages environments, profiles and their generations.
+- The [nix-env](https://nixos.org/manual/nix/stable/command-ref/nix-env.html) tool manages environments, profiles and their generations.
 
--   We installed `hello` by derivation name minus the version. I repeat: we specified the **derivation name** (minus the version) to install it.
+- We installed `hello` by derivation name minus the version. I repeat: we specified the **derivation name** (minus the version) to install it.
 
 We can list generations without walking through the `/nix` hierarchy:
 
@@ -135,7 +135,7 @@ A nicer view of the closure:
     $ nix-store -q --tree `which man`
     [...]
 
-With the above command, you can find out exactly why a *runtime* dependency, be it direct or indirect, exists for a given derivation.
+With the above command, you can find out exactly why a _runtime_ dependency, be it direct or indirect, exists for a given derivation.
 
 The same applies to environments. As an exercise, run `nix-store -q --tree ~/.nix-profile`, and see that the first children are direct dependencies of the user environment: the installed derivations, and the `manifest.nix`.
 
@@ -162,7 +162,7 @@ The first option is to rollback:
 
 The second option is to install Nix, thus creating a new generation:
 
-    $ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env 
+    $ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env
 
 ## Channels
 

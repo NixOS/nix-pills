@@ -140,7 +140,7 @@ It doesn't matter which input derivations are being used, the final out path mus
 What nix does is to create an intermediate string representation of the fixed-output content:
 
     $ echo -n "fixed:out:sha256:f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb:" > mycontent.str
-    $ sha256sum mycontent.str 
+    $ sha256sum mycontent.str
     423e6fdef56d53251c5939359c375bf21ea07aaa8d89ca5798fb374dbcfd7639  myfile.str
 
 Then proceed as it was a normal derivation output path:

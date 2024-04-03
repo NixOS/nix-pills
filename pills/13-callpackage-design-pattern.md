@@ -33,11 +33,11 @@ To achieve this, we will define a `callPackage` function with the following call
 
 We want `callPackage` to be a function of two arguments, with the following behavior:
 
--   Import the given expression contained in the file of the first argument, and return a function. This function returns a package derivation that uses the inputs pattern.
+- Import the given expression contained in the file of the first argument, and return a function. This function returns a package derivation that uses the inputs pattern.
 
--   Determine the name of the arguments to the function (i.e., the names of the inputs to the package derivation).
+- Determine the name of the arguments to the function (i.e., the names of the inputs to the package derivation).
 
--   Pass default arguments from the repository set, and let us override those arguments if we wish to customize the package derivation.
+- Pass default arguments from the repository set, and let us override those arguments if we wish to customize the package derivation.
 
 ## Implementing `callPackage`
 
@@ -55,9 +55,9 @@ The next step is to make `callPackage` automatically pass inputs to our package 
 
 To do this, we need two things:
 
--   A package repository set containing package derivations that match the arguments names we've obtained
+- A package repository set containing package derivations that match the arguments names we've obtained
 
--   A way to obtain an auto-populated attribute set combining the package repository and the return value of `functionArgs`.
+- A way to obtain an auto-populated attribute set combining the package repository and the return value of `functionArgs`.
 
 The former is easy: we just have to set our package derivation's inputs to be package names in a repository, such as `nixpkgs`. For the latter, Nix provides another builtin function:
 
@@ -79,15 +79,15 @@ This is all we need to do: we have obtained the argument names from a function, 
 
 Let's dissect the above snippet:
 
--   We define a `callPackage` variable which is a function.
+- We define a `callPackage` variable which is a function.
 
--   The first parameter to the `callPackage` function is a set of name-value pairs that may appear in the argument set of the function we wish to "autocall".
+- The first parameter to the `callPackage` function is a set of name-value pairs that may appear in the argument set of the function we wish to "autocall".
 
--   The second parameter is the function to "autocall"
+- The second parameter is the function to "autocall"
 
--   We take the argument names of the function and intersect with the set of all values.
+- We take the argument names of the function and intersect with the set of all values.
 
--   Finally, we call the passed function `f` with the resulting intersection.
+- Finally, we call the passed function `f` with the resulting intersection.
 
 In the snippet above, we've also demonstrated that the `callPackage` call is equivalent to directly calling `add a b`.
 
@@ -127,17 +127,17 @@ Given our `callPackages`, we can simplify the repository expression in `default.
 
 Let's examine this in detail:
 
--   The expression above defines our own package repository, which we call `pkgs`, that contains `hello` along with our two variants of `graphviz`.
+- The expression above defines our own package repository, which we call `pkgs`, that contains `hello` along with our two variants of `graphviz`.
 
--   In the `let` expression, we import `nixpkgs`. Note that previously, we referred to this import with the variable `pkgs`, but now that name is taken by the repository we are creating ourselves.
+- In the `let` expression, we import `nixpkgs`. Note that previously, we referred to this import with the variable `pkgs`, but now that name is taken by the repository we are creating ourselves.
 
--   We needed a way to pass `pkgs` to `callPackage` somehow. Instead of returning the set of packages directly from `default.nix`, we first assign it to a `let` variable and reuse it in `callPackage`.
+- We needed a way to pass `pkgs` to `callPackage` somehow. Instead of returning the set of packages directly from `default.nix`, we first assign it to a `let` variable and reuse it in `callPackage`.
 
--   For convenience, in `callPackage` we first import the file instead of calling it directly. Otherwise we would have to write the `import` for each package.
+- For convenience, in `callPackage` we first import the file instead of calling it directly. Otherwise we would have to write the `import` for each package.
 
--   Since our expressions use packages from `nixpkgs`, in `callPackage` we use `allPkgs`, which is the union of `nixpkgs` and our packages.
+- Since our expressions use packages from `nixpkgs`, in `callPackage` we use `allPkgs`, which is the union of `nixpkgs` and our packages.
 
--   We moved `mkDerivation` into `pkgs` itself, so that it also gets passed automatically.
+- We moved `mkDerivation` into `pkgs` itself, so that it also gets passed automatically.
 
 Note how easily we overrode arguments in the case of `graphviz` without `gd`. In addition, note how easy it was to merge two repositories: `nixpkgs` and our `pkgs`!
 

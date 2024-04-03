@@ -26,7 +26,7 @@ Let's say you need an nginx service and also an nginx-openresty service. You hav
 
 Or suppose that you want to run two different instances of mysql: 5.2 and 5.5. The same thing applies, plus you have to also make sure the two mysqlclient libraries do not collide.
 
-This is not impossible but it *is* very inconvenient. If you want to install two whole stacks of software like GNOME 3.10 and GNOME 3.12, you can imagine the amount of work.
+This is not impossible but it _is_ very inconvenient. If you want to install two whole stacks of software like GNOME 3.10 and GNOME 3.12, you can imagine the amount of work.
 
 From an administrator's point of view: you can use containers. The typical solution nowadays is to create a container per service, especially when different versions are needed. That somewhat solves the problem, but at a different level and with other drawbacks. For example, needing orchestration tools, setting up a shared cache of packages, and new machines to monitor rather than simple services.
 
@@ -36,7 +36,7 @@ And so on. Nix solves all this at the packaging level and solves it well. A sing
 
 ## Being purely functional
 
-Nix makes no assumptions about the global state of the system. This has many advantages, but also some drawbacks of course. The core of a Nix system is the Nix store, usually installed under `/nix/store`, and some tools to manipulate the store. In Nix there is the notion of a *derivation* rather than a package. The difference can be subtle at the beginning, so I will often use the words interchangeably.
+Nix makes no assumptions about the global state of the system. This has many advantages, but also some drawbacks of course. The core of a Nix system is the Nix store, usually installed under `/nix/store`, and some tools to manipulate the store. In Nix there is the notion of a _derivation_ rather than a package. The difference can be subtle at the beginning, so I will often use the words interchangeably.
 
 Derivations/packages are stored in the Nix store as follows: `/nix/store/hash-name`, where the hash uniquely identifies the derivation (this isn't quite true, it's a little more complex), and the name is the name of the derivation.
 
@@ -85,7 +85,7 @@ If there is a data format change, then migrating to the new data format remains 
 
 Nix lets you compose software at build time with maximum flexibility, and with builds being as reproducible as possible. Not only that, due to its nature deploying systems in the cloud is so easy, consistent, and reliable that in the Nix world all existing self-containment and orchestration tools are deprecated by [NixOps](http://nixos.org/nixops/).
 
-It however *currently* falls short when working with dynamic composition at runtime or replacing low level libraries, due to the need to rebuild dependencies.
+It however _currently_ falls short when working with dynamic composition at runtime or replacing low level libraries, due to the need to rebuild dependencies.
 
 That may sound scary, however after running NixOS on both a server and a laptop desktop, I'm very satisfied so far. Some of the architectural problems just need some man-power, other design problems still need to be solved as a community.
 

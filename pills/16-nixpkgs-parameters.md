@@ -16,11 +16,11 @@ The `all-packages.nix` is then the file that composes all the packages. Note the
 
 The `all-packages.nix` is a bit contrived. First of all, it's a function. It accepts a couple of interesting parameters:
 
--   `system`: defaults to the current system
+- `system`: defaults to the current system
 
--   `config`: defaults to null
+- `config`: defaults to null
 
--   others...
+- others...
 
 The **system** parameter, as per comment in the expression, it's the system for which the packages will be built. It allows for example to install i686 packages on amd64 machines.
 
@@ -73,9 +73,9 @@ A `.nix` file contains a nix expression. Thus it can also be a function. I remin
 
 In this case, nix does a trick:
 
--   If the expression is a derivation, build it.
+- If the expression is a derivation, build it.
 
--   If the expression is a function, call it and build the resulting derivation.
+- If the expression is a function, call it and build the resulting derivation.
 
 For example you can nix-build the `.nix` file below:
 
