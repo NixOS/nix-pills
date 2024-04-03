@@ -103,9 +103,9 @@ In summary, it may happen when playing with nix that `nix-env` picks a different
 
 Why is `nix-env` having this different behavior? I don't know specifically by myself either, but the answers could be:
 
--   `nix-env` tries to be generic, thus it does not look for `nixpkgs` in `NIX_PATH`, rather it looks in `~/.nix-defexpr`.
+- `nix-env` tries to be generic, thus it does not look for `nixpkgs` in `NIX_PATH`, rather it looks in `~/.nix-defexpr`.
 
--   `nix-env` is able to merge multiple trees in `~/.nix-defexpr` by looking at all the possible derivations
+- `nix-env` is able to merge multiple trees in `~/.nix-defexpr` by looking at all the possible derivations
 
 It may also happen to you **that you cannot match a derivation name when installing**, because of the derivation name vs -A switch described above. Maybe `nix-env` wanted to be more friendly in this case for default user setups.
 

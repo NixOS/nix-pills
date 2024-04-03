@@ -29,7 +29,7 @@ What we have to do is create something in the path `$out`, be it a file or a dir
 
 In addition, we print out the environment variables during the build process. We cannot use env for this, because env is part of coreutils and we don't have a dependency to it yet. We only have bash for now.
 
-Like for coreutils in the previous pill, we get a blessed bash for free from our magic nixpkgs stuff: 
+Like for coreutils in the previous pill, we get a blessed bash for free from our magic nixpkgs stuff:
 
 ```
 nix-repl> :l <nixpkgs>
@@ -80,15 +80,15 @@ declare -x system="x86_64-linux"
 
 Let's inspect those environment variables printed during the build process.
 
--   `$HOME` is not your home directory, and `/homeless-shelter` doesn't exist at all. We force packages not to depend on `$HOME` during the build process.
+- `$HOME` is not your home directory, and `/homeless-shelter` doesn't exist at all. We force packages not to depend on `$HOME` during the build process.
 
--   `$PATH` plays the same game as `$HOME`
+- `$PATH` plays the same game as `$HOME`
 
--   `$NIX_BUILD_CORES` and `$NIX_STORE` are [nix configuration options](https://nixos.org/manual/nix/stable/command-ref/conf-file.html)
+- `$NIX_BUILD_CORES` and `$NIX_STORE` are [nix configuration options](https://nixos.org/manual/nix/stable/command-ref/conf-file.html)
 
--   `$PWD` and `$TMP` clearly show that nix created a temporary build directory
+- `$PWD` and `$TMP` clearly show that nix created a temporary build directory
 
--   Then `$builder`, `$name`, `$out`, and `$system` are variables set due to the .drv file's contents.
+- Then `$builder`, `$name`, `$out`, and `$system` are variables set due to the .drv file's contents.
 
 And that's how we were able to use `$out` in our derivation and put stuff in it. It's like Nix reserved a slot in the nix store for us, and we must fill it.
 
@@ -148,7 +148,7 @@ And its `simple_builder.sh`:
     mkdir $out
     gcc -o $out/simple $src
 
-Don't worry too much about where those variables come from yet; let's write the derivation and build it: 
+Don't worry too much about where those variables come from yet; let's write the derivation and build it:
 
 ```
 nix-repl> :l <nixpkgs>
@@ -196,9 +196,9 @@ Now you can build it with `nix-build simple.nix`. This will create a symlink `re
 
 nix-build does two jobs:
 
--   [ nix-instantiate ](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html): parse and evaluate `simple.nix` and return the .drv file corresponding to the parsed derivation set
+- [ nix-instantiate ](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html): parse and evaluate `simple.nix` and return the .drv file corresponding to the parsed derivation set
 
--   [ `nix-store -r` ](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise): realise the .drv file, which actually builds it.
+- [ `nix-store -r` ](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise): realise the .drv file, which actually builds it.
 
 Finally, it creates the symlink.
 
@@ -230,4 +230,4 @@ This syntax only makes sense inside sets. There's no magic involved, it's simply
 
 We will generalize the builder. You may have noticed that we wrote two separate `builder.sh` scripts in this post. We would like to have a generic builder script instead, especially since each build script goes in the nix store: a bit of a waste.
 
-*Is it really that hard to package stuff in Nix? No*, here we're studying the fundamentals of Nix.
+_Is it really that hard to package stuff in Nix? No_, here we're studying the fundamentals of Nix.

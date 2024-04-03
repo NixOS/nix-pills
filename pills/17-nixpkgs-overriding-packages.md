@@ -58,11 +58,11 @@ At first sight, it's an infinite loop. With lazy evaluation it isn't, because th
 
 Without the `rec` keyword, we were able to refer to `a` and `b` of the same set.
 
--   First `pkgs` gets called with an unevaluated thunk `(pkgs(pkgs(...)`
+- First `pkgs` gets called with an unevaluated thunk `(pkgs(pkgs(...)`
 
--   To set the value of `c` then `self.a` and `self.b` are evaluated.
+- To set the value of `c` then `self.a` and `self.b` are evaluated.
 
--   The `pkgs` function gets called again to get the value of `a` and `b`.
+- The `pkgs` function gets called again to get the value of `a` and `b`.
 
 The trick is that `c` is not needed to be evaluated in the inner call, thus it doesn't go in an infinite loop.
 

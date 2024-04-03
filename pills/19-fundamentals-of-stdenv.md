@@ -63,7 +63,7 @@ How to use this file? Like our old builder. To test it, we enter a fake empty de
     nix-shell$ buildPhase
     ...
 
-*I unset `PATH` to further show that the `stdenv` is sufficiently self-contained to build autotools packages that have no other dependencies.*
+_I unset `PATH` to further show that the `stdenv` is sufficiently self-contained to build autotools packages that have no other dependencies._
 
 So we ran the `configurePhase` function and `buildPhase` function and they worked. These bash functions should be self-explanatory. You can read the code in the `setup` file.
 
@@ -181,13 +181,13 @@ The `stdenv` is the core of the `nixpkgs` repository. All packages use the `stde
 
 The overall process is simple:
 
--   `nix-build`
+- `nix-build`
 
--   `bash -e default-builder.sh`
+- `bash -e default-builder.sh`
 
--   `source $stdenv/setup`
+- `source $stdenv/setup`
 
--   `genericBuild`
+- `genericBuild`
 
 That's it. Everything you need to know about the stdenv phases is in the [setup file](https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh).
 

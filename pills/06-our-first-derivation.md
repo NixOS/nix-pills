@@ -14,11 +14,11 @@ That's where the real power comes in.
 
 The `derivation` function receives a set as its first argument. This set requires at least the following three attributes:
 
--   name: the name of the derivation. In the nix store the format is hash-name, that's the name.
+- name: the name of the derivation. In the nix store the format is hash-name, that's the name.
 
--   system: is the name of the system in which the derivation can be built. For example, x86_64-linux.
+- system: is the name of the system in which the derivation can be built. For example, x86_64-linux.
 
--   builder: is the binary program that builds the derivation.
+- builder: is the binary program that builds the derivation.
 
 First of all, what's the name of our system as seen by nix?
 
@@ -39,11 +39,11 @@ What's that `.drv` file? It is the specification of how to build the derivation,
 
 Before continuing, some analogies with the C language:
 
--   `.nix` files are like `.c` files.
+- `.nix` files are like `.c` files.
 
--   `.drv` files are intermediate files like `.o` files. The `.drv` describes how to build a derivation; it's the bare minimum information.
+- `.drv` files are intermediate files like `.o` files. The `.drv` describes how to build a derivation; it's the bare minimum information.
 
--   out paths are then the product of the build.
+- out paths are then the product of the build.
 
 Both drv paths and out paths are stored in the nix store as you can see.
 
@@ -259,9 +259,9 @@ Nix does not build derivations **during evaluation** of Nix expressions. In fact
 
 An important separation is made in Nix:
 
--   **Instantiate/Evaluation time**: the Nix expression is parsed, interpreted and finally returns a derivation set. During evaluation, you can refer to other derivations because Nix will create .drv files and we will know out paths beforehand. This is achieved with [nix-instantiate](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html).
+- **Instantiate/Evaluation time**: the Nix expression is parsed, interpreted and finally returns a derivation set. During evaluation, you can refer to other derivations because Nix will create .drv files and we will know out paths beforehand. This is achieved with [nix-instantiate](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html).
 
--   **Realise/Build time**: the .drv from the derivation set is built, first building .drv inputs (build dependencies). This is achieved with [nix-store -r](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise).
+- **Realise/Build time**: the .drv from the derivation set is built, first building .drv inputs (build dependencies). This is achieved with [nix-store -r](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise).
 
 Think of it as of compile time and link time like with C/C++ projects. You first compile all source files to object files. Then link object files in a single executable.
 

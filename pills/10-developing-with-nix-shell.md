@@ -31,9 +31,9 @@ This means that we can `source` our `builder.sh`, and it will build the derivati
 
 The derivation didn't install, but it did build. Note the following:
 
--   We sourced `builder.sh` and it ran all of the build steps, including setting up the `PATH` for us.
+- We sourced `builder.sh` and it ran all of the build steps, including setting up the `PATH` for us.
 
--   The working directory is no longer a temp directory created by `nix-build`, but is instead the directory in which we entered the shell. Therefore, `hello-2.10` has been unpacked in the current directory.
+- The working directory is no longer a temp directory created by `nix-build`, but is instead the directory in which we entered the shell. Therefore, `hello-2.10` has been unpacked in the current directory.
 
 We are able to `cd` into `hello-2.10` and type `make`, because `make` is now available.
 

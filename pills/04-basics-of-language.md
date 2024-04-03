@@ -110,7 +110,7 @@ Escaping `${...}` within double quoted strings is done with the backslash. Withi
 
 ## Lists
 
-Lists are a sequence of expressions delimited by space (*not* comma):
+Lists are a sequence of expressions delimited by space (_not_ comma):
 
     nix-repl> [ 2 "foo" true (2+3) ]
     [ 2 "foo" true 5 ]
@@ -205,7 +205,7 @@ This kind of expression is something you rarely see in other languages. You can 
     nix-repl> with longName; a + b
     7
 
-That's it, it takes an attribute set and includes symbols from it in the scope of the inner expression. Of course, only valid identifiers from the keys of the set will be included. If a symbol exists in the outer scope and would also be introduced by the `with`, it will *not* be shadowed. You can however still refer to the attribute set:
+That's it, it takes an attribute set and includes symbols from it in the scope of the inner expression. Of course, only valid identifiers from the keys of the set will be included. If a symbol exists in the outer scope and would also be introduced by the `with`, it will _not_ be shadowed. You can however still refer to the attribute set:
 
     nix-repl> let a = 10; in with longName; a + b
     14

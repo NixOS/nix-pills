@@ -71,6 +71,7 @@ Darwin (i.e. macOS) builds typically use `clang` rather than `gcc` for a C compi
     }
 
 Later, we will show how Nix can automatically handle these differences. For now, please be just aware that changes similar to the above may be needed in what follows.
+
 </div>
 
 Now build it with `nix-build hello.nix` and you can launch `result/bin/hello`. Nothing easier, but do we have to create a builder.sh for each package? Do we always have to pass the dependencies to the `derivation` function?
@@ -226,11 +227,11 @@ Then we rewrite `hello.nix` as follows:
 
 Finally! We got a very simple description of a package! Below are a couple of remarks that you may find useful as you're continuing to understand the nix language:
 
--   We assigned to pkgs the import that we did in the previous expressions in the "with". Don't be afraid, it's that straightforward.
+- We assigned to pkgs the import that we did in the previous expressions in the "with". Don't be afraid, it's that straightforward.
 
--   The mkDerivation variable is a nice example of partial application, look at it as (`import ./autotools.nix`) `pkgs`. First we import the expression, then we apply the `pkgs` parameter. That will give us a function that accepts the attribute set `attrs`.
+- The mkDerivation variable is a nice example of partial application, look at it as (`import ./autotools.nix`) `pkgs`. First we import the expression, then we apply the `pkgs` parameter. That will give us a function that accepts the attribute set `attrs`.
 
--   We create the derivation specifying only name and src. If the project eventually needed other dependencies to be in PATH, then we would simply add those to buildInputs (not specified in hello.nix because empty).
+- We create the derivation specifying only name and src. If the project eventually needed other dependencies to be in PATH, then we would simply add those to buildInputs (not specified in hello.nix because empty).
 
 Note we didn't use any other library. Special C flags may be needed to find include files of other libraries at compile time, and ld flags at link time.
 
