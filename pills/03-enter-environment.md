@@ -16,7 +16,7 @@ $ source ~/.nix-profile/etc/profile.d/nix.sh
 
 To remind you, `~/.nix-profile/etc` points to the `nix-2.1.3` derivation. At this point, we are in our Nix user profile.
 
-## Install something
+## Install something {#install-something}
 
 Finally something practical! Installation into the Nix environment is an interesting process. Let's install `hello`, a simple CLI tool which prints `Hello world` and is mainly used to test compilers and package installations.
 
