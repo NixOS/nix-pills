@@ -68,6 +68,8 @@
         sed -Ei 's~(<h[1-6])(>.+) \{#([^\}]+)\}(</h[1-6]>)~\1 id="\3"\2\4~g' OEBPS/*.html
         # Fix broken links in body.
         sed -Ei 's/("[0-9a-z-]+\.)md(["#])/\1html\2/g' OEBPS/*.html
+        # Remove unnecessary page breaks, the sections are short.
+        substituteInPlace OEBPS/stylesheet.css --replace-fail "page-break-before: always;" ""
         zip -q "../book/epub/Nix Pills.epub" **/*
       )
 
