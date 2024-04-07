@@ -38,7 +38,7 @@ And so on. Nix solves all this at the packaging level and solves it well. A sing
 
 Nix makes no assumptions about the global state of the system. This has many advantages, but also some drawbacks of course. The core of a Nix system is the Nix store, usually installed under `/nix/store`, and some tools to manipulate the store. In Nix there is the notion of a _derivation_ rather than a package. The difference can be subtle at the beginning, so I will often use the words interchangeably.
 
-Derivations/packages are stored in the Nix store as follows: `/nix/store/hash-name`, where the hash uniquely identifies the derivation (this isn't quite true, it's a little more complex), and the name is the name of the derivation.
+Derivations/packages are stored in the Nix store as follows: `/nix/store/«hash-name»`, where the hash uniquely identifies the derivation (this isn't quite true, it's a little more complex), and the name is the name of the derivation.
 
 Let's take a bash derivation as an example: `/nix/store/s4zia7hhqkin1di0f187b79sa2srhv6k-bash-4.2-p45/`. This is a directory in the Nix store which contains `bin/bash`.
 
