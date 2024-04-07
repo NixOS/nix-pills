@@ -28,7 +28,7 @@ copying Nix to /nix/store..........................
 
 That's the `/nix/store` we were talking about in the first article. We're copying in the necessary software to bootstrap a Nix system. You can see bash, coreutils, the C compiler toolchain, perl libraries, sqlite and Nix itself with its own tools and libnix.
 
-You may have noticed that `/nix/store` can contain not only directories, but also files, still always in the form \<hash-name\>.
+You may have noticed that `/nix/store` can contain not only directories, but also files, still always in the form «hash-name».
 
 ## The Nix database
 

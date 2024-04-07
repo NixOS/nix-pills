@@ -111,7 +111,7 @@ With the real `hello` on the `PATH`, the `installPhase` should hopefully make se
 
 ## The `propagatedBuildInputs` Attribute
 
-The `buildInputs` covers direct dependencies, but what about indirect dependencies where one package needs a second package which needs a third? Nix itself handles this just fine, understanding various dependency closures as covered in previous builds. But what about the conveniences that `buildInputs` provides, namely accumulating in `pkgs` environment variable and inclusion of `pkg/bin` directories on the `PATH`? For this, stdenv provides the `propagatedBuildInputs`:
+The `buildInputs` covers direct dependencies, but what about indirect dependencies where one package needs a second package which needs a third? Nix itself handles this just fine, understanding various dependency closures as covered in previous builds. But what about the conveniences that `buildInputs` provides, namely accumulating in `pkgs` environment variable and inclusion of `«pkg»/bin` directories on the `PATH`? For this, stdenv provides the `propagatedBuildInputs`:
 
 ```nix
 let
@@ -212,7 +212,7 @@ This demonstrates an important point. For the _current_ package alone, it doesn'
 
 ## Setup Hooks
 
-As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just _being_ a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively "injecting" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. _Arbitrary_ is the key word here. We could teach `setup.sh` things about upstream packages like `pkg/nix-support/propagated-build-inputs`, but not arbitrary interactions.
+As we mentioned above, sometimes dependencies need to influence the packages that use them in ways other than just _being_ a dependency. [^1] `propagatedBuildInputs` can actually be seen as an example of this: packages using that are effectively "injecting" those dependencies as extra `buildInputs` in their downstream dependents. But in general, a dependency might affect the packages it depends on in arbitrary ways. _Arbitrary_ is the key word here. We could teach `setup.sh` things about upstream packages like `«pkg»/nix-support/propagated-build-inputs`, but not arbitrary interactions.
 
 Setup hooks are the basic building block we have for this. In nixpkgs, a "hook" is basically a bash callback, and a setup hook is no exception. Let's look at the last part of `findInputs` we haven't covered:
 
@@ -231,7 +231,7 @@ findInputs() {
 }
 ```
 
-If a package includes the path `pkg/nix-support/setup-hook`, it will be sourced by any stdenv-based build including that as a dependency.
+If a package includes the path `«pkg»/nix-support/setup-hook`, it will be sourced by any stdenv-based build including that as a dependency.
 
 This is strictly more general than any of the other mechanisms introduced in this chapter. For example, try writing a setup hook that has the same effect as a _propagatedBuildInputs_ entry. One can almost think of this as an escape hatch around Nix's normal isolation guarantees, and the principle that dependencies are immutable and inert. We're not actually doing something unsafe or modifying dependencies, but we are allowing arbitrary ad-hoc behavior. For this reason, setup-hooks should only be used as a last resort.
 
