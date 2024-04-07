@@ -103,7 +103,7 @@ Running `nix-collect-garbage` after deleting the GC root or the indirect GC root
 
 ## Cleanup everything
 
-The main source of software duplication in the nix store comes from GC roots, due to `nix-build` and profile generations. Running `nix-build` results in a GC root for the build that refers to a specific version of specific libraries, such as glibc. After an upgrade, we must delete the previous build if we want the garbage collector to remove the corresponding derivation, as well as if we want old dependencies cleaned up.
+The main source of software duplication in the nix store comes from GC roots, due to `nix-build` and profile generations. Running `nix-build` results in a GC root for the build that refers to a specific version of specific libraries, such as `glibc`. After an upgrade, we must delete the previous build if we want the garbage collector to remove the corresponding derivation, as well as if we want old dependencies cleaned up.
 
 The same holds for profiles. Manipulating the `nix-env` profile will create further generations. Old generations refer to old software, thus increasing duplication in the nix store after an upgrade.
 

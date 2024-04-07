@@ -45,7 +45,7 @@ defaultNativeBuildInputs="/nix/store/sgwq15xg00xnm435gjicspm048rqg9y6-patchelf-0
 
 ## The setup file
 
-Remember our generic `builder.sh` in [Pill 8](08-generic-builders.md)? It sets up a basic `PATH`, unpacks the source and runs the usual autotools commands for us.
+Remember our generic `builder.sh` in [Pill 8](08-generic-builders.md)? It sets up a basic `PATH`, unpacks the source and runs the usual `autotools` commands for us.
 
 The [stdenv setup file](https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh) is exactly that. It sets up several environment variables like `PATH` and creates some helper bash functions to build a package. I invite you to read it.
 

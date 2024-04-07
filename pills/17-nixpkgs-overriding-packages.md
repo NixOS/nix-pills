@@ -10,7 +10,7 @@ Recall the override design pattern from the [nix pill 14](14-override-design-pat
 
 We put the override function in the returned attribute set of the original function call.
 
-Take for example graphviz. It has an input parameter xorg. If it's null, then graphviz will build without X support.
+Take for example `graphviz`. It has an input parameter `xorg`. If it's null, then `graphviz` will build without X support.
 
 ```console
 $ nix repl
@@ -19,9 +19,9 @@ Added 4360 variables.
 nix-repl> :b graphviz.override { withXorg = false; }
 ```
 
-This will build graphviz without X support, it's as simple as that.
+This will build `graphviz` without X support, it's as simple as that.
 
-However, let's say a package `P` depends on graphviz, how do we make `P` depend on the new graphviz without X support?
+However, let's say a package `P` depends on `graphviz`, how do we make `P` depend on the new `graphviz` without X support?
 
 ## In an imperative world...
 
@@ -33,7 +33,7 @@ pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
 build(pkgs.P)
 ```
 
-Given `pkgs.P` depends on `pkgs.graphviz`, it's easy to build `P` with the replaced graphviz. In a pure functional language it's not that easy because you can assign to variables only once.
+Given `pkgs.P` depends on `pkgs.graphviz`, it's easy to build `P` with the replaced `graphviz`. In a pure functional language it's not that easy because you can assign to variables only once.
 
 ## Fixed point
 
@@ -109,16 +109,16 @@ Create a `config.nix` file like this somewhere:
 }
 ```
 
-Now we can build e.g. asciidoc-full and it will automatically use the overridden graphviz:
+Now we can build e.g. `asciidoc-full` and it will automatically use the overridden `graphviz`:
 
 ```console
 nix-repl> pkgs = import <nixpkgs> { config = import ./config.nix; }
 nix-repl> :b pkgs.asciidoc-full
 ```
 
-Note how we pass the `config` with `packageOverrides` when importing `nixpkgs`. Then `pkgs.asciidoc-full` is a derivation that has graphviz input (`pkgs.asciidoc` is the lighter version and doesn't use graphviz at all).
+Note how we pass the `config` with `packageOverrides` when importing `nixpkgs`. Then `pkgs.asciidoc-full` is a derivation that has `graphviz` input (`pkgs.asciidoc` is the lighter version and doesn't use `graphviz` at all).
 
-Since there's no version of asciidoc with graphviz without X support in the binary cache, Nix will recompile the needed stuff for you.
+Since there's no version of `asciidoc` with `graphviz` without X support in the binary cache, Nix will recompile the needed stuff for you.
 
 ## The \~/.config/nixpkgs/config.nix file
 
@@ -132,9 +132,9 @@ We've learned about a new design pattern: using fixed point for overriding packa
 
 Whereas in an imperative setting, like with other package managers, a library is installed replacing the old version and applications will use it, in Nix it's not that straight and simple. But it's more precise.
 
-Nix applications will depend on specific versions of libraries, hence the reason why we have to recompile asciidoc to use the new graphviz library.
+Nix applications will depend on specific versions of libraries, hence the reason why we have to recompile `asciidoc` to use the new `graphviz` library.
 
-The newly built asciidoc will depend on the new graphviz, and old asciidoc will keep using the old graphviz undisturbed.
+The newly built `asciidoc` will depend on the new `graphviz`, and old `asciidoc` will keep using the old `graphviz` undisturbed.
 
 ## Next pill
 

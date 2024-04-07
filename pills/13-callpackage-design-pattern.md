@@ -1,6 +1,6 @@
 # Callpackage Design Pattern
 
-Welcome to the 13th Nix pill. In the previous [12th pill](12-inputs-design-pattern.md), we introduced the first basic design pattern for organizing a repository of software. In addition, we packaged graphviz so that we had two packages to bundle into an example repository.
+Welcome to the 13th Nix pill. In the previous [12th pill](12-inputs-design-pattern.md), we introduced the first basic design pattern for organizing a repository of software. In addition, we packaged `graphviz` so that we had two packages to bundle into an example repository.
 
 The next design pattern we will examine is called the `callPackage` pattern. This technique is extensively used in [nixpkgs](https://github.com/NixOS/nixpkgs), and it's the current de facto standard for importing packages in a repository. Its purpose is to reduce the duplication of identifiers between package derivation inputs and repository derivations.
 
@@ -169,4 +169,4 @@ Writing a repository in Nix is an evolution of writing convenient functions for 
 
 ## Next pill
 
-In the next pill, we will talk about the "`override`" design pattern. The `graphvizCore` seems straightforward. It starts from `graphviz.nix` and builds it without gd. In the next pill, we will consider another point of view: starting from `pkgs.graphviz` and disabling gd?
+In the next pill, we will talk about the "`override`" design pattern. The `graphvizCore` seems straightforward. It starts from `graphviz.nix` and builds it without `gd`. In the next pill, we will consider another point of view: starting from `pkgs.graphviz` and disabling `gd`?

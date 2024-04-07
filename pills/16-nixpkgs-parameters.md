@@ -45,7 +45,7 @@ Why is it useful? With this parameter it's very easy to select a set of packages
 nix-build -A psmisc --argstr system i686-linux
 ```
 
-This will build the psmisc derivation for i686-linux instead of x86_64-linux. This concept is very similar to multi-arch of Debian.
+This will build the `psmisc` derivation for i686-linux instead of x86_64-linux. This concept is very similar to multi-arch of Debian.
 
 The setup for cross compiling is also in `nixpkgs`, however it's a little contrived to talk about it and I don't know much of it either.
 
@@ -71,7 +71,7 @@ nix-repl> pkgs.config
 
 What attributes go in `config` is a matter of convenience and conventions.
 
-For example, `config.allowUnfree` is an attribute that forbids building packages that have an unfree license by default. The `config.pulseaudio` setting tells whether to build packages with pulseaudio support or not where applicable and when the derivation obeys to the setting.
+For example, `config.allowUnfree` is an attribute that forbids building packages that have an unfree license by default. The `config.pulseaudio` setting tells whether to build packages with `pulseaudio` support or not where applicable and when the derivation obeys to the setting.
 
 ## About .nix functions
 

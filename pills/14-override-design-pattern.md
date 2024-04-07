@@ -24,13 +24,13 @@ Designing such utilities is not trivial in a functional language without static 
 
 In [pill 12](12-inputs-design-pattern.md) we introduced the inputs design pattern. We do not return a derivation picking dependencies directly from the repository; rather we declare the inputs and let the callers pass the necessary arguments.
 
-In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let's take for example the graphviz attribute:
+In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let's take for example the `graphviz` attribute:
 
 ```nix
 graphviz = import ./graphviz.nix { inherit mkDerivation gd fontconfig libjpeg bzip2; };
 ```
 
-If we wanted to produce a derivation of graphviz with a customized gd version, we would have to repeat most of the above plus specifying an alternative gd:
+If we wanted to produce a derivation of `graphviz` with a customized `gd` version, we would have to repeat most of the above plus specifying an alternative `gd`:
 
 ```nix
 {
@@ -54,7 +54,7 @@ mygraphviz = callPackage ./graphviz.nix { gd = customgd; };
 
 But we may still be diverging from the original graphviz in the repository.
 
-We would like to avoid specifying the nix expression again. Instead, we would like to reuse the original graphviz attribute in the repository and add our overrides like so:
+We would like to avoid specifying the nix expression again. Instead, we would like to reuse the original `graphviz` attribute in the repository and add our overrides like so:
 
 ```nix
 mygraphviz = graphviz.override { gd = customgd; };
@@ -66,7 +66,7 @@ Note: that `.override` is not a "method" in the OO sense as you may think. Nix i
 
 ## The override implementation
 
-Recall that the graphviz attribute in the repository is the derivation returned by the function imported from `graphviz.nix`. We would like to add a further attribute named "`override`" to the returned set.
+Recall that the `graphviz` attribute in the repository is the derivation returned by the function imported from `graphviz.nix`. We would like to add a further attribute named "`override`" to the returned set.
 
 Let's start by first creating a function "`makeOverridable`". This function will take two arguments: a function (that must return a set) and the set of original arguments to be passed to the function.
 
@@ -148,7 +148,7 @@ Now it would be nice if `callPackage` made our derivations overridable. This is 
 
 The "`override`" pattern simplifies the way we customize packages starting from an existing set of packages. This opens a world of possibilities for using a central repository like `nixpkgs` and defining overrides on our local machine without modifying the original package.
 
-We can dream of a custom, isolated `nix-shell` environment for testing graphviz with a custom gd:
+We can dream of a custom, isolated `nix-shell` environment for testing `graphviz` with a custom `gd`:
 
 ```nix
 debugVersion (graphviz.override { gd = customgd; })
