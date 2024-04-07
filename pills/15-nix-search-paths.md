@@ -71,7 +71,7 @@ $ nix-instantiate --eval '<mypkgs>'
 { graphviz = <code>; graphvizCore = <code>; hello = <code>; mkDerivation = <code>; }
 ```
 
-Yes, `nix-build` also accepts paths with angular brackets. We first evaluate the whole repository (`default.nix`) and then pick the graphviz attribute.
+Yes, `nix-build` also accepts paths with angular brackets. We first evaluate the whole repository (`default.nix`) and then pick the `graphviz` attribute.
 
 ## A big word about nix-env
 
@@ -92,7 +92,7 @@ replacing old `graphviz'
 installing `graphviz'
 ```
 
-Oh why did it say there's another derivation named graphviz? Because both `graphviz` and `graphvizCore` attributes in our repository have the name "graphviz" for the derivation:
+Oh why did it say there's another derivation named `graphviz`? Because both `graphviz` and `graphvizCore` attributes in our repository have the name "graphviz" for the derivation:
 
 ```console
 $ nix-env -f '<mypkgs>' -qaP

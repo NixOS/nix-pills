@@ -181,4 +181,4 @@ Also we've introduced some fundamentals, in particular the fact that Nix knows b
 
 ## Next pill
 
-...we will introduce `stdenv`. In the previous pills we rolled our own `mkDerivation` convenience function for wrapping the builtin derivation, but the `nixpkgs` repository also has its own convenience functions for dealing with autotools projects and other build systems.
+...we will introduce `stdenv`. In the previous pills we rolled our own `mkDerivation` convenience function for wrapping the builtin derivation, but the `nixpkgs` repository also has its own convenience functions for dealing with `autotools` projects and other build systems.

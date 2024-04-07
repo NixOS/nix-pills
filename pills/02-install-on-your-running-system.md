@@ -82,7 +82,7 @@ manifest.nix -> /nix/store/q8b5238akq07lj9gfb3qb5ycq4dxxiwm-<b>env-manifest.nix<
 share -> /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-<b>nix-2.1.3</b>/share
 </code></pre>
 
-That nix-2.1.3 derivation in the Nix store is Nix itself, with binaries and libraries. The process of "installing" the derivation in the profile basically reproduces the hierarchy of the nix-2.1.3 store derivation in the profile by means of symbolic links.
+That `nix-2.1.3` derivation in the Nix store is Nix itself, with binaries and libraries. The process of "installing" the derivation in the profile basically reproduces the hierarchy of the `nix-2.1.3` store derivation in the profile by means of symbolic links.
 
 The contents of this profile are special, because only one program has been installed in our profile, therefore e.g. the `bin` directory points to the only program which has been installed (Nix itself).
 
@@ -121,7 +121,7 @@ Read `nix.sh`, it's short.
 
 ## FAQ: Can I change /nix to something else?
 
-You can, but there's a good reason to keep using `/nix` instead of a different directory. All the derivations depend on other derivations by using absolute paths. We saw in the first article that bash referenced a glibc under a specific absolute path in `/nix/store`.
+You can, but there's a good reason to keep using `/nix` instead of a different directory. All the derivations depend on other derivations by using absolute paths. We saw in the first article that bash referenced a `glibc` under a specific absolute path in `/nix/store`.
 
 You can see for yourself, don't worry if you see multiple bash derivations:
 
@@ -132,9 +132,9 @@ $ ldd /nix/store/*bash*/bin/bash
 
 Keeping the store in `/nix` means we can grab the binary cache from nixos.org (just like you grab packages from debian mirrors) otherwise:
 
-- glibc would be installed under `/foo/store`
+- `glibc` would be installed under `/foo/store`
 
-- Thus bash would need to point to glibc under `/foo/store`, instead of under `/nix/store`
+- Thus bash would need to point to `glibc` under `/foo/store`, instead of under `/nix/store`
 
 - So the binary cache can't help, because we need a _different_ bash, and so we'd have to recompile everything ourselves.
 
