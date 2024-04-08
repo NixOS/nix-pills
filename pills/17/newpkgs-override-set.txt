@@ -1,5 +1,0 @@
-nix-repl> overrides = { a = 1; b = 2; }
-nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs
-{ a = 3; b = 4; c = 3; }
-nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs // overrides
-{ a = 1; b = 2; c = 3; }

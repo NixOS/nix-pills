@@ -70,13 +70,16 @@
     First of all, what's the name of our system as seen by nix?
   </para>
 
-  <screen><xi:include href="./06/current-system.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; builtins.currentSystem
+"x86_64-linux"</screen>
 
   <para>
     Let's try to fake the name of the system:
   </para>
 
-  <screen><xi:include href="./06/fake-system.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl&gt; d
+«derivation /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv»</screen>
 
   <para>
     Oh oh, what's that? Did it build the derivation? No it didn't, but it
@@ -131,7 +134,28 @@
       If your version of nix doesn't have <literal>nix derivation show</literal>, use <literal>nix show-derivation</literal> instead.
   </para></note>
 
-  <xi:include href="./06/show-derivation.xml" />
+  &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix derivation show /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-&lt;emphasis&gt;myname.drv&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;{
+  "/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+      }
+    },
+    "inputSrcs": [],
+    "inputDrvs": {},
+    "platform": "mysystem",
+    "builder": "mybuilder",
+    "args": [],
+    "env": {
+      "builder": "mybuilder",
+      "name": "myname",
+      "out": "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname",
+      "system": "mysystem"
+    }
+  }
+}&lt;/computeroutput&gt;&lt;/screen&gt;
+
 
   <para>
     Ok, we can see there's an out path, but it does not exist yet. We never told
@@ -207,7 +231,13 @@
     Let's build our really fake derivation:
   </para>
 
-  <screen><xi:include href="./06/build-derivation.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl&gt; :b d
+[...]
+these derivations will be built:
+  /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+building path(s) `/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname'
+error: a `mysystem' is required to build `/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv', but I am a `x86_64-linux'</screen>
 
   <para>
     The <code>:b</code> is a <literal>nix repl</literal> specific command to build a derivation.
@@ -224,8 +254,7 @@
     <filename>.drv</filename> with:
   </para>
 
-  <screen><xi:include href="./06/realise-derivation.txt" parse="text"
-  /></screen>
+  <screen>$ nix-store -r /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv</screen>
 
   <para>
     You will get the same output as before.
@@ -235,7 +264,10 @@
     Let's fix the system attribute:
   </para>
 
-  <screen><xi:include href="./06/fix-attribute.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d = derivation { name = "myname"; builder = "mybuilder"; system = builtins.currentSystem; }
+nix-repl&gt; :b d
+[...]
+build error: invalid file name `mybuilder'</screen>
 
   <para>
     A step forward: of course, that <code>mybuilder</code> executable does not
@@ -252,7 +284,11 @@
     In this case, the returned value is a plain set:
   </para>
 
-  <screen><xi:include href="./06/inspect-values.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl&gt; builtins.isAttrs d
+true
+nix-repl&gt; builtins.attrNames d
+[ "all" "builder" "drvAttrs" "drvPath" "name" "out" "outPath" "outputName" "system" "type" ]</screen>
 
   <para>
     You can guess what <code>builtins.isAttrs</code> does; it returns true if
@@ -264,7 +300,8 @@
     Start from drvAttrs:
   </para>
 
-  <screen><xi:include href="./06/drvattrs.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d.drvAttrs
+{ builder = "mybuilder"; name = "myname"; system = "mysystem"; }</screen>
 
   <para>
     That's basically the input we gave to the derivation function. Also the
@@ -272,7 +309,8 @@
     attributes are exactly the ones we gave as input.
   </para>
 
-  <screen><xi:include href="./06/check-drvattrs.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; (d == d.out)
+true</screen>
 
   <para>
     So out is just the derivation itself, it seems weird but the reason is that
@@ -293,7 +331,8 @@
     yourself a set with that type, it's a simple set:
   </para>
 
-  <screen><xi:include href="./06/type-derivation.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; { type = "derivation"; }
+«derivation ???»</screen>
 
   <para>
     Of course it has no other information, so Nix doesn't know what to say :-)
@@ -325,7 +364,10 @@
     Nix is able to do a conversion from a derivation set to a string.
   </para>
 
-  <screen><xi:include href="./06/outpath.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; d.outPath
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+nix-repl&gt; builtins.toString d
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"</screen>
 
   <para>
     Nix does the "set to string conversion" as long as there is the
@@ -333,13 +375,21 @@
     languages):
   </para>
 
-  <screen><xi:include href="./06/tostring.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; builtins.toString { outPath = "foo"; }
+"foo"
+nix-repl&gt; builtins.toString { a = "b"; }
+error: cannot coerce a set to a string, at (string):1:1</screen>
 
   <para>
     Say we want to use binaries from coreutils (ignore the nixpkgs etc.):
   </para>
 
-  <screen><xi:include href="./06/coreutils.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; :l &lt;nixpkgs&gt;
+Added 3950 variables.
+nix-repl&gt; coreutils
+«derivation /nix/store/1zcs1y4n27lqs0gw4v038i303pb89rw6-coreutils-8.21.drv»
+nix-repl&gt; builtins.toString coreutils
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"</screen>
 
   <para>
     Apart from the nixpkgs stuff, just think we added to the scope a series of
@@ -350,7 +400,8 @@
   </para>
 
 
-  <screen><xi:include href="./06/list-coreutils.txt" parse="text" /></screen>
+  <screen>$ ls /nix/store/*coreutils*/bin
+[...]</screen>
 
   <para>
     I remind you, inside strings it's possible to interpolate Nix expressions
@@ -358,7 +409,10 @@
   </para>
 
 
-  <screen><xi:include href="./06/interpolate.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; "${d}"
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+nix-repl&gt; "${coreutils}"
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"</screen>
 
   <para>
     That's very convenient, because then we could refer to e.g. the bin/true
@@ -366,7 +420,8 @@
   </para>
 
 
-  <screen><xi:include href="./06/reference.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; "${coreutils}/bin/true"
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21/bin/true"</screen>
 
 </section>
 <section>
@@ -378,7 +433,12 @@
     exits with 0 (success).
   </para>
 
-  <screen><xi:include href="./06/test-build.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; :l &lt;nixpkgs&gt;
+nix-repl&gt; d = derivation { name = "myname"; builder = "${coreutils}/bin/true"; system = builtins.currentSystem; }
+nix-repl&gt; :b d
+[...]
+builder for `/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv' failed to produce output path `/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname'
+</screen>
 
   <para>
     Another step forward, it executed the builder (bin/true), but the builder
@@ -396,7 +456,32 @@
     another derivation:
   </para>
 
-  <xi:include href="./06/examine-build.xml" />
+  &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix derivation show /nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-&lt;emphasis&gt;myname.drv&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;{
+  "/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname"
+      }
+    },
+    "inputSrcs": [],
+    "inputDrvs": {
+      "/nix/store/hixdnzz2wp75x1jy65cysq06yl74vx7q-coreutils-8.29.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+    "args": [],
+    "env": {
+      "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+      "name": "myname",
+      "out": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname",
+      "system": "x86_64-linux"
+    }
+  }
+}&lt;/computeroutput&gt;&lt;/screen&gt;
+
 
   <para>
     Aha! Nix added a dependency to our myname.drv, it's the coreutils.drv.

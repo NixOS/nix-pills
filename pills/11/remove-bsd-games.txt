@@ -1,6 +1,0 @@
-$ nix-env -e bsd-games
-uninstalling `bsd-games-2.17'
-$ nix-collect-garbage
-[...]
-$ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
-bin  share

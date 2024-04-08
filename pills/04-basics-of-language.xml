@@ -65,13 +65,23 @@
       Help is available through the <literal>:?</literal> command.)
     </para>
 
-    <screen><xi:include href="./04/basics.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; 1+3
+4
+
+nix-repl&gt; 7-4
+3
+
+nix-repl&gt; 3*2
+6
+</screen>
 
     <para>
       Attempting to perform division in Nix can lead to some surprises.
     </para>
 
-    <screen><xi:include href="./04/relative-path.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; 6/3
+/home/nix/6/3
+</screen>
 
     <para>
       What happened? Recall that Nix is not a general purpose language, it's a
@@ -83,7 +93,12 @@
       <literal>builtins.div</literal>.
     </para>
 
-    <screen><xi:include href="./04/division.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; 6/ 3
+2
+
+nix-repl&gt; builtins.div 6 3
+2
+</screen>
 
     <para>
       Other operators are <literal>||</literal>, <literal>&amp;&amp;</literal> and <literal>!</literal>
@@ -128,7 +143,11 @@
       convenient since many packages use dash in their names. In fact:
     </para>
 
-    <screen><xi:include href="./04/dash.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; a-b
+error: undefined variable `a-b' at (string):1:1
+nix-repl&gt; a - b
+error: undefined variable `a' at (string):1:1
+</screen>
 
     <para>
       As you can see, <literal>a-b</literal> is parsed as identifier, not as
@@ -145,7 +164,11 @@
       Strings are enclosed by double quotes (<literal>"</literal>), or two single quotes (<literal>''</literal>).
     </para>
 
-    <screen><xi:include href="./04/strings-basic.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; "foo"
+"foo"
+nix-repl&gt; ''foo''
+"foo"
+</screen>
 
     <para>
       In other languages like Python you can also use single quotes for strings (e.g. <literal>'foo'</literal>),
@@ -159,7 +182,14 @@
       not <literal>$foo</literal> or <literal>{$foo}</literal> or anything else.
     </para>
 
-    <screen><xi:include href="./04/interpolate.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; foo = "strval"
+nix-repl&gt; "$foo"
+"$foo"
+nix-repl&gt; "${foo}"
+"strval"
+nix-repl&gt; "${2+3}"
+error: cannot coerce an integer to a string, at (string):1:2
+</screen>
 
     <para>
       Note: ignore the <literal>foo = "strval"</literal> assignment, special syntax in <literal>nix repl</literal>.
@@ -175,14 +205,22 @@
       quotes inside strings without needing to escape them:
     </para>
 
-    <screen><xi:include href="./04/double-quotes.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; ''test " test''
+"test \" test"
+nix-repl&gt; ''${foo}''
+"strval"
+</screen>
 
     <para>
       Escaping <literal>${...}</literal> within double quoted strings is done with the backslash.
       Within two single quotes, it's done with <literal>''</literal>:
     </para>
 
-    <screen><xi:include href="./04/escaping.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; "\${foo}"
+"${foo}"
+nix-repl&gt; ''test ''${foo} test''
+"test ${foo} test"
+</screen>
 
   </section>
 
@@ -193,7 +231,9 @@
       Lists are a sequence of expressions delimited by space (<emphasis>not</emphasis> comma):
     </para>
 
-    <screen><xi:include href="./04/lists.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; [ 2 "foo" true (2+3) ]
+[ 2 "foo" true 5 ]
+</screen>
 
     <para>
       Lists, like everything else in Nix, are immutable. Adding or removing
@@ -210,7 +250,10 @@
       keys.
     </para>
 
-    <screen><xi:include href="./04/set-basics.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; s = { foo = "bar"; a-b = "baz"; "123" = "num"; }
+nix-repl&gt; s
+{ "123" = "num"; a-b = "baz"; foo = "bar"; }
+</screen>
 
     <para>
       For those reading Nix expressions from nixpkgs: do not confuse attribute sets with
@@ -221,7 +264,11 @@
       To access elements in the attribute set:
     </para>
 
-    <screen><xi:include href="./04/set-access.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; s.a-b
+"baz"
+nix-repl&gt; s."123"
+"num"
+</screen>
 
     <para>
       Yes, you can use strings to address keys which aren't valid identifiers.
@@ -231,14 +278,18 @@
       Inside an attribute set you cannot normally refer to elements of the same attribute set:
     </para>
 
-    <screen><xi:include href="./04/set-failed.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; { a = 3; b = a+4; }
+error: undefined variable `a' at (string):1:10
+</screen>
 
     <para>
       To do so, use
       <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#recursive-sets">recursive attribute sets</link>:
     </para>
 
-    <screen><xi:include href="./04/set-recursive.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; rec { a = 3; b = a+4; }
+{ a = 3; b = 7; }
+</screen>
 
     <para>
       This is very convenient when defining packages, which tend to be recursive attribute sets.
@@ -252,7 +303,11 @@
       These are expressions, not statements.
     </para>
 
-    <screen><xi:include href="./04/if.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; a = 3
+nix-repl&gt; b = 4
+nix-repl&gt; if a &gt; b then "yes" else "no"
+"no"
+</screen>
 
     <para>
       You can't have only the <literal>then</literal> branch, you must specify also the <literal>else</literal>
@@ -268,7 +323,9 @@
       expressions.
     </para>
 
-    <screen><xi:include href="./04/let-basic.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = "foo"; in a
+"foo"
+</screen>
 
     <para>
       The syntax is: first assign variables, then <literal>in</literal>, then an expression which can
@@ -276,33 +333,45 @@
       the value of the expression after the <literal>in</literal>.
     </para>
 
-    <screen><xi:include href="./04/let-multiple.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = 3; b = 4; in a + b
+7
+</screen>
 
     <para>
       Let's write two <literal>let</literal> expressions, one inside the other:
     </para>
 
-    <screen><xi:include href="./04/let-nested.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = 3; in let b = 4; in a + b
+7
+</screen>
 
     <para>
       With <literal>let</literal> you cannot assign twice to the same variable. However, you can
       shadow outer variables:
     </para>
 
-    <screen><xi:include href="./04/let-multiple-assign.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = 3; a = 8; in a
+error: attribute `a' at (string):1:12 already defined at (string):1:5
+nix-repl&gt; let a = 3; in let a = 8; in a
+8
+</screen>
 
     <para>
       You cannot refer to variables in a <literal>let</literal> expression outside of it:
     </para>
 
-    <screen><xi:include href="./04/let-scope.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = (let c = 3; in c); in c
+error: undefined variable `c' at (string):1:31
+</screen>
 
     <para>
       You can refer to variables in the <literal>let</literal> expression when assigning variables,
       like with recursive attribute sets:
     </para>
 
-    <screen><xi:include href="./04/let-reference.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = 4; b = a + 5; in b
+9
+</screen>
 
     <para>
       So beware when you want to refer to a variable from the outer scope, but
@@ -321,7 +390,12 @@
       per-expression when to include symbols into the scope.
     </para>
 
-    <screen><xi:include href="./04/with-basic.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; longName = { a = 3; b = 4; }
+nix-repl&gt; longName.a + longName.b
+7
+nix-repl&gt; with longName; a + b
+7
+</screen>
 
     <para>
       That's it, it takes an attribute set and includes symbols from it in the scope of the inner
@@ -331,7 +405,11 @@
       You can however still refer to the attribute set:
     </para>
 
-    <screen><xi:include href="./04/with-scope.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = 10; in with longName; a + b
+14
+nix-repl&gt; let a = 10; in with longName; longName.a + b
+7
+</screen>
   </section>
 
   <section>
@@ -342,7 +420,9 @@
       working with packages.
     </para>
 
-    <screen><xi:include href="./04/lazy.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; let a = builtins.div 4 0; b = 6; in b
+6
+</screen>
 
     <para>
       Since <literal>a</literal> is not needed, there's no error about division by zero, because

@@ -1,7 +1,0 @@
-nix-repl> mul = a: (b: a*b)
-nix-repl> mul
-«lambda»
-nix-repl> mul 3
-«lambda»
-nix-repl> (mul 3) 4
-12

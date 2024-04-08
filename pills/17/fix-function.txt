@@ -1,9 +1,0 @@
-{
-  # Take a function and evaluate it with its own returned value.
-  fix =
-    f:
-    let
-      result = f result;
-    in
-    result;
-}

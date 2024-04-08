@@ -23,11 +23,37 @@
     <para>
       I remind you, the simplest derivation you can write has a <literal>name</literal>, a <literal>builder</literal> and the <literal>system</literal>:
     </para>
-    <screen><xi:include href="./18/derivation-simple.txt" parse="text" /></screen>
+    <screen>$ nix repl
+nix-repl&gt; derivation { system = "x86_64-linux"; builder = ./myfile; name = "foo"; }
+«derivation /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv»
+</screen>
     <para>
       Now inspect the .drv to see where is <filename>./myfile</filename> being stored:
     </para>
-    <xi:include href="./18/derivation-simple-content.xml" />
+    &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix derivation show /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-&lt;emphasis&gt;foo.drv&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;{
+  "/nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo"
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile"
+    ],
+    "inputDrvs": {},
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile",
+    "args": [],
+    "env": {
+      "builder": "/nix/store/xv2iccirbrvklck36f1g7vldn5v58vck-myfile",
+      "name": "foo",
+      "out": "/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo",
+      "system": "x86_64-linux"
+    }
+  }
+}&lt;/computeroutput&gt;&lt;/screen&gt;
+
     <para>
       Great, how did nix decide to use <literal>xv2iccirbrvklck36f1g7vldn5v58vck</literal> ? Keep looking at the nix comments.
     </para>
@@ -40,11 +66,15 @@
       <para>
         The comments tell us to first compute the sha256 of the NAR serialization of the file. Can be done in two ways:
       </para>
-      <screen><xi:include href="./18/myfile-hash.txt" parse="text" /></screen>
+      <screen>$ nix-hash --type sha256 myfile
+2bfef67de873c54551d884fdab3055d84d573e654efa79db3c0d7b98883f9ee3
+</screen>
       <para>
         Or:
       </para>
-      <screen><xi:include href="./18/myfile-hash-alternate.txt" parse="text" /></screen>
+      <screen>$ nix-store --dump myfile|sha256sum
+2bfef67de873c54551d884fdab3055d84d573e654efa79db3c0d7b98883f9ee3
+</screen>
       <para>
         In general, Nix understands two contents: flat for regular files, or recursive for NAR serializations which can be anything.
       </para>
@@ -61,7 +91,9 @@
       <para>
         Finally the comments tell us to compute the base-32 representation of the first 160 bits (truncation) of a sha256 of the above string:
       </para>
-      <screen><xi:include href="./18/myfile-final-hash.txt" parse="text" /></screen>
+      <screen>$ nix-hash --type sha256 --truncate --base32 --flat myfile.str
+xv2iccirbrvklck36f1g7vldn5v58vck
+</screen>
     </section>
   </section>
   <section>
@@ -75,11 +107,18 @@
     <para>
       At the time nix computes the out path, the .drv contains an empty string for each out path. So what we do is getting our .drv and replacing the out path with an empty string:
     </para>
-    <screen><xi:include href="./18/output-path-replace-empty.txt" parse="text" /></screen>
+    <screen>$ cp -f /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv myout.drv
+$ sed -i 's,/nix/store/hs0yi5n5nw6micqhy8l1igkbhqdkzqa1-foo,,g' myout.drv
+</screen>
     <para>
       The <literal>myout.drv</literal> is the .drv state in which nix is when computing the out path for our derivation:
     </para>
-    <screen><xi:include href="./18/myout-drv-hash.txt" parse="text" /></screen>
+    <screen>$ sha256sum myout.drv
+1bdc41b9649a0d59f270a92d69ce6b5af0bc82b46cb9d9441ebc6620665f40b5  myout.drv
+$ echo -n "output:out:sha256:1bdc41b9649a0d59f270a92d69ce6b5af0bc82b46cb9d9441ebc6620665f40b5:/nix/store:foo" &gt; myout.str
+$ nix-hash --type sha256 --truncate --base32 --flat myout.str
+hs0yi5n5nw6micqhy8l1igkbhqdkzqa1
+</screen>
     <para>
       Then nix puts that out path in the .drv, and that's it.
     </para>
@@ -104,22 +143,46 @@
     <para>
       Let's say our builder should create a file whose contents is <literal>mycontent</literal>:
     </para>
-    <screen><xi:include href="./18/mycontent.txt" parse="text" /></screen>
+    <screen>$ echo mycontent &gt; myfile
+$ sha256sum myfile
+f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb  myfile
+nix-repl&gt; derivation { name = "bar"; system = "x86_64-linux"; builder = "none"; outputHashMode = "flat"; outputHashAlgo = "sha256"; outputHash = "f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb"; }
+«derivation /nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv»
+</screen>
     <para>
       Inspect the .drv and see that it also stored the fact that it's a fixed-output derivation with sha256 algorithm, compared to the previous examples:
     </para>
-    <xi:include href="./18/bar-derivation.xml" />
+    &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix derivation show /nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-&lt;emphasis&gt;bar.drv&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;{
+  "/nix/store/ymsf5zcqr9wlkkqdjwhqllgwa97rff5i-bar.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/a00d5f71k0vp5a6klkls0mvr1f7sx6ch-bar",
+        "hashAlgo": "sha256",
+        "hash": "f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb"
+      }
+    },
+&lt;emphasis&gt;[...]&lt;/emphasis&gt;
+}&lt;/computeroutput&gt;&lt;/screen&gt;
+
     <para>
       It doesn't matter which input derivations are being used, the final out path must only depend on the declared hash.
     </para>
     <para>
       What nix does is to create an intermediate string representation of the fixed-output content:
     </para>
-    <screen><xi:include href="./18/mycontent-string-representation.txt" parse="text" /></screen>
+    <screen>$ echo -n "fixed:out:sha256:f3f3c4763037e059b4d834eaf68595bbc02ba19f6d2a500dce06d124e2cd99bb:" &gt; mycontent.str
+$ sha256sum mycontent.str 
+423e6fdef56d53251c5939359c375bf21ea07aaa8d89ca5798fb374dbcfd7639  myfile.str
+
+</screen>
     <para>
       Then proceed as it was a normal derivation output path:
     </para>
-    <screen><xi:include href="./18/myfile-string-hash.txt" parse="text" /></screen>
+    <screen>$ echo -n "output:out:sha256:423e6fdef56d53251c5939359c375bf21ea07aaa8d89ca5798fb374dbcfd7639:/nix/store:bar" &gt; myfile.str
+$ nix-hash --type sha256 --truncate --base32 --flat myfile.str
+a00d5f71k0vp5a6klkls0mvr1f7sx6ch
+</screen>
     <para>
       Hence, the store path only depends on the declared fixed-output hash.
     </para>

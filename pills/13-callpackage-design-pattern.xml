@@ -33,12 +33,18 @@
       For example, if we define a package derivation using the <literal>inputs</literal>
       pattern such as:
     </para>
-    <screen><xi:include href="./13/package-derivation.txt" parse="text" /></screen>
+    <screen>{ input1, input2, ... }:
+...
+</screen>
     <para>
       we would likely want to bundle that package derivation into a repository via a
       an attribute set defined as something like:
     </para>
-    <screen><xi:include href="./13/repository-derivation.txt" parse="text" /></screen>
+    <screen>rec {
+  lib1 = import package1.nix { inherit input1 input2; };
+  program2 = import package2.nix { inherit inputX inputY lib1; };
+}
+</screen>
     <para>
       There are two things to note. First, that inputs often have the same name as
       attributes in the repository itself. Second, that (due to the <code>rec</code>
@@ -53,7 +59,11 @@
       To achieve this, we will define a <literal>callPackage</literal> function with
       the following calling convention:
     </para>
-    <screen><xi:include href="./13/callpackage-function-call.txt" parse="text" /></screen>
+    <screen>{
+  lib1 = callPackage package1.nix { };
+  program2 = callPackage package2.nix { someoverride = overriddenDerivation; };
+}
+</screen>
     <para>
       We want <code>callPackage</code> to be a function of two arguments, with the
       following behavior:
@@ -86,7 +96,10 @@
     <para>
       Nix provides a builtin function to do this:
     </para>
-    <screen><xi:include href="./13/get-args-function.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; add = { a ? 3, b }: a+b
+nix-repl&gt; builtins.functionArgs add
+{ a = true; b = false; }
+</screen>
     <para>
       In addition to returning the argument names, the attribute set returned by
       <code>functionArgs</code> indicates whether or not the argument has a default value.
@@ -117,7 +130,12 @@
       to be package names in a repository, such as <code>nixpkgs</code>. For
       the latter, Nix provides another builtin function:
     </para>
-    <screen><xi:include href="./13/intersect-attr-values.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; values = { a = 3; b = 5; c = 10; }
+nix-repl&gt; builtins.intersectAttrs values (builtins.functionArgs add)
+{ a = true; b = false; }
+nix-repl&gt; builtins.intersectAttrs (builtins.functionArgs add) values
+{ a = 3; b = 5; }
+</screen>
     <para>
       The <literal>intersectAttrs</literal> returns an attribute set whose names are
       the intersection of both arguments' attribute names, with the attribute
@@ -128,7 +146,12 @@
       and populated these with an existing set of attributes. This is our simple
       implementation of <literal>callPackage</literal>:
     </para>
-    <screen><xi:include href="./13/callpackage-function.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; callPackage = set: f: f (builtins.intersectAttrs (builtins.functionArgs f) set)
+nix-repl&gt; callPackage values add
+8
+nix-repl&gt; with values; add { inherit a b; }
+8
+</screen>
     <para>
       Let's dissect the above snippet:
       <itemizedlist>
@@ -170,7 +193,12 @@
       We may not want to always call functions with values taken from the big set.
       Thus, we add a third parameter which takes a set of overrides:
     </para>
-    <screen><xi:include href="./13/callpackage-function-overrides.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; callPackage = set: f: overrides: f ((builtins.intersectAttrs (builtins.functionArgs f) set) // overrides)
+nix-repl&gt; callPackage values add { }
+8
+nix-repl&gt; callPackage values add { b = 12; }
+15
+</screen>
     <para>
       Apart from the increasing number of parentheses, it should be clear that we simply
       take a set union between the default arguments and the overriding set.
@@ -182,7 +210,24 @@
       Given our <literal>callPackages</literal>, we can simplify the repository expression
       in <filename>default.nix</filename>:
     </para>
-    <screen><xi:include href="./13/callpackage-usage.txt" parse="text" /></screen>
+    <screen>let
+  nixpkgs = import &lt;nixpkgs&gt; { };
+  allPkgs = nixpkgs // pkgs;
+  callPackage =
+    path: overrides:
+    let
+      f = import path;
+    in
+    f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
+  pkgs = with nixpkgs; {
+    mkDerivation = import ./autotools.nix nixpkgs;
+    hello = callPackage ./hello.nix { };
+    graphviz = callPackage ./graphviz.nix { };
+    graphvizCore = callPackage ./graphviz.nix { gdSupport = false; };
+  };
+in
+pkgs
+</screen>
     <para>
       Let's examine this in detail:
       <itemizedlist>

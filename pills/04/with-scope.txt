@@ -1,4 +1,0 @@
-nix-repl> let a = 10; in with longName; a + b
-14
-nix-repl> let a = 10; in with longName; longName.a + b
-7

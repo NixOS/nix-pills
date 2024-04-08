@@ -1,4 +1,0 @@
-nix-repl> ''test " test''
-"test \" test"
-nix-repl> ''${foo}''
-"strval"

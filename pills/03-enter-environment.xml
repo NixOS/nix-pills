@@ -33,7 +33,8 @@
       If that's not the case:
     </para>
 
-    <screen><xi:include href="./03/source-nix.txt" parse="text" /></screen>
+    <screen>$ source ~/.nix-profile/etc/profile.d/nix.sh
+</screen>
 
     <para>
       To remind you, <literal>~/.nix-profile/etc</literal> points to the <literal>nix-2.1.3</literal>
@@ -55,7 +56,12 @@
       Back to the installation:
     </para>
 
-    <screen><xi:include href="./03/install-hello.txt" parse="text" /></screen>
+    <screen>$ nix-env -i hello
+installing 'hello-2.10'
+[...]
+building '/nix/store/0vqw0ssmh6y5zj48yg34gc6macr883xk-user-environment.drv'...
+created 36 symlinks in user environment
+</screen>
 
     <para>
       Now you can run <literal>hello</literal>. Things to notice:
@@ -92,13 +98,19 @@
       We can list generations without walking through the <filename>/nix</filename> hierarchy:
     </para>
 
-    <screen><xi:include href="./03/list-generations.txt" parse="text" /></screen>
+    <screen>$ nix-env --list-generations
+   1   2014-07-24 09:23:30
+   2   2014-07-25 08:45:01   (current)
+</screen>
 
     <para>
       Listing installed derivations:
     </para>
 
-    <screen><xi:include href="./03/list-installed-derivations.txt" parse="text" /></screen>
+    <screen>$ nix-env -q
+nix-2.1.3
+hello-2.10
+</screen>
 
     <para>
       So, where did <literal>hello</literal> really get installed?
@@ -128,7 +140,11 @@
       a bit:
     </para>
 
-    <screen><xi:include href="./03/ls-nix-profile.txt" parse="text" /></screen>
+    <screen>$ ls -l ~/.nix-profile/
+dr-xr-xr-x 2 nix nix 4096 Jan  1  1970 bin
+lrwxrwxrwx 1 nix nix   55 Jan  1  1970 etc -&gt; /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/etc
+[...]
+</screen>
 
     <para>
       Now that's interesting. When only <literal>nix-2.1.3</literal> was installed, <filename>bin</filename> was a
@@ -136,7 +152,15 @@
       (<literal>man</literal>, <literal>hello</literal>), it's a real directory, not a symlink.
     </para>
 
-    <screen><xi:include href="./03/ls-profile-bin.txt" parse="text" /></screen>
+    <screen>$ ls -l ~/.nix-profile/bin/
+[...]
+man -&gt; /nix/store/83cn9ing5sc6644h50dqzzfxcs07r2jn-man-1.6g/bin/man
+[...]
+nix-env -&gt; /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env
+[...]
+hello -&gt; /nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10/bin/hello
+[...]
+</screen>
 
     <para>
       Okay, that's clearer now. <literal>nix-env</literal> merged the paths from the installed derivations.
@@ -155,7 +179,9 @@
       old generation:
     </para>
 
-    <screen><xi:include href="./03/rollback.txt" parse="text" /></screen>
+    <screen>$ nix-env --rollback
+switching from generation 3 to 2
+</screen>
 
     <para>
       Now <command>nix-env -q</command> does not list <literal>man</literal> anymore.
@@ -166,7 +192,9 @@
       Enough with the rollback, let's go back to the most recent generation:
     </para>
 
-    <screen><xi:include href="./03/generation-3.txt" parse="text" /></screen>
+    <screen>$ nix-env -G 3
+switching from generation 2 to 3
+</screen>
 
     <para>
       I invite you to read the manpage of <literal>nix-env</literal>. <literal>nix-env</literal> requires an operation
@@ -200,7 +228,10 @@
       To show the direct runtime dependencies of <literal>hello</literal>:
     </para>
 
-    <screen><xi:include href="./03/references.txt" parse="text" /></screen>
+    <screen>$ nix-store -q --references `which hello`
+/nix/store/fg4yq8i8wd08xg3fy58l6q73cjy8hjr2-glibc-2.27
+/nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10
+</screen>
 
     <para>
       The argument to <literal>nix-store</literal> can be anything as long as it points to the
@@ -212,7 +243,13 @@
       dependencies of <literal>hello</literal>:
     </para>
 
-    <screen><xi:include href="./03/referrers.txt" parse="text" /></screen>
+    <screen>$ nix-store -q --referrers `which hello`
+/nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10
+/nix/store/fhvy2550cpmjgcjcx5rzz328i0kfv3z3-env-manifest.nix
+/nix/store/yzdk0xvr0b8dcwhi2nns6d75k2ha5208-env-manifest.nix
+/nix/store/mp987abm20c70pl8p31ljw1r5by4xwfw-user-environment
+/nix/store/ppr3qbq7fk2m2pa49i2z3i32cvfhsv7p-user-environment
+</screen>
 
     <para>
       Was it what you expected? It turns out that our environments depend upon <literal>hello</literal>.
@@ -241,7 +278,9 @@
       including absolutely everything necessary to use that derivation.
     </para>
 
-    <screen><xi:include href="./03/nix-store.txt" parse="text" /></screen>
+    <screen>$ nix-store -qR `which man`
+[...]
+</screen>
 
     <para>
       Copying all those derivations to the Nix store of another machine makes
@@ -256,7 +295,9 @@
       A nicer view of the closure:
     </para>
 
-    <screen><xi:include href="./03/nix-store-tree.txt" parse="text" /></screen>
+    <screen>$ nix-store -q --tree `which man`
+[...]
+</screen>
 
     <para>
       With the above command, you can find out exactly why a
@@ -286,7 +327,11 @@
   <section>
     <title>Recovering the hard way</title>
 
-    <screen><xi:include href="./03/uninstall-all.txt" parse="text" /></screen>
+    <screen>$ nix-env -e '*'
+uninstalling 'hello-2.10'
+uninstalling 'nix-2.1.3'
+[...]
+</screen>
 
     <para>
       Oops, that uninstalled all derivations from the environment, including
@@ -308,13 +353,15 @@
       The first option is to rollback:
     </para>
 
-    <screen><xi:include href="./03/nix-env-rollback.txt" parse="text" /></screen>
+    <screen>$ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env --rollback
+</screen>
 
     <para>
       The second option is to install Nix, thus creating a new generation:
     </para>
 
-    <screen><xi:include href="./03/install.txt" parse="text" /></screen>
+    <screen>$ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env 
+</screen>
   </section>
 
   <section>
@@ -328,7 +375,9 @@
       <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-channel.html">nix-channel</link>.
     </para>
 
-    <screen><xi:include href="./03/channel-list.txt" parse="text" /></screen>
+    <screen>$ nix-channel --list
+nixpkgs http://nixos.org/channels/nixpkgs-unstable
+</screen>
 
     <para>
       If you're using NixOS, you may not see any output from the above command

@@ -65,7 +65,18 @@
       <package>gd</package> version, we would have to repeat most of the above plus
       specifying an alternative <package>gd</package>:
     </para>
-    <screen><xi:include href="./14/mygraphviz.txt" parse="text" /></screen>
+    <screen>{
+  mygraphviz = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      fontconfig
+      libjpeg
+      bzip2
+      ;
+    gd = customgd;
+  };
+}
+</screen>
     <para>
       That's hard to maintain. Using <code>callPackage</code> would be easier:
     </para>
@@ -104,7 +115,15 @@
     <para>
       We will put this function in a <filename>lib.nix</filename>:
     </para>
-    <screen><xi:include href="./14/make-overridable-lib.txt" parse="text" /></screen>
+    <screen>{
+  makeOverridable =
+    f: origArgs:
+    let
+      origRes = f origArgs;
+    in
+    origRes // { override = newArgs: f (origArgs // newArgs); };
+}
+</screen>
     <para>
       <literal>makeOverridable</literal> takes a function and a set of original arguments.
       It returns the original returned set, plus a new <literal>override</literal> attribute.
@@ -118,7 +137,18 @@
     <para>
       Let's try it with <literal>nix repl</literal>:
     </para>
-    <screen><xi:include href="./14/nix-repl-make-overridable-test.txt" parse="text" /></screen>
+    <screen>$ nix repl
+nix-repl&gt; :l lib.nix
+Added 1 variables.
+nix-repl&gt; f = { a, b }: { result = a+b; }
+nix-repl&gt; f { a = 3; b = 5; }
+{ result = 8; }
+nix-repl&gt; res = makeOverridable f { a = 3; b = 5; }
+nix-repl&gt; res
+{ override = «lambda»; result = 8; }
+nix-repl&gt; res.override { a = 10; }
+{ result = 15; }
+</screen>
     <para>
       Note that, as we specified above, the function <literal>f</literal> does not return
       the plain sum. Instead, it returns a set with the sum bound to the name
@@ -142,7 +172,15 @@
       The solution is simple: the <literal>.override</literal> function should make the
       result overridable again:
     </para>
-    <screen><xi:include href="./14/rec-make-overridable.txt" parse="text" /></screen>
+    <screen>rec {
+  makeOverridable =
+    f: origArgs:
+    let
+      origRes = f origArgs;
+    in
+    origRes // { override = newArgs: makeOverridable f (origArgs // newArgs); };
+}
+</screen>
     <para>
       Please note the <literal>rec</literal> keyword. It's necessary so that we can refer
       to <literal>makeOverridable</literal> from <literal>makeOverridable</literal> itself.
@@ -150,7 +188,16 @@
     <para>
       Now let's try overriding twice:
     </para>
-    <screen><xi:include href="./14/nix-repl-make-overridable-twice.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; :l lib.nix
+Added 1 variables.
+nix-repl&gt; f = { a, b }: { result = a+b; }
+nix-repl&gt; res = makeOverridable f { a = 3; b = 5; }
+nix-repl&gt; res2 = res.override { a = 10; }
+nix-repl&gt; res2
+{ override = «lambda»; result = 15; }
+nix-repl&gt; res2.override { b = 20; }
+{ override = «lambda»; result = 30; }
+</screen>
     <para>
       Success! The result is 30 (as expected) because <literal>a</literal> is overridden
       to 10 in the first override, and <literal>b</literal> is overridden to 20 in the

@@ -1,2 +1,0 @@
-nix-repl> let a = 4; b = a + 5; in b
-9

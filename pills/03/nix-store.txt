@@ -1,2 +1,0 @@
-$ nix-store -qR `which man`
-[...]

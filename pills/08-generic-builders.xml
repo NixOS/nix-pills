@@ -41,17 +41,65 @@
       Let's create a builder script for GNU hello world, hello_builder.sh:
     </para>
 
-    <screen><xi:include href="./08/hello-builder.txt" parse="text" /></screen>
+    <screen>export PATH="$gnutar/bin:$gcc/bin:$gnumake/bin:$coreutils/bin:$gawk/bin:$gzip/bin:$gnugrep/bin:$gnused/bin:$bintools/bin"
+tar -xzf $src
+cd hello-2.12.1
+./configure --prefix=$out
+make
+make install
+</screen>
 
     <para>
       And the derivation hello.nix:
     </para>
 
-    <screen><xi:include href="./08/hello-nix.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./hello_builder.sh ];
+  inherit (pkgs)
+    gnutar
+    gzip
+    gnumake
+    gcc
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    ;
+  bintools = pkgs.binutils.bintools;
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+</screen>
     <note><title>Nix on darwin</title>
     <para>Darwin (i.e. macOS) builds typically use <literal>clang</literal> rather than <literal>gcc</literal> for a C compiler.
     We can adapt this early example for darwin by using this modified version of <filename>hello.nix</filename>:
-    <screen><xi:include href="./08/hello-nix-darwin.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./hello_builder.sh ];
+  inherit (pkgs)
+    gnutar
+    gzip
+    gnumake
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    ;
+  gcc = pkgs.clang;
+  bintools = pkgs.clang.bintools.bintools_bin;
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+</screen>
     Later, we will show how Nix can automatically handle these differences.
     For now, please be just aware that changes similar to the above may be needed in what follows.
     </para>
@@ -78,7 +126,25 @@
       projects:
     </para>
 
-    <screen><xi:include href="./08/generic-builder.txt" parse="text" /></screen>
+    <screen>set -e
+unset PATH
+for p in $buildInputs; do
+  export PATH=$p/bin${PATH:+:}$PATH
+done
+
+tar -xf $src
+
+for d in *; do
+  if [ -d "$d" ]; then
+    cd "$d"
+    break
+  fi
+done
+
+./configure --prefix=$out
+make
+make install
+</screen>
 
     <para>
       What do we do here?
@@ -130,7 +196,28 @@
       Now let's rewrite <filename>hello.nix</filename>:
     </para>
 
-    <screen><xi:include href="./08/hello-nix-rev-1.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./builder.sh ];
+  buildInputs = with pkgs; [
+    gnutar
+    gzip
+    gnumake
+    gcc
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    binutils.bintools
+  ];
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+</screen>
 
     <para>
       All clear, except that buildInputs. However it's easier than any black
@@ -142,13 +229,23 @@
       to strings, and then concatenates them separated by a space:
     </para>
 
-    <screen><xi:include href="./08/to-string.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; builtins.toString 123
+"123"
+nix-repl&gt; builtins.toString [ 123 456 ]
+"123 456"
+</screen>
 
     <para>
       Recall that derivations can be converted to a string, hence:
     </para>
 
-    <screen><xi:include href="./08/to-string-nixpkgs.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; :l &lt;nixpkgs&gt;
+Added 3950 variables.
+nix-repl&gt; builtins.toString gnugrep
+"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14"
+nix-repl&gt; builtins.toString [ gnugrep gnused ]
+"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14 /nix/store/krgdc4sknzpw8iyk9p20lhqfd52kjmg0-gnused-4.2.2"
+</screen>
 
     <para>
       Simple! The buildInputs variable is a string with out paths separated by
@@ -176,7 +273,28 @@
       Create <filename>autotools.nix</filename>:
     </para>
 
-    <screen><xi:include href="./08/autotools-nix.txt" parse="text" /></screen>
+    <screen>pkgs: attrs:
+let
+  defaultAttrs = {
+    builder = "${pkgs.bash}/bin/bash";
+    args = [ ./builder.sh ];
+    baseInputs = with pkgs; [
+      gnutar
+      gzip
+      gnumake
+      gcc
+      coreutils
+      gawk
+      gnused
+      gnugrep
+      binutils.bintools
+    ];
+    buildInputs = [ ];
+    system = builtins.currentSystem;
+  };
+in
+derivation (defaultAttrs // attrs)
+</screen>
 
     <para>
       Ok now we have to remember a little about
@@ -230,7 +348,11 @@
       operator:
     </para>
 
-    <screen><xi:include href="./08/set-union.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; { a = "b"; } // { c = "d"; }
+{ a = "b"; c = "d"; }
+nix-repl&gt; { a = "b"; } // { a = "c"; }
+{ a = "c"; }
+</screen>
 
     <para>
       <emphasis role="bold">Exercise:</emphasis>
@@ -246,7 +368,15 @@
       Then we rewrite <filename>hello.nix</filename> as follows:
     </para>
 
-    <screen><xi:include href="./08/hello-nix-rev-2.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "hello";
+  src = ./hello-2.12.1.tar.gz;
+}
+</screen>
 
     <para>
       Finally! We got a very simple description of a package! Below are a

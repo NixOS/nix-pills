@@ -1,3 +1,0 @@
-pkgs = import <nixpkgs> {};
-pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
-build(pkgs.P)

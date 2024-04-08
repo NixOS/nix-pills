@@ -1,2 +1,0 @@
-nix-repl> pkgs = import <nixpkgs> { config = import ./config.nix; }
-nix-repl> :b pkgs.asciidoc-full

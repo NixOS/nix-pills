@@ -1,9 +1,0 @@
-nix-repl> :l lib.nix
-Added 1 variables.
-nix-repl> f = { a, b }: { result = a+b; }
-nix-repl> res = makeOverridable f { a = 3; b = 5; }
-nix-repl> res2 = res.override { a = 10; }
-nix-repl> res2
-{ override = «lambda»; result = 15; }
-nix-repl> res2.override { b = 20; }
-{ override = «lambda»; result = 30; }

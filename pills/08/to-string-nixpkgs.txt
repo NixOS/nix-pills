@@ -1,6 +1,0 @@
-nix-repl> :l <nixpkgs>
-Added 3950 variables.
-nix-repl> builtins.toString gnugrep
-"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14"
-nix-repl> builtins.toString [ gnugrep gnused ]
-"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14 /nix/store/krgdc4sknzpw8iyk9p20lhqfd52kjmg0-gnused-4.2.2"

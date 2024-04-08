@@ -52,7 +52,12 @@
       <code>PATH</code> does not have the utilities we want:
     </para>
 
-    <screen><xi:include href="./10/nix-shell-hello.txt" parse="text" /></screen>
+    <screen>$ nix-shell hello.nix
+[nix-shell]$ make
+bash: make: command not found
+[nix-shell]$ echo $baseInputs
+/nix/store/jff4a6zqi0yrladx3kwy4v6844s3swpc-gnutar-1.27.1 [...]
+</screen>
 
     <para>
       This shell is rather useless. It would be reasonable to expect that the GNU
@@ -73,7 +78,9 @@
       not have the permission to write to <filename>/nix/store</filename>:
     </para>
 
-    <screen><xi:include href="./10/source-builder.txt" parse="text" /></screen>
+    <screen>[nix-shell]$ source builder.sh
+...
+</screen>
 
     <para>
       The derivation didn't install, but it did build. Note the following:
@@ -157,7 +164,31 @@
       correspondingly adds a <code>$setup</code> environment variable in the builder.
     </para>
 
-    <programlisting><xi:include href="./10/autotools-nix.txt" parse="text" /></programlisting>
+    <programlisting>pkgs: attrs:
+let
+  defaultAttrs = {
+    builder = "${pkgs.bash}/bin/bash";
+    args = [ ./builder.sh ];
+    setup = ./setup.sh;
+    baseInputs = with pkgs; [
+      gnutar
+      gzip
+      gnumake
+      gcc
+      coreutils
+      gawk
+      gnused
+      gnugrep
+      binutils.bintools
+      patchelf
+      findutils
+    ];
+    buildInputs = [ ];
+    system = builtins.currentSystem;
+  };
+in
+derivation (defaultAttrs // attrs)
+</programlisting>
 
     <para>
       Thanks to that, we can split <filename>builder.sh</filename> into
@@ -171,25 +202,78 @@
       Here is the modified <filename>builder.sh</filename>:
     </para>
 
-    <programlisting><xi:include href="./10/builder-sh.txt" parse="text" /></programlisting>
+    <programlisting>set -e
+source $setup
+genericBuild
+</programlisting>
 
     <para>
       Here is the newly added <filename>setup.sh</filename>:
     </para>
 
-    <programlisting><xi:include href="./10/setup-sh.txt" parse="text" /></programlisting>
+    <programlisting>unset PATH
+for p in $baseInputs $buildInputs; do
+  export PATH=$p/bin${PATH:+:}$PATH
+done
+
+function unpackPhase() {
+  tar -xzf $src
+
+  for d in *; do
+    if [ -d "$d" ]; then
+      cd "$d"
+      break
+    fi
+  done
+}
+
+function configurePhase() {
+  ./configure --prefix=$out
+}
+
+function buildPhase() {
+  make
+}
+
+function installPhase() {
+  make install
+}
+
+function fixupPhase() {
+  find $out -type f -exec patchelf --shrink-rpath '{}' \; -exec strip '{}' \; 2&gt;/dev/null
+}
+
+function genericBuild() {
+  unpackPhase
+  configurePhase
+  buildPhase
+  installPhase
+  fixupPhase
+}
+</programlisting>
 
     <para>
       Finally, here is <filename>hello.nix</filename>:
     </para>
 
-    <programlisting><xi:include href="./10/hello-nix.txt" parse="text" /></programlisting>
+    <programlisting>let
+  pkgs = import &lt;nixpkgs&gt; { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "hello";
+  src = ./hello-2.12.1.tar.gz;
+}
+</programlisting>
 
     <para>
       Now back to nix-shell:
     </para>
 
-    <screen><xi:include href="./10/nix-shell-source.txt" parse="text" /></screen>
+    <screen>$ nix-shell hello.nix
+[nix-shell]$ source $setup
+[nix-shell]$
+</screen>
 
     <para>
       Now, for example, you can run <code>unpackPhase</code> which unpacks

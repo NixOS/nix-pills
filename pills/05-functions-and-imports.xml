@@ -37,7 +37,8 @@ xml:id="functions-and-imports">
     then the body of the function.
   </para>
 
-  <screen><xi:include href="./05/anon-function.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; x: x*2
+«lambda»</screen>
 
   <para>
     So here we defined a function that takes a parameter
@@ -49,7 +50,11 @@ xml:id="functions-and-imports">
     We can store functions in variables.
   </para>
 
-  <screen><xi:include href="./05/named-function.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; double = x: x*2
+nix-repl&gt; double
+«lambda»
+nix-repl&gt; double 3
+6</screen>
 
   <para>
     As usual, please ignore the special syntax for assignments inside <literal>nix repl</literal>.
@@ -81,8 +86,13 @@ xml:id="functions-and-imports">
     it step by step.
   </para>
 
-  <screen><xi:include href="./05/multi-argument-function.txt" parse="text"
-  /></screen>
+  <screen>nix-repl&gt; mul = a: (b: a*b)
+nix-repl&gt; mul
+«lambda»
+nix-repl&gt; mul 3
+«lambda»
+nix-repl&gt; (mul 3) 4
+12</screen>
 
   <para>
     We defined a function that takes the parameter <code>a</code>, the body
@@ -97,7 +107,15 @@ xml:id="functions-and-imports">
     parsing the code:
   </para>
 
-  <screen><xi:include href="./05/no-parenthesis.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; mul = a: b: a*b
+nix-repl&gt; mul
+«lambda»
+nix-repl&gt; mul 3
+«lambda»
+nix-repl&gt; mul 3 4
+12
+nix-repl&gt; mul (6+7) (8+9)
+221</screen>
 
   <para>
     Much more readable, you don't even notice that functions only receive one
@@ -111,8 +129,11 @@ xml:id="functions-and-imports">
     <emphasis role="strong">partial application</emphasis>:
   </para>
 
-  <screen><xi:include href="./05/partial-application.txt" parse="text"
-  /></screen>
+  <screen>nix-repl&gt; foo = mul 3
+nix-repl&gt; foo 4
+12
+nix-repl&gt; foo 5
+15</screen>
 
   <para>
     We stored the function returned by <code>mul 3</code> into a variable foo,
@@ -129,7 +150,12 @@ xml:id="functions-and-imports">
     a*b</code> first by using a set as argument, then using pattern matching.
   </para>
 
-  <screen><xi:include href="./05/set-argument.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; mul = s: s.a*s.b
+nix-repl&gt; mul { a = 3; b = 4; }
+12
+nix-repl&gt; mul = { a, b }: a*b
+nix-repl&gt; mul { a = 3; b = 4; }
+12</screen>
 
   <para>
     In the first case we defined a function that accepts a single parameter. We
@@ -146,8 +172,11 @@ xml:id="functions-and-imports">
     <code>b</code> in the function body directly.
   </para>
 
-  <screen><xi:include href="./05/argument-set-error.txt" parse="text"
-  /></screen>
+  <screen>nix-repl&gt; mul = { a, b }: a*b
+nix-repl&gt; mul { a = 3; b = 4; c = 6; }
+error: anonymous function at (string):1:2 called with unexpected argument `c', at (string):1:1
+nix-repl&gt; mul { a = 3; }
+error: anonymous function at (string):1:2 called without required argument `b', at (string):1:1</screen>
 
   <para>
     Only a set with exactly the attributes required by the function is accepted,
@@ -163,15 +192,19 @@ xml:id="functions-and-imports">
     of attributes in the argument set:
   </para>
 
-  <screen><xi:include href="./05/default-values.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; mul = { a, b ? 2 }: a*b
+nix-repl&gt; mul { a = 3; }
+6
+nix-repl&gt; mul { a = 3; b = 4; }
+12</screen>
 
   <para>
     Also you can allow passing more attributes (<emphasis
     role="strong">variadic</emphasis>) than the expected ones:
   </para>
 
-  <screen><xi:include href="./05/variadic-arguments.txt" parse="text"
-  /></screen>
+  <screen>nix-repl&gt; mul = { a, b, ... }: a*b
+nix-repl&gt; mul { a = 3; b = 4; c = 2; }</screen>
 
   <para>
     However, in the function body you cannot access the "c" attribute. The
@@ -179,8 +212,9 @@ xml:id="functions-and-imports">
     role="strong">@-pattern</emphasis>:
   </para>
 
-  <screen><xi:include href="./05/named-set-argument.txt" parse="text"
-  /></screen>
+  <screen>nix-repl&gt; mul = s@{ a, b, ... }: a*b*s.c
+nix-repl&gt; mul { a = 3; b = 4; c = 2; }
+24</screen>
 
   <para>
     That's it, you give a name to the whole parameter with name@ before the set
@@ -244,24 +278,25 @@ xml:id="functions-and-imports">
     <filename>a.nix</filename>:
   </para>
 
-  <programlisting><xi:include href="./05/a-nix.txt" parse="text"
-  /></programlisting>
+  <programlisting>3</programlisting>
 
   <para>
     <filename>b.nix</filename>:
   </para>
 
-  <programlisting><xi:include href="./05/b-nix.txt" parse="text"
-  /></programlisting>
+  <programlisting>4</programlisting>
 
   <para>
     <filename>mul.nix</filename>:
   </para>
 
-  <programlisting><xi:include href="./05/mul-nix.txt" parse="text"
-  /></programlisting>
+  <programlisting>a: b: a*b</programlisting>
 
-  <screen><xi:include href="./05/import.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; a = import ./a.nix
+nix-repl&gt; b = import ./b.nix
+nix-repl&gt; mul = import ./mul.nix
+nix-repl&gt; mul a b
+12</screen>
 
   <para>
     Yes it's really that simple. You import a file, and it gets parsed as an
@@ -273,10 +308,10 @@ xml:id="functions-and-imports">
     <filename>test.nix</filename>:
   </para>
 
-  <programlisting><xi:include href="./05/test-nix.txt" parse="text"
-  /></programlisting>
+  <programlisting>x</programlisting>
 
-  <screen><xi:include href="./05/test-import.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; let x = 5; in import ./test.nix
+error: undefined variable `x' at /home/lethal/test.nix:1:1</screen>
 
   <para>
     So how do we pass information to the module? Use functions, like we did with
@@ -287,10 +322,16 @@ xml:id="functions-and-imports">
     <filename>test.nix</filename>:
   </para>
 
-  <programlisting><xi:include href="./05/test-nix-2.txt" parse="text"
-  /></programlisting>
+  <programlisting>{ a, b ? 3, trueMsg ? "yes", falseMsg ? "no" }:
+if a &gt; b
+  then builtins.trace trueMsg true
+  else builtins.trace falseMsg false
+</programlisting>
 
-  <screen><xi:include href="./05/test-import-2.txt" parse="text" /></screen>
+  <screen>nix-repl&gt; import ./test.nix { a = 5; trueMsg = "ok"; }
+trace: ok
+true
+</screen>
 
 
   <para>
