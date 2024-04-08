@@ -1,6 +1,6 @@
 # Automatic Runtime Dependencies
 
-Welcome to the 9th Nix pill. In the previous [8th pill](#generic-builders) we wrote a generic builder for autotools projects. We fed in build dependencies and a source tarball, and we received a Nix derivation as a result.
+Welcome to the 9th Nix pill. In the previous [8th pill](08-generic-builders.md) we wrote a generic builder for autotools projects. We fed in build dependencies and a source tarball, and we received a Nix derivation as a result.
 
 Today we stop by the GNU `hello` program to analyze build and runtime dependencies, and we enhance our builder to eliminate unnecessary runtime dependencies.
 
@@ -106,7 +106,7 @@ Now, we rebuild `hello.nix`\...
 
 and we see that `glibc` is a runtime dependency. This is exactly what we wanted.
 
-The package is self-contained. This means that we can copy its closure onto another machine and we will be able to run it. Remember, only a very few components under the `/nix/store` are required to [run nix](#install-on-your-running-system). The `hello` binary will use the exact version of `glibc` library and interpreter referred to in the binary, rather than the system one:
+The package is self-contained. This means that we can copy its closure onto another machine and we will be able to run it. Remember, only a very few components under the `/nix/store` are required to [run nix](02-install-on-your-running.md). The `hello` binary will use the exact version of `glibc` library and interpreter referred to in the binary, rather than the system one:
 
     $ ldd result/bin/hello
      linux-vdso.so.1 (0x00007fff11294000)

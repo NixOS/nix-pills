@@ -1,6 +1,6 @@
 # Nixpkgs Parameters
 
-Welcome to the 16th Nix pill. In the previous [15th](#nix-search-paths) pill we\'ve realized how nix finds expressions with the angular brackets syntax, so that we finally know where `<nixpkgs>` is located on our system.
+Welcome to the 16th Nix pill. In the previous [15th](15-nix-search-paths.md) pill we\'ve realized how nix finds expressions with the angular brackets syntax, so that we finally know where `<nixpkgs>` is located on our system.
 
 We can start diving into the [nixpkgs repository](https://github.com/NixOS/nixpkgs), through all the various tools and design patterns. Please note that also `nixpkgs` has its own manual, underlying the difference between the general `nix` language and the `nixpkgs` repository.
 

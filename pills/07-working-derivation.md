@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to the seventh nix pill. In the previous [sixth pill](#our-first-derivation) we introduced the notion of derivation in the Nix language --- how to define a raw derivation and how to (try to) build it.
+Welcome to the seventh nix pill. In the previous [sixth pill](06-our-first-derivation.md) we introduced the notion of derivation in the Nix language --- how to define a raw derivation and how to (try to) build it.
 
 In this post we continue along the path, by creating a derivation that actually builds something. Then, we try to package a real program: we compile a simple C file and create a derivation out of it, given a blessed toolchain.
 
@@ -57,7 +57,7 @@ In terms of autotools, `$out` will be the `--prefix` path. Yes, not the make `DE
 
 We added something else to the derivation this time: the args attribute. Let\'s see how this changed the .drv compared to the previous pill: \<screen xmlns=\"http://docbook.org/ns/docbook\"\>\<prompt\>\$ \</prompt\>\<userinput\>nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-\<emphasis\>foo.drv\</emphasis\>\</userinput\> \<computeroutput\>{ \"/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv\": { \"outputs\": { \"out\": { \"path\": \"/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo\" } }, \"inputSrcs\": \[ \"/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh\" \], \"inputDrvs\": { \"/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv\": \[ \"out\" \] }, \"platform\": \"x86_64-linux\", \"builder\": \"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash\", \"args\": \[ \"/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh\" \], \"env\": { \"builder\": \"/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash\", \"name\": \"foo\", \"out\": \"/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo\", \"system\": \"x86_64-linux\" } } }\</computeroutput\>\</screen\> Much like the usual .drv, except that there\'s a list of arguments in there passed to the builder (bash) with `builder.sh`... In the nix store..? Nix automatically copies files or directories needed for the build into the store to ensure that they are not changed during the build process and that the deployment is stateless and independent of the building machine. `builder.sh` is not only in the arguments passed to the builder, it\'s also in the input derivations.
 
-Given that `builder.sh` is a plain file, it has no .drv associated with it. The store path is computed based on the filename and on the hash of its contents. Store paths are covered in detail in [a later pill](#nix-store-paths).
+Given that `builder.sh` is a plain file, it has no .drv associated with it. The store path is computed based on the filename and on the hash of its contents. Store paths are covered in detail in [a later pill](18-nix-store-paths.md).
 
 ## Packaging a simple C program
 
@@ -118,7 +118,7 @@ Finally, it creates the symlink.
 
 In the second line of `simple.nix`, we have an `import` function call. Recall that `import` accepts one argument, a nix file to load. In this case, the contents of the file evaluate to a function.
 
-Afterwards, we call the function with the empty set. We saw this already in [the fifth pill](#functions-and-imports). To reiterate: `import <nixpkgs> {}` is calling two functions, not one. Reading it as `(import <nixpkgs>) {}` makes this clearer.
+Afterwards, we call the function with the empty set. We saw this already in [the fifth pill](05-functions-and-imports.md). To reiterate: `import <nixpkgs> {}` is calling two functions, not one. Reading it as `(import <nixpkgs>) {}` makes this clearer.
 
 The value returned by the nixpkgs function is a set; more specifically, it\'s a set of derivations. Calling `import <nixpkgs> {}` into a `let`-expression creates the local variable `pkgs` and brings it into scope. This has an effect similar to the `:l <nixpkgs>` we used in nix repl, in that it allows us to easily access derivations such as `bash`, `gcc`, and `coreutils`, but those derivations will have to be explicitly referred to as members of the `pkgs` set (e.g., `pkgs.bash` instead of just `bash`).
 

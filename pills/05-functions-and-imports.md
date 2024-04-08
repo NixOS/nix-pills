@@ -1,6 +1,6 @@
 # Functions and Imports
 
-Welcome to the fifth Nix pill. In the previous [fourth pill](#basics-of-language) we touched the Nix language for a moment. We introduced basic types and values of the Nix language, and basic expressions such as `if`, `with` and `let`. I invite you to re-read about these expressions and play with them in the repl.
+Welcome to the fifth Nix pill. In the previous [fourth pill](04-basics-of-language.md) we touched the Nix language for a moment. We introduced basic types and values of the Nix language, and basic expressions such as `if`, `with` and `let`. I invite you to re-read about these expressions and play with them in the repl.
 
 Functions help to build reusable components in a big repository like [nixpkgs](https://github.com/NixOS/nixpkgs/). The Nix manual has a [great explanation of functions](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#functions). Let\'s go: pill on one hand, Nix manual on the other hand.
 
@@ -25,7 +25,7 @@ We can store functions in variables.
 
 As usual, please ignore the special syntax for assignments inside `nix repl`. So, we defined a function `x: x*2` that takes one parameter `x`, and returns `x*2`. This function is then assigned to the variable `double`. Finally we did our first function call: `double 3`.
 
-[Big note:]{.underline} it\'s not like many other programming languages where you write `double(3)`. It really is `double 3`.
+Big note: it\'s not like many other programming languages where you write `double(3)`. It really is `double 3`.
 
 In summary: to call a function, name the variable, then space, then the argument. Nothing else to say, it\'s as easy as that.
 

@@ -1,6 +1,6 @@
 # Generic Builders
 
-Welcome to the 8th Nix pill. In the previous [7th pill](#working-derivation) we successfully built a derivation. We wrote a builder script that compiled a C file and installed the binary under the nix store.
+Welcome to the 8th Nix pill. In the previous [7th pill](07-working-derivation.md) we successfully built a derivation. We wrote a builder script that compiled a C file and installed the binary under the nix store.
 
 In this post, we will generalize the builder script, write a Nix expression for [GNU hello world](https://www.gnu.org/software/hello/) and create a wrapper around the derivation built-in function.
 
@@ -43,10 +43,8 @@ And the derivation hello.nix:
       system = builtins.currentSystem;
     }
 
-:::: note
-::: title
-Nix on darwin
-:::
+<div class="info">
+<h4>Nix on darwin</h4>
 
 Darwin (i.e. macOS) builds typically use `clang` rather than `gcc` for a C compiler. We can adapt this early example for darwin by using this modified version of `hello.nix`:
 
@@ -73,11 +71,11 @@ Darwin (i.e. macOS) builds typically use `clang` rather than `gcc` for a C compi
     }
 
 Later, we will show how Nix can automatically handle these differences. For now, please be just aware that changes similar to the above may be needed in what follows.
-::::
+</div>
 
 Now build it with `nix-build hello.nix` and you can launch `result/bin/hello`. Nothing easier, but do we have to create a builder.sh for each package? Do we always have to pass the dependencies to the `derivation` function?
 
-Please note the `--prefix=$out` we were talking about in the [previous pill](#working-derivation).
+Please note the `--prefix=$out` we were talking about in the [previous pill](07-working-derivation.md).
 
 ## A generic builder
 
@@ -192,7 +190,7 @@ Create `autotools.nix`:
     in
     derivation (defaultAttrs // attrs)
 
-Ok now we have to remember a little about [Nix functions](#functions-and-imports). The whole nix expression of this `autotools.nix` file will evaluate to a function. This function accepts a parameter `pkgs`, then returns a function which accepts a parameter `attrs`.
+Ok now we have to remember a little about [Nix functions](05-functions-and-imports.md). The whole nix expression of this `autotools.nix` file will evaluate to a function. This function accepts a parameter `pkgs`, then returns a function which accepts a parameter `attrs`.
 
 The body of the function is simple, yet at first sight it might be hard to grasp:
 
@@ -244,7 +242,7 @@ Out of this pill we managed to create a generic builder for autotools projects, 
 
 We are familiarizing ourselves with the way a Nix system grows up: it\'s about creating and composing derivations with the Nix language.
 
-[Analogy]{.underline}: in C you create objects in the heap, and then you compose them inside new objects. Pointers are used to refer to other objects.
+Analogy: in C you create objects in the heap, and then you compose them inside new objects. Pointers are used to refer to other objects.
 
 In Nix you create derivations stored in the nix store, and then you compose them by creating new derivations. Store paths are used to refer to other derivations.
 

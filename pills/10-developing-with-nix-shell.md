@@ -1,6 +1,6 @@
 # Developing with `nix-shell`
 
-Welcome to the 10th Nix pill. In the previous [9th pill](#automatic-runtime-dependencies) we saw one of the powerful features of Nix: automatic discovery of runtime dependencies. We also finalized the GNU `hello` package.
+Welcome to the 10th Nix pill. In the previous [9th pill](09-automatic-runtime.md) we saw one of the powerful features of Nix: automatic discovery of runtime dependencies. We also finalized the GNU `hello` package.
 
 In this pill, we will introduce the `nix-shell` tool and use it to hack on the GNU `hello` program. We will see how `nix-shell` gives us an isolated environment while we modify the source files of the project, similar to how `nix-build` gave us an isolated environment while building the derivation.
 

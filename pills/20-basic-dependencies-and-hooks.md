@@ -1,16 +1,18 @@
 # Basic Dependencies and Hooks
 
-Welcome to the 20th Nix pill. In the previous [19th](#fundamentals-of-stdenv) pill we introduced Nixpkgs\' stdenv, including `setup.sh` script, `default-builder.sh` helper script, and `stdenv.mkDerivation` builder. We focused on how stdenv is put together, and how it\'s used, and a bit about the phases of `genericBuild`.
+Welcome to the 20th Nix pill. In the previous [19th](19-fundamentals-of-stdenv.md) pill we introduced Nixpkgs\' stdenv, including `setup.sh` script, `default-builder.sh` helper script, and `stdenv.mkDerivation` builder. We focused on how stdenv is put together, and how it\'s used, and a bit about the phases of `genericBuild`.
 
 This time, we\'ll focus on the interaction of packages built with `stdenv.mkDerivation`. Packages need to depend on each other, of course. For this we have `buildInputs` and `propagatedBuildInputs` attributes. We\'ve also found that dependencies sometimes need to influence their dependents in ways the dependents can\'t or shouldn\'t predict. For this we have setup hooks and env hooks. Together, these 4 concepts support almost all build-time package interactions.
 
-::: note
-The complexity of the dependencies and hooks infrastructure has increased, over time, to support cross compilation. Once you learn the core concepts, you will be able to understand the extra complexity. As a starting point, you might want to refer to nixpkgs commit [6675f0a5](https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25), the last version of stdenv without cross-compilation complexity.
-:::
+<div class="info">
+
+Note: The complexity of the dependencies and hooks infrastructure has increased, over time, to support cross compilation. Once you learn the core concepts, you will be able to understand the extra complexity. As a starting point, you might want to refer to nixpkgs commit [6675f0a5](https://github.com/nixos/nixpkgs/tree/6675f0a52c0962042a1000c7f20e887d0d26ae25), the last version of stdenv without cross-compilation complexity.
+
+</div>
 
 ## The `buildInputs` Attribute
 
-For the simplest dependencies where the current package directly needs another, we use the `buildInputs` attribute. This is exactly the pattern used in our builder in [Pill 8](#generic-builders). To demo this, let\'s build GNU Hello, and then another package which provides a shell script that `exec`s it.
+For the simplest dependencies where the current package directly needs another, we use the `buildInputs` attribute. This is exactly the pattern used in our builder in [Pill 8](08-generic-builders.html). To demo this, let\'s build GNU Hello, and then another package which provides a shell script that `exec`s it.
 
     let
 
@@ -213,7 +215,7 @@ This is strictly more general than any of the other mechanisms introduced in thi
 
 ## Environment Hooks
 
-As a final convenience, we have environment hooks. Recall in [Pill 12](#inputs-design-pattern) how we created `NIX_CFLAGS_COMPILE` for `-I` flags and `NIX_LDFLAGS` for `-L` flags, in a similar manner to how we prepared the `PATH`. One point of ugliness was how anti-modular this was. It makes sense to build the `PATH` in a generic builder, because the `PATH` is used by the shell, and the generic builder is intrinsically tied to the shell. But `-I` and `-L` flags are only relevant to the C compiler. The stdenv isn\'t wedded to including a C compiler (though it does by default), and there are other compilers too which may take completely different flags.
+As a final convenience, we have environment hooks. Recall in [Pill 12](12-inputs-design-pattern.md) how we created `NIX_CFLAGS_COMPILE` for `-I` flags and `NIX_LDFLAGS` for `-L` flags, in a similar manner to how we prepared the `PATH`. One point of ugliness was how anti-modular this was. It makes sense to build the `PATH` in a generic builder, because the `PATH` is used by the shell, and the generic builder is intrinsically tied to the shell. But `-I` and `-L` flags are only relevant to the C compiler. The stdenv isn\'t wedded to including a C compiler (though it does by default), and there are other compilers too which may take completely different flags.
 
 As a first step, we can move that logic to a setup hook on the C compiler; indeed that\'s just what we do in CC Wrapper. [^2] But this pattern comes up fairly often, so somebody decided to add some helper support to reduce boilerplate.
 

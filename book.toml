@@ -6,5 +6,11 @@ multilingual = false
 src = "pills"
 
 [output.html]
+additional-css = ["custom.css"]
 edit-url-template = "https://github.com/NixOS/nix-pills/tree/master/{path}"
 git-repository-url = "https://github.com/NixOS/nix-pills"
+
+[output.linkcheck]
+follow-web-links = true
+
+[output.epub]
