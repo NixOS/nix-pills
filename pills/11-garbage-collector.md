@@ -1,6 +1,6 @@
 # The Garbage Collector {#garbage-collector}
 
-Welcome to the 11th Nix pill. In the previous [10th pill](#developing-with-nix-shell), we drew a parallel between the isolated build environment provided by `nix-build` and the isolated development shell provided by `nix-shell`. Using `nix-shell` allowed us to debug, modify, and manually build software using an environment that is almost identical to the one provided by `nix-build`.
+Welcome to the 11th Nix pill. In the previous [10th pill](10-developing-with-nix-shell.md), we drew a parallel between the isolated build environment provided by `nix-build` and the isolated development shell provided by `nix-shell`. Using `nix-shell` allowed us to debug, modify, and manually build software using an environment that is almost identical to the one provided by `nix-build`.
 
 Today, we will stop focusing on packaging and instead look at a critical component of Nix: the garbage collector. When we use Nix tools, we are often building derivations. This includes `.drv` files as well as out paths. These artifacts go in the Nix store and take up space in our storage. Eventually we may wish to free up some space by removing derivations we no longer need. This is the focus of the 11th pill. By default, Nix takes a relatively conservative approach when automatically deciding which derivations are \"needed\". In this pill, we will also see a technique to conduct more destructive upgrade and deletion operations.
 
@@ -63,7 +63,7 @@ Removing a GC root is simple. In our case, we delete the generation that refers 
     $ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
     ls: cannot access /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17: No such file or directory
 
-[Note]{.underline}: `nix-env --list-generations` does not rely on any particular metadata. It is able to list generations based solely on the file names under the profiles directory.
+Note: `nix-env --list-generations` does not rely on any particular metadata. It is able to list generations based solely on the file names under the profiles directory.
 
 Note that we removed the link from `/nix/var/nix/profiles`, not from `/nix/var/nix/gcroots`. In addition to the latter, Nix treats `/nix/var/nix/profiles` as a GC root. This is useful because it means that any profile and its generations are GC roots. Other paths are considered GC roots as well; for example, `/run/booted-system` on NixOS. The command `nix-store --gc --print-roots` prints all paths considered as GC roots when running the garbage collector.
 

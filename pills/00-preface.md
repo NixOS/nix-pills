@@ -8,6 +8,8 @@ For an up-to-date version, please visit <https://nixos.org/guides/nix-pills/>. A
 
 If you encounter problems, please report them on the [nixos/nix-pills](https://github.com/NixOS/nix-pills/issues) issue tracker.
 
-::: note
-Commands prefixed with `#` have to be run as root, either requiring to login as root user or temporarily switching to it using `sudo` for example.
-:::
+<div class="info">
+
+Note: Commands prefixed with `#` have to be run as root, either requiring to login as root user or temporarily switching to it using `sudo` for example.
+
+</div>

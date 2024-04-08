@@ -1,6 +1,6 @@
 # Nix Store Paths
 
-Welcome to the 18th Nix pill. In the previous [17th](#nixpkgs-overriding-packages) pill we have scratched the surface of the `nixpkgs` repository structure. It is a set of packages, and it\'s possible to override such packages so that all other packages will use the overrides.
+Welcome to the 18th Nix pill. In the previous [17th](17-nixpkgs-overriding-packages.md) pill we have scratched the surface of the `nixpkgs` repository structure. It is a set of packages, and it\'s possible to override such packages so that all other packages will use the overrides.
 
 Before reading existing derivations, I\'d like to talk about store paths and how they are computed. In particular we are interested in fixed store paths that depend on an integrity hash (e.g. a sha256), which is usually applied to source tarballs.
 

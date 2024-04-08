@@ -1,12 +1,12 @@
 # Nixpkgs Overriding Packages
 
-Welcome to the 17th Nix pill. In the previous [16th](#nixpkgs-parameters) pill we have started to dive into the [nixpkgs repository](http://github.com/NixOS/nixpkgs). `Nixpkgs` is a function, and we\'ve looked at some parameters like `system` and `config`.
+Welcome to the 17th Nix pill. In the previous [16th](16-nixpkgs-parameters.md) pill we have started to dive into the [nixpkgs repository](http://github.com/NixOS/nixpkgs). `Nixpkgs` is a function, and we\'ve looked at some parameters like `system` and `config`.
 
 Today we\'ll talk about a special attribute: `config.packageOverrides`. Overriding packages in a set with fixed point can be considered another design pattern in nixpkgs.
 
 ## Overriding a package
 
-Recall the override design pattern from the [nix pill 14](#override-design-pattern). Instead of calling a function with parameters directly, we make the call (function + parameters) overridable.
+Recall the override design pattern from the [nix pill 14](14-override-design-pattern.md). Instead of calling a function with parameters directly, we make the call (function + parameters) overridable.
 
 We put the override function in the returned attribute set of the original function call.
 

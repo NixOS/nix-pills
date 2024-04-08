@@ -1,6 +1,6 @@
 # Package Repositories and the Inputs Design Pattern {#inputs-design-pattern}
 
-Welcome to the 12th Nix pill. In the previous [11th pill](#garbage-collector), we stopped packaging and cleaned up the system with the garbage collector.
+Welcome to the 12th Nix pill. In the previous [11th pill](11-garbage-collector.md), we stopped packaging and cleaned up the system with the garbage collector.
 
 This time, we will resume packaging and improve different aspects of it. We will also demonstrate how to create a repository of multiple packages.
 

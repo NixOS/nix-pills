@@ -1,6 +1,6 @@
 # Override Design Pattern
 
-Welcome to the 14th Nix pill. In the previous [13th](#callpackage-design-pattern) pill, we introduced the `callPackage` pattern and used it to simplify the composition of software in a repository.
+Welcome to the 14th Nix pill. In the previous [13th](13-callpackage-design-pattern.md) pill, we introduced the `callPackage` pattern and used it to simplify the composition of software in a repository.
 
 The next design pattern is less necessary, but is useful in many cases and is a good exercise to learn more about Nix.
 
@@ -20,7 +20,7 @@ Designing such utilities is not trivial in a functional language without static 
 
 ## The override pattern
 
-In [pill 12](#inputs-design-pattern) we introduced the inputs design pattern. We do not return a derivation picking dependencies directly from the repository; rather we declare the inputs and let the callers pass the necessary arguments.
+In [pill 12](12-inputs-design-pattern.md) we introduced the inputs design pattern. We do not return a derivation picking dependencies directly from the repository; rather we declare the inputs and let the callers pass the necessary arguments.
 
 In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let\'s take for example the graphviz attribute:
 
@@ -52,7 +52,7 @@ We would like to avoid specifying the nix expression again. Instead, we would li
 
 The difference is obvious, as well as the advantages of this approach.
 
-[Note:]{.underline} that `.override` is not a \"method\" in the OO sense as you may think. Nix is a functional language. The`.override` is simply an attribute of a set.
+Note: that `.override` is not a \"method\" in the OO sense as you may think. Nix is a functional language. The`.override` is simply an attribute of a set.
 
 ## The override implementation
 

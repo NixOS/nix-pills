@@ -1,6 +1,6 @@
 # Callpackage Design Pattern
 
-Welcome to the 13th Nix pill. In the previous [12th pill](#inputs-design-pattern), we introduced the first basic design pattern for organizing a repository of software. In addition, we packaged graphviz so that we had two packages to bundle into an example repository.
+Welcome to the 13th Nix pill. In the previous [12th pill](12-inputs-design-pattern.md), we introduced the first basic design pattern for organizing a repository of software. In addition, we packaged graphviz so that we had two packages to bundle into an example repository.
 
 The next design pattern we will examine is called the `callPackage` pattern. This technique is extensively used in [nixpkgs](https://github.com/NixOS/nixpkgs), and it\'s the current de facto standard for importing packages in a repository. Its purpose is to reduce the duplication of identifiers between package derivation inputs and repository derivations.
 
@@ -91,7 +91,7 @@ Let\'s dissect the above snippet:
 
 In the snippet above, we\'ve also demonstrated that the `callPackage` call is equivalent to directly calling `add a b`.
 
-We achieved most of what we wanted: to automatically call functions given a set of possible arguments. If an argument is not found within the set we used to call the function, then we receive an error (unless the function has variadic arguments denoted with `...`, as explained in the [5th pill](#functions-and-imports)).
+We achieved most of what we wanted: to automatically call functions given a set of possible arguments. If an argument is not found within the set we used to call the function, then we receive an error (unless the function has variadic arguments denoted with `...`, as explained in the [5th pill](05-functions-and-imports.md)).
 
 The last missing piece is allowing users to override some of the parameters. We may not want to always call functions with values taken from the big set. Thus, we add a third parameter which takes a set of overrides:
 

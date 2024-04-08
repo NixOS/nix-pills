@@ -1,6 +1,6 @@
 # Fundamentals of Stdenv
 
-Welcome to the 19th Nix pill. In the previous [18th](#nix-store-paths) pill we dived into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.
+Welcome to the 19th Nix pill. In the previous [18th](18-nix-store-paths.md) pill we dived into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.
 
 This time we will instead look into `nixpkgs`, in particular one of its core derivations: `stdenv`.
 
@@ -39,7 +39,7 @@ How can it be? The package must be referring to those other packages somehow. In
 
 ## The setup file
 
-Remember our generic `builder.sh` in [Pill 8](#generic-builders)? It sets up a basic `PATH`, unpacks the source and runs the usual autotools commands for us.
+Remember our generic `builder.sh` in [Pill 8](08-generic-builders.md)? It sets up a basic `PATH`, unpacks the source and runs the usual autotools commands for us.
 
 The [stdenv setup file](https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh) is exactly that. It sets up several environment variables like `PATH` and creates some helper bash functions to build a package. I invite you to read it.
 
@@ -81,7 +81,7 @@ Let\'s write a `hello.nix` expression using this newly discovered `stdenv`:
       src = ./hello-2.10.tar.gz;
     }
 
-Don\'t be scared by the `with` expression. It pulls the `nixpkgs` repository into scope, so we can directly use `stdenv`. It looks very similar to the hello expression in [Pill 8](#generic-builders).
+Don\'t be scared by the `with` expression. It pulls the `nixpkgs` repository into scope, so we can directly use `stdenv`. It looks very similar to the hello expression in [Pill 8](08-generic-builders.md).
 
 It builds, and runs fine:
 
@@ -114,7 +114,7 @@ You can open [default-builder.sh](https://github.com/NixOS/nixpkgs/blob/master/p
     source $stdenv/setup
     genericBuild
 
-It\'s what we did in [Pill 10](#developing-with-nix-shell) to make the derivations `nix-shell` friendly. When entering the shell, the setup file only sets up the environment without building anything. When doing `nix-build`, it actually runs the build process.
+It\'s what we did in [Pill 10](10-developing-with-nix-shell.md) to make the derivations `nix-shell` friendly. When entering the shell, the setup file only sets up the environment without building anything. When doing `nix-build`, it actually runs the build process.
 
 To get a clear understanding of the environment variables, look at the .drv of the hello derivation:
 
