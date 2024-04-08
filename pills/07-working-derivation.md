@@ -20,8 +20,10 @@ In summary, we want the builder to be bash, and pass it an argument, `builder.sh
 
 First of all, let's write our `builder.sh` in the current directory:
 
-    declare -xp
-    echo foo > $out
+```sh
+declare -xp
+echo foo > $out
+```
 
 The command `declare -xp` lists exported variables (`declare` is a builtin bash function). As we covered in the previous pill, Nix computes the output path of the derivation. The resulting `.drv` file contains a list of environment variables passed to the builder. One of these is `$out`.
 
@@ -31,7 +33,7 @@ In addition, we print out the environment variables during the build process. We
 
 Like for coreutils in the previous pill, we get a blessed bash for free from our magic nixpkgs stuff:
 
-```
+```console
 nix-repl> :l <nixpkgs>
 Added 3950 variables.
 nix-repl> "${bash}"
@@ -40,7 +42,7 @@ nix-repl> "${bash}"
 
 So with the usual trick, we can refer to bin/bash and create our derivation:
 
-```
+```console
 nix-repl> d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }
 nix-repl> :b d
 [1 built, 0.0 MiB DL]
@@ -57,7 +59,7 @@ Note that we used `./builder.sh` and not `"./builder.sh"`. This way, it is parse
 
 We can use `nix-store --read-log` to see the logs our builder produced:
 
-```
+```console
 $ nix-store --read-log /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo
 declare -x HOME="/homeless-shelter"
 declare -x NIX_BUILD_CORES="4"
@@ -98,7 +100,7 @@ In terms of autotools, `$out` will be the `--prefix` path. Yes, not the make `DE
 
 We added something else to the derivation this time: the args attribute. Let's see how this changed the .drv compared to the previous pill:
 
-```
+```console
 $ nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv
 {
   "/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv": {
@@ -138,19 +140,23 @@ Given that `builder.sh` is a plain file, it has no .drv associated with it. The 
 
 Start off by writing a simple C program called `simple.c`:
 
-    void main() {
-      puts("Simple!");
-    }
+```c
+void main() {
+    puts("Simple!");
+}
+```
 
 And its `simple_builder.sh`:
 
-    export PATH="$coreutils/bin:$gcc/bin"
-    mkdir $out
-    gcc -o $out/simple $src
+```sh
+export PATH="$coreutils/bin:$gcc/bin"
+mkdir $out
+gcc -o $out/simple $src
+```
 
 Don't worry too much about where those variables come from yet; let's write the derivation and build it:
 
-```
+```console
 nix-repl> :l <nixpkgs>
 nix-repl> simple = derivation { name = "simple"; builder = "${bash}/bin/bash"; args = [ ./simple_builder.sh ]; gcc = gcc; coreutils = coreutils; src = ./simple.c; system = builtins.currentSystem; }
 nix-repl> :b simple
@@ -179,18 +185,20 @@ We then create `$out` as a directory and place the binary inside it. Note that g
 
 Drop out of nix repl and write a file `simple.nix`:
 
-    let
-      pkgs = import <nixpkgs> { };
-    in
-    pkgs.stdenv.mkDerivation {
-      name = "simple";
-      builder = "${pkgs.bash}/bin/bash";
-      args = [ ./simple_builder.sh ];
-      gcc = pkgs.gcc;
-      coreutils = pkgs.coreutils;
-      src = ./simple.c;
-      system = builtins.currentSystem;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+in
+pkgs.stdenv.mkDerivation {
+  name = "simple";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./simple_builder.sh ];
+  gcc = pkgs.gcc;
+  coreutils = pkgs.coreutils;
+  src = ./simple.c;
+  system = builtins.currentSystem;
+}
+```
 
 Now you can build it with `nix-build simple.nix`. This will create a symlink `result` in the current directory, pointing to the out path of the derivation.
 
@@ -210,17 +218,19 @@ The value returned by the nixpkgs function is a set; more specifically, it's a s
 
 Below is a revised version of the `simple.nix` file, using the `inherit` keyword:
 
-    let
-      pkgs = import <nixpkgs> { };
-    in
-    pkgs.stdenv.mkDerivation {
-      name = "simple";
-      builder = "${pkgs.bash}/bin/bash";
-      args = [ ./simple_builder.sh ];
-      inherit (pkgs) gcc coreutils;
-      src = ./simple.c;
-      system = builtins.currentSystem;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+in
+pkgs.stdenv.mkDerivation {
+  name = "simple";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./simple_builder.sh ];
+  inherit (pkgs) gcc coreutils;
+  src = ./simple.c;
+  system = builtins.currentSystem;
+}
+```
 
 Here we also take the opportunity to introduce the [`inherit` keyword](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes). `inherit foo;` is equivalent to `foo = foo;`. Similarly, `inherit gcc coreutils;` is equivalent to `gcc = gcc; coreutils = coreutils;`. Lastly, `inherit (pkgs) gcc coreutils;` is equivalent to `gcc = pkgs.gcc; coreutils = pkgs.coreutils;`.
 

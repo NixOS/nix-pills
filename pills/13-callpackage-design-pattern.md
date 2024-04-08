@@ -10,15 +10,19 @@ In the previous pill, we demonstrated how the `inputs` pattern decouples package
 
 However, as with usual programming languages, there is some duplication of work: we declare parameter names and then we pass arguments, typically with the same name. For example, if we define a package derivation using the `inputs` pattern such as:
 
-    { input1, input2, ... }:
-    ...
+```nix
+{ input1, input2, ... }:
+...
+```
 
 we would likely want to bundle that package derivation into a repository via a an attribute set defined as something like:
 
-    rec {
-      lib1 = import package1.nix { inherit input1 input2; };
-      program2 = import package2.nix { inherit inputX inputY lib1; };
-    }
+```nix
+rec {
+  lib1 = import package1.nix { inherit input1 input2; };
+  program2 = import package2.nix { inherit inputX inputY lib1; };
+}
+```
 
 There are two things to note. First, that inputs often have the same name as attributes in the repository itself. Second, that (due to the `rec` keyword), the inputs to a package derivation may be other packages in the repository itself.
 
@@ -26,10 +30,12 @@ Rather than passing the inputs twice, we would prefer to pass those inputs from 
 
 To achieve this, we will define a `callPackage` function with the following calling convention:
 
-    {
-      lib1 = callPackage package1.nix { };
-      program2 = callPackage package2.nix { someoverride = overriddenDerivation; };
-    }
+```nix
+{
+  lib1 = callPackage package1.nix { };
+  program2 = callPackage package2.nix { someoverride = overriddenDerivation; };
+}
+```
 
 We want `callPackage` to be a function of two arguments, with the following behavior:
 
@@ -45,9 +51,11 @@ In this section, we will build up the `callPackages` pattern from scratch. To st
 
 Nix provides a builtin function to do this:
 
-    nix-repl> add = { a ? 3, b }: a+b
-    nix-repl> builtins.functionArgs add
-    { a = true; b = false; }
+```console
+nix-repl> add = { a ? 3, b }: a+b
+nix-repl> builtins.functionArgs add
+{ a = true; b = false; }
+```
 
 In addition to returning the argument names, the attribute set returned by `functionArgs` indicates whether or not the argument has a default value. For our purposes, we are only interested in the argument names; we do not care about the default values right now.
 
@@ -61,21 +69,25 @@ To do this, we need two things:
 
 The former is easy: we just have to set our package derivation's inputs to be package names in a repository, such as `nixpkgs`. For the latter, Nix provides another builtin function:
 
-    nix-repl> values = { a = 3; b = 5; c = 10; }
-    nix-repl> builtins.intersectAttrs values (builtins.functionArgs add)
-    { a = true; b = false; }
-    nix-repl> builtins.intersectAttrs (builtins.functionArgs add) values
-    { a = 3; b = 5; }
+```console
+nix-repl> values = { a = 3; b = 5; c = 10; }
+nix-repl> builtins.intersectAttrs values (builtins.functionArgs add)
+{ a = true; b = false; }
+nix-repl> builtins.intersectAttrs (builtins.functionArgs add) values
+{ a = 3; b = 5; }
+```
 
 The `intersectAttrs` returns an attribute set whose names are the intersection of both arguments' attribute names, with the attribute values taken from the second argument.
 
 This is all we need to do: we have obtained the argument names from a function, and populated these with an existing set of attributes. This is our simple implementation of `callPackage`:
 
-    nix-repl> callPackage = set: f: f (builtins.intersectAttrs (builtins.functionArgs f) set)
-    nix-repl> callPackage values add
-    8
-    nix-repl> with values; add { inherit a b; }
-    8
+```console
+nix-repl> callPackage = set: f: f (builtins.intersectAttrs (builtins.functionArgs f) set)
+nix-repl> callPackage values add
+8
+nix-repl> with values; add { inherit a b; }
+8
+```
 
 Let's dissect the above snippet:
 
@@ -95,11 +107,13 @@ We achieved most of what we wanted: to automatically call functions given a set 
 
 The last missing piece is allowing users to override some of the parameters. We may not want to always call functions with values taken from the big set. Thus, we add a third parameter which takes a set of overrides:
 
-    nix-repl> callPackage = set: f: overrides: f ((builtins.intersectAttrs (builtins.functionArgs f) set) // overrides)
-    nix-repl> callPackage values add { }
-    8
-    nix-repl> callPackage values add { b = 12; }
-    15
+```console
+nix-repl> callPackage = set: f: overrides: f ((builtins.intersectAttrs (builtins.functionArgs f) set) // overrides)
+nix-repl> callPackage values add { }
+8
+nix-repl> callPackage values add { b = 12; }
+15
+```
 
 Apart from the increasing number of parentheses, it should be clear that we simply take a set union between the default arguments and the overriding set.
 
@@ -107,23 +121,25 @@ Apart from the increasing number of parentheses, it should be clear that we simp
 
 Given our `callPackages`, we can simplify the repository expression in `default.nix`:
 
+```nix
+let
+  nixpkgs = import <nixpkgs> { };
+  allPkgs = nixpkgs // pkgs;
+  callPackage =
+    path: overrides:
     let
-      nixpkgs = import <nixpkgs> { };
-      allPkgs = nixpkgs // pkgs;
-      callPackage =
-        path: overrides:
-        let
-          f = import path;
-        in
-        f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
-      pkgs = with nixpkgs; {
-        mkDerivation = import ./autotools.nix nixpkgs;
-        hello = callPackage ./hello.nix { };
-        graphviz = callPackage ./graphviz.nix { };
-        graphvizCore = callPackage ./graphviz.nix { gdSupport = false; };
-      };
+      f = import path;
     in
-    pkgs
+    f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
+  pkgs = with nixpkgs; {
+    mkDerivation = import ./autotools.nix nixpkgs;
+    hello = callPackage ./hello.nix { };
+    graphviz = callPackage ./graphviz.nix { };
+    graphvizCore = callPackage ./graphviz.nix { gdSupport = false; };
+  };
+in
+pkgs
+```
 
 Let's examine this in detail:
 

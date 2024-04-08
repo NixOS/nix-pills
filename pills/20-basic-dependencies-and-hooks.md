@@ -14,86 +14,98 @@ Note: The complexity of the dependencies and hooks infrastructure has increased,
 
 For the simplest dependencies where the current package directly needs another, we use the `buildInputs` attribute. This is exactly the pattern used in our builder in [Pill 8](08-generic-builders.html). To demo this, let's build GNU Hello, and then another package which provides a shell script that `exec`s it.
 
-    let
+```nix
+let
 
-      nixpkgs = import <nixpkgs> { };
+  nixpkgs = import <nixpkgs> { };
 
-      inherit (nixpkgs) stdenv fetchurl which;
+  inherit (nixpkgs) stdenv fetchurl which;
 
-      actualHello = stdenv.mkDerivation {
-        name = "hello-2.3";
+  actualHello = stdenv.mkDerivation {
+    name = "hello-2.3";
 
-        src = fetchurl {
-          url = "mirror://gnu/hello/hello-2.3.tar.bz2";
-          sha256 = "0c7vijq8y68bpr7g6dh1gny0bff8qq81vnp4ch8pjzvg56wb3js1";
-        };
-      };
+    src = fetchurl {
+      url = "mirror://gnu/hello/hello-2.3.tar.bz2";
+      sha256 = "0c7vijq8y68bpr7g6dh1gny0bff8qq81vnp4ch8pjzvg56wb3js1";
+    };
+  };
 
-      wrappedHello = stdenv.mkDerivation {
-        name = "hello-wrapper";
+  wrappedHello = stdenv.mkDerivation {
+    name = "hello-wrapper";
 
-        buildInputs = [
-          actualHello
-          which
-        ];
+    buildInputs = [
+      actualHello
+      which
+    ];
 
-        unpackPhase = "true";
+    unpackPhase = "true";
 
-        installPhase = ''
-          mkdir -p "$out/bin"
-          echo "#! ${stdenv.shell}" >> "$out/bin/hello"
-          echo "exec $(which hello)" >> "$out/bin/hello"
-          chmod 0755 "$out/bin/hello"
-        '';
-      };
-    in
-    wrappedHello
+    installPhase = ''
+      mkdir -p "$out/bin"
+      echo "#! ${stdenv.shell}" >> "$out/bin/hello"
+      echo "exec $(which hello)" >> "$out/bin/hello"
+      chmod 0755 "$out/bin/hello"
+    '';
+  };
+in
+wrappedHello
+```
 
 Notice that the wrappedHello derivation finds the `hello` binary from the `PATH`. This works because stdenv contains something like:
 
-    pkgs=""
-    for i in $buildInputs; do
-        findInputs $i
-    done
+```sh
+pkgs=""
+for i in $buildInputs; do
+    findInputs $i
+done
+```
 
 where `findInputs` is defined like:
 
-    findInputs() {
-        local pkg=$1
+```sh
+findInputs() {
+    local pkg=$1
 
-        ## Don't need to repeat already processed package
-        case $pkgs in
-            *\ $pkg\ *)
-                return 0
-                ;;
-        esac
+    ## Don't need to repeat already processed package
+    case $pkgs in
+        *\ $pkg\ *)
+            return 0
+            ;;
+    esac
 
-        pkgs="$pkgs $pkg "
+    pkgs="$pkgs $pkg "
 
-        ## More goes here in reality that we can ignore for now.
-    }
+    ## More goes here in reality that we can ignore for now.
+}
+```
 
 then after this is run:
 
-    for i in $pkgs; do
-        addToEnv $i
-    done
+```sh
+for i in $pkgs; do
+    addToEnv $i
+done
+```
 
 where `addToEnv` is defined like:
 
-    addToEnv() {
-        local pkg=$1
+```sh
+addToEnv() {
+    local pkg=$1
 
-        if test -d $1/bin; then
-            addToSearchPath _PATH $1/bin
-        fi
+    if test -d $1/bin; then
+        addToSearchPath _PATH $1/bin
+    fi
 
-        ## More goes here in reality that we can ignore for now.
-    }
+    ## More goes here in reality that we can ignore for now.
+}
+```
 
 The `addToSearchPath` call adds `$1/bin` to `_PATH` if the former exists (code [here](https://github.com/NixOS/nixpkgs/blob/6675f0a52c0962042a1000c7f20e887d0d26ae25/pkgs/stdenv/generic/setup.sh#L60-L73)). Once all the packages in `buildInputs` have been processed, then content of `_PATH` is added to `PATH`, as follows:
 
-    PATH="${_PATH-}${_PATH:+${PATH:+:}}$PATH"
+```sh
+PATH="${_PATH-}${_PATH:+${PATH:+:}}$PATH"
+```
 
 With the real `hello` on the `PATH`, the `installPhase` should hopefully make sense.
 
@@ -101,92 +113,100 @@ With the real `hello` on the `PATH`, the `installPhase` should hopefully make se
 
 The `buildInputs` covers direct dependencies, but what about indirect dependencies where one package needs a second package which needs a third? Nix itself handles this just fine, understanding various dependency closures as covered in previous builds. But what about the conveniences that `buildInputs` provides, namely accumulating in `pkgs` environment variable and inclusion of `pkg/bin` directories on the `PATH`? For this, stdenv provides the `propagatedBuildInputs`:
 
-    let
+```nix
+let
 
-      nixpkgs = import <nixpkgs> { };
+  nixpkgs = import <nixpkgs> { };
 
-      inherit (nixpkgs) stdenv fetchurl which;
+  inherit (nixpkgs) stdenv fetchurl which;
 
-      actualHello = stdenv.mkDerivation {
-        name = "hello-2.3";
+  actualHello = stdenv.mkDerivation {
+    name = "hello-2.3";
 
-        src = fetchurl {
-          url = "mirror://gnu/hello/hello-2.3.tar.bz2";
-          sha256 = "0c7vijq8y68bpr7g6dh1gny0bff8qq81vnp4ch8pjzvg56wb3js1";
-        };
-      };
+    src = fetchurl {
+      url = "mirror://gnu/hello/hello-2.3.tar.bz2";
+      sha256 = "0c7vijq8y68bpr7g6dh1gny0bff8qq81vnp4ch8pjzvg56wb3js1";
+    };
+  };
 
-      intermediary = stdenv.mkDerivation {
-        name = "middle-man";
+  intermediary = stdenv.mkDerivation {
+    name = "middle-man";
 
-        propagatedBuildInputs = [ actualHello ];
+    propagatedBuildInputs = [ actualHello ];
 
-        unpackPhase = "true";
+    unpackPhase = "true";
 
-        installPhase = ''
-          mkdir -p "$out"
-        '';
-      };
+    installPhase = ''
+      mkdir -p "$out"
+    '';
+  };
 
-      wrappedHello = stdenv.mkDerivation {
-        name = "hello-wrapper";
+  wrappedHello = stdenv.mkDerivation {
+    name = "hello-wrapper";
 
-        buildInputs = [
-          intermediary
-          which
-        ];
+    buildInputs = [
+      intermediary
+      which
+    ];
 
-        unpackPhase = "true";
+    unpackPhase = "true";
 
-        installPhase = ''
-          mkdir -p "$out/bin"
-          echo "#! ${stdenv.shell}" >> "$out/bin/hello"
-          echo "exec $(which hello)" >> "$out/bin/hello"
-          chmod 0755 "$out/bin/hello"
-        '';
-      };
-    in
-    wrappedHello
+    installPhase = ''
+      mkdir -p "$out/bin"
+      echo "#! ${stdenv.shell}" >> "$out/bin/hello"
+      echo "exec $(which hello)" >> "$out/bin/hello"
+      chmod 0755 "$out/bin/hello"
+    '';
+  };
+in
+wrappedHello
+```
 
 See how the intermediate package has a `propagatedBuildInputs` dependency, but the wrapper only needs a `buildInputs` dependency on the intermediary.
 
 How does this work? You might think we do something in Nix, but actually it's done not at eval time but at build time in bash. let's look at part of the `fixupPhase` of stdenv:
 
-    fixupPhase() {
+```sh
+fixupPhase() {
 
-        ## Elided
+    ## Elided
 
-        if test -n "$propagatedBuildInputs"; then
-            mkdir -p "$out/nix-support"
-            echo "$propagatedBuildInputs" > "$out/nix-support/propagated-build-inputs"
-        fi
+    if test -n "$propagatedBuildInputs"; then
+        mkdir -p "$out/nix-support"
+        echo "$propagatedBuildInputs" > "$out/nix-support/propagated-build-inputs"
+    fi
 
-        ## Elided
+    ## Elided
 
-    }
+}
+```
 
 This dumps the propagated build inputs in a so-named file in `$out/nix-support/`. Then, back in `findInputs` look at the lines at the bottom we elided before:
 
-    findInputs() {
-        local pkg=$1
+```sh
+findInputs() {
+    local pkg=$1
 
-        ## More goes here in reality that we can ignore for now.
+    ## More goes here in reality that we can ignore for now.
 
-        if test -f $pkg/nix-support/propagated-build-inputs; then
-            for i in $(cat $pkg/nix-support/propagated-build-inputs); do
-                findInputs $i
-            done
-        fi
-    }
+    if test -f $pkg/nix-support/propagated-build-inputs; then
+        for i in $(cat $pkg/nix-support/propagated-build-inputs); do
+            findInputs $i
+        done
+    fi
+}
+```
 
 See how `findInputs` is actually recursive, looking at the propagated build inputs of each dependency, and those dependencies' propagated build inputs, etc.
 
 We actually simplified the `findInputs` call site from before; `propagatedBuildInputs` is also looped over in reality:
 
-    pkgs=""
-    for i in $buildInputs $propagatedBuildInputs; do
-        findInputs $i
-    done
+```sh
+pkgs=""
+for i in $buildInputs $propagatedBuildInputs; do
+    findInputs $i
+done
+```
 
 This demonstrates an important point. For the _current_ package alone, it doesn't matter whether a dependency is propagated or not. It will be processed the same way: called with `findInputs` and `addToEnv`. (The packages discovered by `findInputs`, which are also accumulated in `pkgs` and passed to `addToEnv`, are also the same in both cases.) Downstream however, it certainly does matter because only the propagated immediate dependencies are put in the `$out/nix-support/propagated-build-inputs`.
 
@@ -196,18 +216,20 @@ As we mentioned above, sometimes dependencies need to influence the packages tha
 
 Setup hooks are the basic building block we have for this. In nixpkgs, a "hook" is basically a bash callback, and a setup hook is no exception. Let's look at the last part of `findInputs` we haven't covered:
 
-    findInputs() {
-        local pkg=$1
+```sh
+findInputs() {
+    local pkg=$1
 
-        ## More goes here in reality that we can ignore for now.
+    ## More goes here in reality that we can ignore for now.
 
-        if test -f $pkg/nix-support/setup-hook; then
-            source $pkg/nix-support/setup-hook
-        fi
+    if test -f $pkg/nix-support/setup-hook; then
+        source $pkg/nix-support/setup-hook
+    fi
 
-        ## More goes here in reality that we can ignore for now.
+    ## More goes here in reality that we can ignore for now.
 
-    }
+}
+```
 
 If a package includes the path `pkg/nix-support/setup-hook`, it will be sourced by any stdenv-based build including that as a dependency.
 
@@ -221,26 +243,30 @@ As a first step, we can move that logic to a setup hook on the C compiler; indee
 
 The other half of `addToEnv` is:
 
-    addToEnv() {
-        local pkg=$1
+```sh
+addToEnv() {
+    local pkg=$1
 
-        ## More goes here in reality that we can ignore for now.
+    ## More goes here in reality that we can ignore for now.
 
-        # Run the package-specific hooks set by the setup-hook scripts.
-        for i in "${envHooks[@]}"; do
-            $i $pkg
-        done
-    }
+    # Run the package-specific hooks set by the setup-hook scripts.
+    for i in "${envHooks[@]}"; do
+        $i $pkg
+    done
+}
+```
 
 Functions listed in `envHooks` are applied to every package passed to `addToEnv`. One can write a setup hook like:
 
-    anEnvHook() {
-        local pkg=$1
+```sh
+anEnvHook() {
+    local pkg=$1
 
-        echo "I'm depending on "$pkg""
-    }
+    echo "I'm depending on \"$pkg\""
+}
 
-    envHooks+=(anEnvHook)
+envHooks+=(anEnvHook)
+```
 
 and if one dependency has that setup hook then all of them will be so `echo`ed. Allowing dependencies to learn about their _sibling_ dependencies is exactly what compilers need.
 

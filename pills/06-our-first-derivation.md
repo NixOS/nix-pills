@@ -22,14 +22,18 @@ The `derivation` function receives a set as its first argument. This set require
 
 First of all, what's the name of our system as seen by nix?
 
-    nix-repl> builtins.currentSystem
-    "x86_64-linux"
+```console
+nix-repl> builtins.currentSystem
+"x86_64-linux"
+```
 
 Let's try to fake the name of the system:
 
-    nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
-    nix-repl> d
-    «derivation /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv»
+```console
+nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl> d
+«derivation /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv»
+```
 
 Oh oh, what's that? Did it build the derivation? No it didn't, but it **did create the .drv file**. `nix repl` does not build derivations unless you tell it to do so.
 
@@ -55,7 +59,7 @@ Note: If your version of nix doesn't have `nix derivation show`, use `nix show-d
 
 </div>
 
-```
+```console
 $ nix derivation show /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
 {
   "/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv": {
@@ -103,28 +107,34 @@ Back to our fake derivation.
 
 Let's build our really fake derivation:
 
-    nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
-    nix-repl> :b d
-    [...]
-    these derivations will be built:
-      /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
-    building path(s) `/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname'
-    error: a `mysystem' is required to build `/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv', but I am a `x86_64-linux'
+```console
+nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl> :b d
+[...]
+these derivations will be built:
+  /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+building path(s) `/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname'
+error: a `mysystem' is required to build `/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv', but I am a `x86_64-linux'
+```
 
 The `:b` is a `nix repl` specific command to build a derivation. You can see more commands with `:?` . So in the output you can see that it takes the `.drv` as information on how to build the derivation. Then it says it's trying to produce our out path. Finally the error we were waiting for: that derivation can't be built on our system.
 
 We're doing the build inside `nix repl`, but what if we don't want to use `nix repl`? You can **realise** a `.drv` with:
 
-    $ nix-store -r /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+```console
+$ nix-store -r /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+```
 
 You will get the same output as before.
 
 Let's fix the system attribute:
 
-    nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = builtins.currentSystem; }
-    nix-repl> :b d
-    [...]
-    build error: invalid file name `mybuilder'
+```console
+nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = builtins.currentSystem; }
+nix-repl> :b d
+[...]
+build error: invalid file name `mybuilder'
+```
 
 A step forward: of course, that `mybuilder` executable does not really exist. Stop for a moment.
 
@@ -132,23 +142,29 @@ A step forward: of course, that `mybuilder` executable does not really exist. St
 
 It is useful to start by inspecting the return value from the derivation function. In this case, the returned value is a plain set:
 
-    nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
-    nix-repl> builtins.isAttrs d
-    true
-    nix-repl> builtins.attrNames d
-    [ "all" "builder" "drvAttrs" "drvPath" "name" "out" "outPath" "outputName" "system" "type" ]
+```console
+nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl> builtins.isAttrs d
+true
+nix-repl> builtins.attrNames d
+[ "all" "builder" "drvAttrs" "drvPath" "name" "out" "outPath" "outputName" "system" "type" ]
+```
 
 You can guess what `builtins.isAttrs` does; it returns true if the argument is a set. While `builtins.attrNames` returns a list of keys of the given set. Some kind of reflection, you might say.
 
 Start from drvAttrs:
 
-    nix-repl> d.drvAttrs
-    { builder = "mybuilder"; name = "myname"; system = "mysystem"; }
+```console
+nix-repl> d.drvAttrs
+{ builder = "mybuilder"; name = "myname"; system = "mysystem"; }
+```
 
 That's basically the input we gave to the derivation function. Also the `d.name`, `d.system` and `d.builder` attributes are exactly the ones we gave as input.
 
-    nix-repl> (d == d.out)
-    true
+```console
+nix-repl> (d == d.out)
+true
+```
 
 So out is just the derivation itself, it seems weird but the reason is that we only have one output from the derivation. That's also the reason why `d.all` is a singleton. We'll see multiple outputs later.
 
@@ -156,8 +172,10 @@ The `d.drvPath` is the path of the `.drv` file: `/nix/store/z3hhlxbckx4g3n9sw91n
 
 Something interesting is the `type` attribute. It's `"derivation"`. Nix does add a little of magic to sets with type derivation, but not that much. To help you understand, you can create yourself a set with that type, it's a simple set:
 
-    nix-repl> { type = "derivation"; }
-    «derivation ???»
+```console
+nix-repl> { type = "derivation"; }
+«derivation ???»
+```
 
 Of course it has no other information, so Nix doesn't know what to say :-) But you get it, the `type = "derivation"` is just a convention for Nix and for us to understand the set is a derivation.
 
@@ -169,53 +187,67 @@ The `outPath` attribute is the build path in the nix store: `/nix/store/40s0qmrf
 
 Just like dependencies in other package managers, how do we refer to other packages? How do we refer to other derivations in terms of files on the disk? We use the `outPath`. The `outPath` describes the location of the files of that derivation. To make it more convenient, Nix is able to do a conversion from a derivation set to a string.
 
-    nix-repl> d.outPath
-    "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
-    nix-repl> builtins.toString d
-    "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+```console
+nix-repl> d.outPath
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+nix-repl> builtins.toString d
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+```
 
 Nix does the "set to string conversion" as long as there is the `outPath` attribute (much like a toString method in other languages):
 
-    nix-repl> builtins.toString { outPath = "foo"; }
-    "foo"
-    nix-repl> builtins.toString { a = "b"; }
-    error: cannot coerce a set to a string, at (string):1:1
+```console
+nix-repl> builtins.toString { outPath = "foo"; }
+"foo"
+nix-repl> builtins.toString { a = "b"; }
+error: cannot coerce a set to a string, at (string):1:1
+```
 
 Say we want to use binaries from coreutils (ignore the nixpkgs etc.):
 
-    nix-repl> :l <nixpkgs>
-    Added 3950 variables.
-    nix-repl> coreutils
-    «derivation /nix/store/1zcs1y4n27lqs0gw4v038i303pb89rw6-coreutils-8.21.drv»
-    nix-repl> builtins.toString coreutils
-    "/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"
+```console
+nix-repl> :l <nixpkgs>
+Added 3950 variables.
+nix-repl> coreutils
+«derivation /nix/store/1zcs1y4n27lqs0gw4v038i303pb89rw6-coreutils-8.21.drv»
+nix-repl> builtins.toString coreutils
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"
+```
 
 Apart from the nixpkgs stuff, just think we added to the scope a series of variables. One of them is coreutils. It is the derivation of the coreutils package you all know of from other Linux distributions. It contains basic binaries for GNU/Linux systems (you may have multiple derivations of coreutils in the nix store, no worries):
 
-    $ ls /nix/store/*coreutils*/bin
-    [...]
+```console
+$ ls /nix/store/*coreutils*/bin
+[...]
+```
 
 I remind you, inside strings it's possible to interpolate Nix expressions with `${...}`:
 
-    nix-repl> "${d}"
-    "/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
-    nix-repl> "${coreutils}"
-    "/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"
+```console
+nix-repl> "${d}"
+"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
+nix-repl> "${coreutils}"
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"
+```
 
 That's very convenient, because then we could refer to e.g. the bin/true binary like this:
 
-    nix-repl> "${coreutils}/bin/true"
-    "/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21/bin/true"
+```console
+nix-repl> "${coreutils}/bin/true"
+"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21/bin/true"
+```
 
 ## An almost working derivation
 
 In the previous attempt we used a fake builder, `mybuilder` which obviously does not exist. But we can use for example bin/true, which always exits with 0 (success).
 
-    nix-repl> :l <nixpkgs>
-    nix-repl> d = derivation { name = "myname"; builder = "${coreutils}/bin/true"; system = builtins.currentSystem; }
-    nix-repl> :b d
-    [...]
-    builder for `/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv' failed to produce output path `/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname'
+```console
+nix-repl> :l <nixpkgs>
+nix-repl> d = derivation { name = "myname"; builder = "${coreutils}/bin/true"; system = builtins.currentSystem; }
+nix-repl> :b d
+[...]
+builder for `/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv' failed to produce output path `/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname'
+```
 
 Another step forward, it executed the builder (bin/true), but the builder did not create the out path of course, it just exited with 0.
 
@@ -223,7 +255,7 @@ Obvious note: every time we change the derivation, a new hash is created.
 
 Let's examine the new `.drv` now that we referred to another derivation:
 
-```
+```console
 $ nix derivation show /nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv
 {
   "/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv": {

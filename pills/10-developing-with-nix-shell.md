@@ -14,11 +14,13 @@ Recall that in a nix environment, we don't have access to libraries or programs 
 
 We can call `nix-shell` on any Nix expression which returns a derivation, but the resulting `bash` shell's `PATH` does not have the utilities we want:
 
-    $ nix-shell hello.nix
-    [nix-shell]$ make
-    bash: make: command not found
-    [nix-shell]$ echo $baseInputs
-    /nix/store/jff4a6zqi0yrladx3kwy4v6844s3swpc-gnutar-1.27.1 [...]
+```console
+$ nix-shell hello.nix
+[nix-shell]$ make
+bash: make: command not found
+[nix-shell]$ echo $baseInputs
+/nix/store/jff4a6zqi0yrladx3kwy4v6844s3swpc-gnutar-1.27.1 [...]
+```
 
 This shell is rather useless. It would be reasonable to expect that the GNU `hello` build inputs are available in `PATH`, including GNU `make`, but this is not the case.
 
@@ -26,8 +28,10 @@ However, we do have the environment variables that we set in the derivation, lik
 
 This means that we can `source` our `builder.sh`, and it will build the derivation. You may get an error in the installation phase, because your user may not have the permission to write to `/nix/store`:
 
-    [nix-shell]$ source builder.sh
-    ...
+```console
+[nix-shell]$ source builder.sh
+...
+```
 
 The derivation didn't install, but it did build. Note the following:
 
@@ -53,97 +57,107 @@ During our refactoring, we will wrap the build phases in functions to give more 
 
 Here is our modified `autotools.nix`. Noteworthy is the `setup = ./setup.sh;` attribute in the derivation, which adds `setup.sh` to the nix store and correspondingly adds a `$setup` environment variable in the builder.
 
-    pkgs: attrs:
-    let
-      defaultAttrs = {
-        builder = "${pkgs.bash}/bin/bash";
-        args = [ ./builder.sh ];
-        setup = ./setup.sh;
-        baseInputs = with pkgs; [
-          gnutar
-          gzip
-          gnumake
-          gcc
-          coreutils
-          gawk
-          gnused
-          gnugrep
-          binutils.bintools
-          patchelf
-          findutils
-        ];
-        buildInputs = [ ];
-        system = builtins.currentSystem;
-      };
-    in
-    derivation (defaultAttrs // attrs)
+```nix
+pkgs: attrs:
+let
+  defaultAttrs = {
+    builder = "${pkgs.bash}/bin/bash";
+    args = [ ./builder.sh ];
+    setup = ./setup.sh;
+    baseInputs = with pkgs; [
+      gnutar
+      gzip
+      gnumake
+      gcc
+      coreutils
+      gawk
+      gnused
+      gnugrep
+      binutils.bintools
+      patchelf
+      findutils
+    ];
+    buildInputs = [ ];
+    system = builtins.currentSystem;
+  };
+in
+derivation (defaultAttrs // attrs)
+```
 
 Thanks to that, we can split `builder.sh` into `setup.sh` and `builder.sh`. What `builder.sh` does is `source` `$setup` and call the `genericBuild` function. Everything else is just some changes to the bash script.
 
 Here is the modified `builder.sh`:
 
-    set -e
-    source $setup
-    genericBuild
+```sh
+set -e
+source $setup
+genericBuild
+```
 
 Here is the newly added `setup.sh`:
 
-    unset PATH
-    for p in $baseInputs $buildInputs; do
-      export PATH=$p/bin${PATH:+:}$PATH
+```sh
+unset PATH
+for p in $baseInputs $buildInputs; do
+    export PATH=$p/bin${PATH:+:}$PATH
+done
+
+function unpackPhase() {
+    tar -xzf $src
+
+    for d in *; do
+    if [ -d "$d" ]; then
+        cd "$d"
+        break
+    fi
     done
+}
 
-    function unpackPhase() {
-      tar -xzf $src
+function configurePhase() {
+    ./configure --prefix=$out
+}
 
-      for d in *; do
-        if [ -d "$d" ]; then
-          cd "$d"
-          break
-        fi
-      done
-    }
+function buildPhase() {
+    make
+}
 
-    function configurePhase() {
-      ./configure --prefix=$out
-    }
+function installPhase() {
+    make install
+}
 
-    function buildPhase() {
-      make
-    }
+function fixupPhase() {
+    find $out -type f -exec patchelf --shrink-rpath '{}' \; -exec strip '{}' \; 2>/dev/null
+}
 
-    function installPhase() {
-      make install
-    }
-
-    function fixupPhase() {
-      find $out -type f -exec patchelf --shrink-rpath '{}' \; -exec strip '{}' \; 2>/dev/null
-    }
-
-    function genericBuild() {
-      unpackPhase
-      configurePhase
-      buildPhase
-      installPhase
-      fixupPhase
-    }
+function genericBuild() {
+    unpackPhase
+    configurePhase
+    buildPhase
+    installPhase
+    fixupPhase
+}
+```
 
 Finally, here is `hello.nix`:
 
-    let
-      pkgs = import <nixpkgs> { };
-      mkDerivation = import ./autotools.nix pkgs;
-    in
-    mkDerivation {
-      name = "hello";
-      src = ./hello-2.12.1.tar.gz;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "hello";
+  src = ./hello-2.12.1.tar.gz;
+}
+```
 
 Now back to nix-shell:
 
-    $ nix-shell hello.nix
-    [nix-shell]$ source $setup
-    [nix-shell]$
+```console
+$ nix-shell hello.nix
+[nix-shell]$ source $setup
+[nix-shell]$
+```
 
 Now, for example, you can run `unpackPhase` which unpacks `$src` and enters the directory. And you can run commands like `./configure`, `make`, and so forth manually, or run phases with their respective functions.
 

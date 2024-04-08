@@ -12,10 +12,12 @@ We put the override function in the returned attribute set of the original funct
 
 Take for example graphviz. It has an input parameter xorg. If it's null, then graphviz will build without X support.
 
-    $ nix repl
-    nix-repl> :l <nixpkgs>
-    Added 4360 variables.
-    nix-repl> :b graphviz.override { withXorg = false; }
+```console
+$ nix repl
+nix-repl> :l <nixpkgs>
+Added 4360 variables.
+nix-repl> :b graphviz.override { withXorg = false; }
+```
 
 This will build graphviz without X support, it's as simple as that.
 
@@ -25,9 +27,11 @@ However, let's say a package `P` depends on graphviz, how do we make `P` depend 
 
 ...you could do something like this:
 
-    pkgs = import <nixpkgs> {};
-    pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
-    build(pkgs.P)
+```nix
+pkgs = import <nixpkgs> {};
+pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
+build(pkgs.P)
+```
 
 Given `pkgs.P` depends on `pkgs.graphviz`, it's easy to build `P` with the replaced graphviz. In a pure functional language it's not that easy because you can assign to variables only once.
 
@@ -37,24 +41,28 @@ The fixed point with lazy evaluation is crippling but about necessary in a langu
 
 Follows the definition of fixed point in [nixpkgs](https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19):
 
-    {
-      # Take a function and evaluate it with its own returned value.
-      fix =
-        f:
-        let
-          result = f result;
-        in
-        result;
-    }
+```nix
+{
+  # Take a function and evaluate it with its own returned value.
+  fix =
+    f:
+    let
+      result = f result;
+    in
+    result;
+}
+```
 
 It's a function that accepts a function `f`, calls `f result` on the result just returned by `f result` and returns it. In other words it's `f(f(f(....`
 
 At first sight, it's an infinite loop. With lazy evaluation it isn't, because the call is done only when needed.
 
-    nix-repl> fix = f: let result = f result; in result
-    nix-repl> pkgs = self: { a = 3; b = 4; c = self.a+self.b; }
-    nix-repl> fix pkgs
-    { a = 3; b = 4; c = 7; }
+```console
+nix-repl> fix = f: let result = f result; in result
+nix-repl> pkgs = self: { a = 3; b = 4; c = self.a+self.b; }
+nix-repl> fix pkgs
+{ a = 3; b = 4; c = 7; }
+```
 
 Without the `rec` keyword, we were able to refer to `a` and `b` of the same set.
 
@@ -72,11 +80,13 @@ Won't go further with the explanation here. A good post about fixed point and Ni
 
 Given that `self.a` and `self.b` refer to the passed set and not to the literal set in the function, we're able to override both `a` and `b` and get a new value for `c`:
 
-    nix-repl> overrides = { a = 1; b = 2; }
-    nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs
-    { a = 3; b = 4; c = 3; }
-    nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs // overrides
-    { a = 1; b = 2; c = 3; }
+```console
+nix-repl> overrides = { a = 1; b = 2; }
+nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs
+{ a = 3; b = 4; c = 3; }
+nix-repl> let newpkgs = pkgs (newpkgs // overrides); in newpkgs // overrides
+{ a = 1; b = 2; c = 3; }
+```
 
 In the first case we computed pkgs with the overrides, in the second case we also included the overridden attributes in the result.
 
@@ -88,19 +98,23 @@ To do this, `nixpkgs` offers `config.packageOverrides`. So `nixpkgs` returns a f
 
 Create a `config.nix` file like this somewhere:
 
-    {
-      packageOverrides = pkgs: {
-        graphviz = pkgs.graphviz.override {
-          # disable xorg support
-          withXorg = false;
-        };
-      };
-    }
+```nix
+{
+    packageOverrides = pkgs: {
+    graphviz = pkgs.graphviz.override {
+      # disable xorg support
+      withXorg = false;
+    };
+  };
+}
+```
 
 Now we can build e.g. asciidoc-full and it will automatically use the overridden graphviz:
 
-    nix-repl> pkgs = import <nixpkgs> { config = import ./config.nix; }
-    nix-repl> :b pkgs.asciidoc-full
+```console
+nix-repl> pkgs = import <nixpkgs> { config = import ./config.nix; }
+nix-repl> :b pkgs.asciidoc-full
+```
 
 Note how we pass the `config` with `packageOverrides` when importing `nixpkgs`. Then `pkgs.asciidoc-full` is a derivation that has graphviz input (`pkgs.asciidoc` is the lighter version and doesn't use graphviz at all).
 

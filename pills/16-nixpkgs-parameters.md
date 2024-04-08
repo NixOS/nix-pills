@@ -32,14 +32,18 @@ You will find this parameter in many other .nix expressions (e.g. release expres
 
 `myrelease.nix`:
 
-    { system ? builtins.currentSystem }:
+```nix
+{ system ? builtins.currentSystem }:
 
-    let pkgs = import <nixpkgs> { inherit system; };
-    ...
+let pkgs = import <nixpkgs> { inherit system; };
+...
+```
 
 Why is it useful? With this parameter it's very easy to select a set of packages for a particular system. For example:
 
-    nix-build -A psmisc --argstr system i686-linux
+```console
+nix-build -A psmisc --argstr system i686-linux
+```
 
 This will build the psmisc derivation for i686-linux instead of x86_64-linux. This concept is very similar to multi-arch of Debian.
 
@@ -55,13 +59,15 @@ After determining `config.nix`, it will be imported as a nix expression, and tha
 
 The `config` is available in the resulting repository:
 
-    $ nix repl
-    nix-repl> pkgs = import <nixpkgs> {}
-    nix-repl> pkgs.config
-    { }
-    nix-repl> pkgs = import <nixpkgs> { config = { foo = "bar"; }; }
-    nix-repl> pkgs.config
-    { foo = "bar"; }
+```console
+$ nix repl
+nix-repl> pkgs = import <nixpkgs> {}
+nix-repl> pkgs.config
+{ }
+nix-repl> pkgs = import <nixpkgs> { config = { foo = "bar"; }; }
+nix-repl> pkgs.config
+{ foo = "bar"; }
+```
 
 What attributes go in `config` is a matter of convenience and conventions.
 
@@ -79,9 +85,11 @@ In this case, nix does a trick:
 
 For example you can nix-build the `.nix` file below:
 
-    { pkgs ? import <nixpkgs> {} }:
+```nix
+{ pkgs ? import <nixpkgs> {} }:
 
-    pkgs.psmisc
+pkgs.psmisc
+```
 
 Nix is able to call the function because the pkgs parameter has a default value. This allows you to pass a different value for pkgs using the `--arg` option.
 

@@ -48,8 +48,10 @@ What we have is basically a store of all packages (with different versions occup
 
 In fact, there's no ldconfig cache either. So where does bash find libc?
 
-    $ ldd  `which bash`
-    libc.so.6 => /nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19/lib/libc.so.6 (0x00007f0248cce000)
+```console
+$ ldd `which bash`
+libc.so.6 => /nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19/lib/libc.so.6 (0x00007f0248cce000)
+```
 
 It turns out that when bash was built, it was built against that specific version of glibc in the Nix store, and at runtime it will require exactly that glibc version.
 

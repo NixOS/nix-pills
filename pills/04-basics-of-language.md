@@ -26,27 +26,33 @@ Nix 2.0 contains a command named `nix repl` which is a simple command line tool 
 
 Launch `nix repl`. First of all, Nix supports basic arithmetic operations: `+`, `-`, `*` and `/`. (To exit `nix repl`, use the command `:q`. Help is available through the `:?` command.)
 
-    nix-repl> 1+3
-    4
+```console
+nix-repl> 1+3
+4
 
-    nix-repl> 7-4
-    3
+nix-repl> 7-4
+3
 
-    nix-repl> 3*2
-    6
+nix-repl> 3*2
+6
+```
 
 Attempting to perform division in Nix can lead to some surprises.
 
-    nix-repl> 6/3
-    /home/nix/6/3
+```console
+nix-repl> 6/3
+/home/nix/6/3
+```
 
 What happened? Recall that Nix is not a general purpose language, it's a domain-specific language for writing packages. Integer division isn't actually that useful when writing package expressions. Nix parsed `6/3` as a relative path to the current directory. To get Nix to perform division instead, leave a space after the `/`. Alternatively, you can use `builtins.div`.
 
-    nix-repl> 6/ 3
-    2
+```console
+nix-repl> 6/ 3
+2
 
-    nix-repl> builtins.div 6 3
-    2
+nix-repl> builtins.div 6 3
+2
+```
 
 Other operators are `||`, `&&` and `!` for booleans, and relational operators such as `!=`, `==`, `<`, `>`, `<=`, `>=`. In Nix, `<`, `>`, `<=` and `>=` are not much used. There are also other operators we will see in the course of this series.
 
@@ -62,10 +68,12 @@ Not all urls or paths can be parsed this way. If a syntax error occurs, it's sti
 
 There's not much to say here, except that dash (`-`) is allowed in identifiers. That's convenient since many packages use dash in their names. In fact:
 
-    nix-repl> a-b
-    error: undefined variable `a-b' at (string):1:1
-    nix-repl> a - b
-    error: undefined variable `a' at (string):1:1
+```console
+nix-repl> a-b
+error: undefined variable `a-b' at (string):1:1
+nix-repl> a - b
+error: undefined variable `a' at (string):1:1
+```
 
 As you can see, `a-b` is parsed as identifier, not as a subtraction.
 
@@ -73,22 +81,26 @@ As you can see, `a-b` is parsed as identifier, not as a subtraction.
 
 It's important to understand the syntax for strings. When learning to read Nix expressions, you may find dollars (`$`) ambiguous, but they are very important . Strings are enclosed by double quotes (`"`), or two single quotes (`''`).
 
-    nix-repl> "foo"
-    "foo"
-    nix-repl> ''foo''
-    "foo"
+```console
+nix-repl> "foo"
+"foo"
+nix-repl> ''foo''
+"foo"
+```
 
 In other languages like Python you can also use single quotes for strings (e.g. `'foo'`), but not in Nix.
 
 It's possible to [interpolate](https://nixos.org/manual/nix/stable/expressions/language-values.html) whole Nix expressions inside strings with the `${...}` syntax and only that syntax, not `$foo` or `{$foo}` or anything else.
 
-    nix-repl> foo = "strval"
-    nix-repl> "$foo"
-    "$foo"
-    nix-repl> "${foo}"
-    "strval"
-    nix-repl> "${2+3}"
-    error: cannot coerce an integer to a string, at (string):1:2
+```console
+nix-repl> foo = "strval"
+nix-repl> "$foo"
+"$foo"
+nix-repl> "${foo}"
+"strval"
+nix-repl> "${2+3}"
+error: cannot coerce an integer to a string, at (string):1:2
+```
 
 Note: ignore the `foo = "strval"` assignment, special syntax in `nix repl`.
 
@@ -96,24 +108,30 @@ As said previously, you cannot mix integers and strings. You need to explicitly 
 
 Using the syntax with two single quotes is useful for writing double quotes inside strings without needing to escape them:
 
-    nix-repl> ''test " test''
-    "test " test"
-    nix-repl> ''${foo}''
-    "strval"
+```console
+nix-repl> ''test " test''
+"test \" test"
+nix-repl> ''${foo}''
+"strval"
+```
 
 Escaping `${...}` within double quoted strings is done with the backslash. Within two single quotes, it's done with `''`:
 
-    nix-repl> "\${foo}"
-    "${foo}"
-    nix-repl> ''test ''${foo} test''
-    "test ${foo} test"
+```console
+nix-repl> "\${foo}"
+"${foo}"
+nix-repl> ''test ''${foo} test''
+"test ${foo} test"
+```
 
 ## Lists
 
 Lists are a sequence of expressions delimited by space (_not_ comma):
 
-    nix-repl> [ 2 "foo" true (2+3) ]
-    [ 2 "foo" true 5 ]
+```console
+nix-repl> [ 2 "foo" true (2+3) ]
+[ 2 "foo" true 5 ]
+```
 
 Lists, like everything else in Nix, are immutable. Adding or removing elements from a list is possible, but will return a new list.
 
@@ -121,30 +139,38 @@ Lists, like everything else in Nix, are immutable. Adding or removing elements f
 
 An attribute set is an association between string keys and Nix values. Keys can only be strings. When writing attribute sets you can also use unquoted identifiers as keys.
 
-    nix-repl> s = { foo = "bar"; a-b = "baz"; "123" = "num"; }
-    nix-repl> s
-    { "123" = "num"; a-b = "baz"; foo = "bar"; }
+```console
+nix-repl> s = { foo = "bar"; a-b = "baz"; "123" = "num"; }
+nix-repl> s
+{ "123" = "num"; a-b = "baz"; foo = "bar"; }
+```
 
 For those reading Nix expressions from nixpkgs: do not confuse attribute sets with argument sets used in functions.
 
 To access elements in the attribute set:
 
-    nix-repl> s.a-b
-    "baz"
-    nix-repl> s."123"
-    "num"
+```console
+nix-repl> s.a-b
+"baz"
+nix-repl> s."123"
+"num"
+```
 
 Yes, you can use strings to address keys which aren't valid identifiers.
 
 Inside an attribute set you cannot normally refer to elements of the same attribute set:
 
-    nix-repl> { a = 3; b = a+4; }
-    error: undefined variable `a' at (string):1:10
+```console
+nix-repl> { a = 3; b = a+4; }
+error: undefined variable `a' at (string):1:10
+```
 
 To do so, use [recursive attribute sets](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#recursive-sets):
 
-    nix-repl> rec { a = 3; b = a+4; }
-    { a = 3; b = 7; }
+```console
+nix-repl> rec { a = 3; b = a+4; }
+{ a = 3; b = 7; }
+```
 
 This is very convenient when defining packages, which tend to be recursive attribute sets.
 
@@ -152,10 +178,12 @@ This is very convenient when defining packages, which tend to be recursive attri
 
 These are expressions, not statements.
 
-    nix-repl> a = 3
-    nix-repl> b = 4
-    nix-repl> if a > b then "yes" else "no"
-    "no"
+```console
+nix-repl> a = 3
+nix-repl> b = 4
+nix-repl> if a > b then "yes" else "no"
+"no"
+```
 
 You can't have only the `then` branch, you must specify also the `else` branch, because an expression must have a value in all cases.
 
@@ -163,35 +191,47 @@ You can't have only the `then` branch, you must specify also the `else` branch, 
 
 This kind of expression is used to define local variables for inner expressions.
 
-    nix-repl> let a = "foo"; in a
-    "foo"
+```console
+nix-repl> let a = "foo"; in a
+"foo"
+```
 
 The syntax is: first assign variables, then `in`, then an expression which can use the defined variables. The value of the whole `let` expression will be the value of the expression after the `in`.
 
-    nix-repl> let a = 3; b = 4; in a + b
-    7
+```console
+nix-repl> let a = 3; b = 4; in a + b
+7
+```
 
 Let's write two `let` expressions, one inside the other:
 
-    nix-repl> let a = 3; in let b = 4; in a + b
-    7
+```console
+nix-repl> let a = 3; in let b = 4; in a + b
+7
+```
 
 With `let` you cannot assign twice to the same variable. However, you can shadow outer variables:
 
-    nix-repl> let a = 3; a = 8; in a
-    error: attribute `a' at (string):1:12 already defined at (string):1:5
-    nix-repl> let a = 3; in let a = 8; in a
-    8
+```console
+nix-repl> let a = 3; a = 8; in a
+error: attribute `a' at (string):1:12 already defined at (string):1:5
+nix-repl> let a = 3; in let a = 8; in a
+8
+```
 
 You cannot refer to variables in a `let` expression outside of it:
 
-    nix-repl> let a = (let c = 3; in c); in c
-    error: undefined variable `c' at (string):1:31
+```console
+nix-repl> let a = (let c = 3; in c); in c
+error: undefined variable `c' at (string):1:31
+```
 
 You can refer to variables in the `let` expression when assigning variables, like with recursive attribute sets:
 
-    nix-repl> let a = 4; b = a + 5; in b
-    9
+```console
+nix-repl> let a = 4; b = a + 5; in b
+9
+```
 
 So beware when you want to refer to a variable from the outer scope, but it's also defined in the current let expression. The same applies to recursive attribute sets.
 
@@ -199,25 +239,31 @@ So beware when you want to refer to a variable from the outer scope, but it's al
 
 This kind of expression is something you rarely see in other languages. You can think of it like a more granular version of `using` from C++, or `from module import *` from Python. You decide per-expression when to include symbols into the scope.
 
-    nix-repl> longName = { a = 3; b = 4; }
-    nix-repl> longName.a + longName.b
-    7
-    nix-repl> with longName; a + b
-    7
+```console
+nix-repl> longName = { a = 3; b = 4; }
+nix-repl> longName.a + longName.b
+7
+nix-repl> with longName; a + b
+7
+```
 
 That's it, it takes an attribute set and includes symbols from it in the scope of the inner expression. Of course, only valid identifiers from the keys of the set will be included. If a symbol exists in the outer scope and would also be introduced by the `with`, it will _not_ be shadowed. You can however still refer to the attribute set:
 
-    nix-repl> let a = 10; in with longName; a + b
-    14
-    nix-repl> let a = 10; in with longName; longName.a + b
-    7
+```console
+nix-repl> let a = 10; in with longName; a + b
+14
+nix-repl> let a = 10; in with longName; longName.a + b
+7
+```
 
 ## Laziness
 
 Nix evaluates expressions only when needed. This is a great feature when working with packages.
 
-    nix-repl> let a = builtins.div 4 0; b = 6; in b
-    6
+```console
+nix-repl> let a = builtins.div 4 0; b = 6; in b
+6
+```
 
 Since `a` is not needed, there's no error about division by zero, because the expression is not in need to be evaluated. That's why we can have all the packages defined on demand, yet have access to specific packages very quickly.
 
