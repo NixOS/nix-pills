@@ -1,4 +1,0 @@
-$ ls -l ~/.nix-profile/
-dr-xr-xr-x 2 nix nix 4096 Jan  1  1970 bin
-lrwxrwxrwx 1 nix nix   55 Jan  1  1970 etc -> /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/etc
-[...]

@@ -71,7 +71,15 @@
     <para>
       First, we download <code>graphviz</code> from <link xlink:href="https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/2.49.3/graphviz-2.49.3.tar.gz">gitlab</link>. The <filename>graphviz.nix</filename> expression is straightforward:
     </para>
-    <screen><xi:include href="./12/graphviz-derivation.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+}
+</screen>
     <para>
       If we build the project with <command>nix-build graphviz.nix</command>, we will get runnable binaries under <filename>result/bin</filename>. Notice how we reused the same <filename>autotools.nix</filename> of <filename>hello.nix.</filename>
     </para>
@@ -80,7 +88,9 @@
       <code>png</code> files. Thus, the derivation above will build a binary
       supporting only the native output formats, as we see below:
     </para>
-    <screen><xi:include href="./12/simple-png.txt" parse="text" /></screen>
+    <screen>$ echo 'graph test { a -- b }'|result/bin/dot -Tpng -o test.png
+Format: "png" not recognized. Use one of: canon cmap [...]
+</screen>
     <para>
       If we want to produce a <code>png</code> file with <code>graphviz</code>, we
       must add it to our derivation. The place to do so is
@@ -119,7 +129,15 @@
       automatically filling the variables from <literal>buildInputs</literal>.
       This is the relevant snippet of <filename>setup.sh</filename>:
     </para>
-    <screen><xi:include href="./12/setup-sh.txt" parse="text" /></screen>
+    <screen>for p in $baseInputs $buildInputs; do
+  if [ -d $p/bin ]; then
+    export PATH="$p/bin${PATH:+:}$PATH"
+  fi
+  if [ -d $p/lib/pkgconfig ]; then
+    export PKG_CONFIG_PATH="$p/lib/pkgconfig${PKG_CONFIG_PATH:+:}$PKG_CONFIG_PATH"
+  fi
+done
+</screen>
     <para>
       Now if we add derivations to <literal>buildInputs</literal>, their
       <filename>lib/pkgconfig</filename> and <filename>bin</filename> paths
@@ -133,7 +151,20 @@
       Below, we finish the expression for <code>graphviz</code> with <code>gd</code> support.
       Note the use of the <literal>with</literal> expression in <literal>buildInputs</literal> to avoid repeating <literal>pkgs</literal>:
     </para>
-    <screen><xi:include href="./12/graphviz-gd-derivation.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+  buildInputs = with pkgs; [
+    pkg-config
+    (pkgs.lib.getLib gd)
+    (pkgs.lib.getDev gd)
+  ];
+}
+</screen>
     <para>
       We add <command>pkg-config</command> to the derivation to make this tool
       available for the configure script. As <code>gd</code> is a package
@@ -163,16 +194,31 @@
     <para>
       To begin, create a default.nix in the current directory:
     </para>
-    <screen><xi:include href="./12/repository.txt" parse="text" /></screen>
+    <screen>{
+  hello = import ./hello.nix;
+  graphviz = import ./graphviz.nix;
+}
+</screen>
     <para>
       This file is ready to use with <command>nix repl</command>:
     </para>
-    <screen><xi:include href="./12/repository-test-nix-repl.txt" parse="text" /></screen>
+    <screen>$ nix repl
+nix-repl&gt; :l default.nix
+Added 2 variables.
+nix-repl&gt; hello
+«derivation /nix/store/dkib02g54fpdqgpskswgp6m7bd7mgx89-hello.drv»
+nix-repl&gt; graphviz
+«derivation /nix/store/zqv520v9mk13is0w980c91z7q1vkhhil-graphviz.drv»
+</screen>
     <para>
       With <command>nix-build</command>, we can pass the <arg>-A</arg> option to
       access an attribute of the set from the given <filename>.nix</filename> expression:
     </para>
-    <screen><xi:include href="./12/repository-test-nix-build.txt" parse="text" /></screen>
+    <screen>$ nix-build default.nix -A hello
+[...]
+$ result/bin/hello
+Hello, world!
+</screen>
     <para>
       The <filename>default.nix</filename> file is special. When a directory
       contains a <filename>default.nix</filename> file, it is used as the implicit
@@ -184,7 +230,10 @@
       We can now use <command>nix-env</command> to install the package into our
       user environment:
     </para>
-    <screen><xi:include href="./12/nix-env-install-graphviz.txt" parse="text" /></screen>
+    <screen>$ nix-env -f . -iA graphviz
+[...]
+$ dot -V
+</screen>
     <para>
       Taking a closer look at the above command, we see the following options:
 
@@ -264,7 +313,21 @@
       with <filename>graphviz.nix</filename>, we make the following changes to make
       the derivation independent of the repository and customizable:
     </para>
-    <screen><xi:include href="./12/graphviz-mkderivation.txt" parse="text" /></screen>
+    <screen>{ mkDerivation, lib, gdSupport ? true, gd, pkg-config }:
+
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+  buildInputs =
+    if gdSupport
+      then [
+          pkg-config
+          (lib.getLib gd)
+          (lib.getDev gd)
+        ]
+      else [];
+}
+</screen>
     <para>
       Recall that "<literal>{...}: ...</literal>" is the syntax for defining functions
       accepting an attribute set as argument; the above snippet just defines a function.
@@ -281,7 +344,32 @@
       Going back to back to <filename>default.nix</filename>, we modify our expression
       to utilize the inputs pattern:
     </para>
-    <screen><xi:include href="./12/repository-mkderivation.txt" parse="text" /></screen>
+    <screen>let
+  pkgs = import &lt;nixpkgs&gt; { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+with pkgs;
+{
+  hello = import ./hello.nix { inherit mkDerivation; };
+  graphviz = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
+  };
+  graphvizCore = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
+    gdSupport = false;
+  };
+}
+</screen>
     <para>
       We factorized the import of <literal>nixpkgs</literal> and
       <literal>mkDerivation</literal>, and also added a variant of <code>graphviz</code>

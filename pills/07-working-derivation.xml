@@ -63,7 +63,9 @@
       First of all, let's write our <filename>builder.sh</filename> in the
       current directory:
 
-      <programlisting><xi:include href="./07/builder.sh.txt" parse="text" /></programlisting>
+      <programlisting>declare -xp
+echo foo &gt; $out
+</programlisting>
 
       The command <literal>declare -xp</literal>
       lists exported variables
@@ -91,12 +93,23 @@
       Like for coreutils in the previous pill, we get a blessed bash for free
       from our magic nixpkgs stuff:
 
-      <xi:include href="./07/bash.xml" />
+      &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;:l &amp;lt;nixpkgs&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;Added 3950 variables.&lt;/computeroutput&gt;
+&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;"${bash}"&lt;/userinput&gt;
+&lt;computeroutput&gt;"/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-&lt;emphasis&gt;bash-4.2-p45&lt;/emphasis&gt;"&lt;/computeroutput&gt;
+&lt;/screen&gt;
+
 
       So with the usual trick, we can refer to
       <application>bin/bash</application> and create our derivation:
 
-      <xi:include href="./07/simple-derivation.xml" />
+      &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }&lt;/userinput&gt;
+&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;:b d&lt;/userinput&gt;
+&lt;computeroutput&gt;[1 built, 0.0 MiB DL]
+
+this derivation produced the following outputs:
+  out -&gt; /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-&lt;emphasis&gt;foo&lt;/emphasis&gt;&lt;/computeroutput&gt;&lt;/screen&gt;
+
 
       We did it! The contents of
       <filename>/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-<emphasis>foo</emphasis></filename>
@@ -117,7 +130,25 @@
     <para>
       We can use <command>nix-store --read-log</command> to see the logs our
       builder produced:
-      <xi:include href="./07/read-log.xml" />
+      &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix-store --read-log /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-&lt;emphasis&gt;foo&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;declare -x HOME="/homeless-shelter"
+declare -x NIX_BUILD_CORES="4"
+declare -x NIX_BUILD_TOP="/tmp/nix-build-foo.drv-0"
+declare -x NIX_LOG_FD="2"
+declare -x NIX_STORE="/nix/store"
+declare -x OLDPWD
+declare -x PATH="/path-not-set"
+declare -x PWD="/tmp/nix-build-foo.drv-0"
+declare -x SHLVL="1"
+declare -x TEMP="/tmp/nix-build-foo.drv-0"
+declare -x TEMPDIR="/tmp/nix-build-foo.drv-0"
+declare -x TMP="/tmp/nix-build-foo.drv-0"
+declare -x TMPDIR="/tmp/nix-build-foo.drv-0"
+declare -x builder="/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash"
+declare -x name="foo"
+declare -x out="/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo"
+declare -x system="x86_64-linux"&lt;/computeroutput&gt;&lt;/screen&gt;
+
     </para>
     <para>
       Let's inspect those environment variables printed during the build process.
@@ -169,7 +200,36 @@
     <para>
       We added something else to the derivation this time: the args attribute.
       Let's see how this changed the .drv compared to the previous pill:
-      <xi:include href="./07/foo.drv.xml" />
+      &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;$ &lt;/prompt&gt;&lt;userinput&gt;nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-&lt;emphasis&gt;foo.drv&lt;/emphasis&gt;&lt;/userinput&gt;
+&lt;computeroutput&gt;{
+  "/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo"
+      }
+    },
+    "inputSrcs": [
+      "/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh"
+    ],
+    "inputDrvs": {
+      "/nix/store/hcgwbx42mcxr7ksnv0i1fg7kw6jvxshb-bash-4.4-p19.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+    "args": [
+      "/nix/store/lb0n38r2b20r8rl1k45a7s4pj6ny22f7-builder.sh"
+    ],
+    "env": {
+      "builder": "/nix/store/q1g0rl8zfmz7r371fp5p42p4acmv297d-bash-4.4-p19/bin/bash",
+      "name": "foo",
+      "out": "/nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo",
+      "system": "x86_64-linux"
+    }
+  }
+}&lt;/computeroutput&gt;&lt;/screen&gt;
+
 
       Much like the usual .drv, except that there's a list of arguments in there
       passed to the builder (<application>bash</application>) with
@@ -192,16 +252,29 @@
     <para>
       Start off by writing a simple C program called <filename>simple.c</filename>:
 
-      <programlisting><xi:include href="./07/simple.c.txt" parse="text" /></programlisting>
+      <programlisting>void main() {
+  puts("Simple!");
+}
+</programlisting>
 
       And its <filename>simple_builder.sh</filename>:
 
-      <programlisting><xi:include href="./07/simple_builder.sh.txt" parse="text" /></programlisting>
+      <programlisting>export PATH="$coreutils/bin:$gcc/bin"
+mkdir $out
+gcc -o $out/simple $src
+</programlisting>
 
       Don't worry too much about where those variables come from yet; let's
       write the derivation and build it:
 
-      <xi:include href="./07/c-program-derivation.xml" />
+      &lt;screen xmlns="http://docbook.org/ns/docbook"&gt;&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;:l &amp;lt;nixpkgs&gt;&lt;/userinput&gt;
+&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;simple = derivation { name = "simple"; builder = "${bash}/bin/bash"; args = [ ./simple_builder.sh ]; gcc = gcc; coreutils = coreutils; src = ./simple.c; system = builtins.currentSystem; }&lt;/userinput&gt;
+&lt;prompt&gt;nix-repl&gt; &lt;/prompt&gt;&lt;userinput&gt;:b simple&lt;/userinput&gt;
+&lt;computeroutput&gt;this derivation produced the following outputs:
+
+  out -&gt; /nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple
+&lt;/computeroutput&gt;&lt;/screen&gt;
+
 
       Now you can run
       <filename>/nix/store/ni66p4jfqksbmsl616llx3fbs1d232d4-simple/simple</filename>
@@ -261,7 +334,19 @@
       Drop out of <application>nix repl</application> and write a file
       <filename>simple.nix</filename>:
 
-      <programlisting><xi:include href="./07/simple.txt" parse="text" /></programlisting>
+      <programlisting>let
+  pkgs = import &lt;nixpkgs&gt; { };
+in
+pkgs.stdenv.mkDerivation {
+  name = "simple";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./simple_builder.sh ];
+  gcc = pkgs.gcc;
+  coreutils = pkgs.coreutils;
+  src = ./simple.c;
+  system = builtins.currentSystem;
+}
+</programlisting>
 
       Now you can build it with <command>nix-build simple.nix</command>. This
       will create a symlink <filename>result</filename> in the current
@@ -311,7 +396,18 @@
     <para>
       Below is a revised version of the <filename>simple.nix</filename> file, using the <code>inherit</code> keyword:
 
-      <programlisting><xi:include href="./07/simple_inherit.txt" parse="text" /></programlisting>
+      <programlisting>let
+  pkgs = import &lt;nixpkgs&gt; { };
+in
+pkgs.stdenv.mkDerivation {
+  name = "simple";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./simple_builder.sh ];
+  inherit (pkgs) gcc coreutils;
+  src = ./simple.c;
+  system = builtins.currentSystem;
+}
+</programlisting>
 
       Here we also take the opportunity to introduce the
       <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes"><code>inherit</code> keyword</link>.

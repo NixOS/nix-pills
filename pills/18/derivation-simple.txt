@@ -1,3 +1,0 @@
-$ nix repl
-nix-repl> derivation { system = "x86_64-linux"; builder = ./myfile; name = "foo"; }
-«derivation /nix/store/y4h73bmrc9ii5bxg6i7ck6hsf5gqv8ck-foo.drv»

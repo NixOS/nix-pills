@@ -1,4 +1,0 @@
-nix-repl> d.outPath
-"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"
-nix-repl> builtins.toString d
-"/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname"

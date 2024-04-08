@@ -124,7 +124,11 @@
       xlink:href="https://nixos.org/manual/nix/stable/package-management/profiles.html">profile</link>:
     </para>
 
-    <xi:include href="./02/user-environment.xml" parse="xml" />
+    &lt;screen&gt;creating /home/nix/.nix-profile
+installing 'nix-2.1.3'
+building path(s) `/nix/store/a7p1w3z2h8pl00ywvw6icr3g5l9vm5r7-&lt;emphasis role="strong"&gt;user-environment&lt;/emphasis&gt;'
+created 7 symlinks in user environment&lt;/screen&gt;
+
 
     <para>
       A profile in Nix is a general and convenient concept for
@@ -144,7 +148,13 @@
       Let's take a closer look at our profile:
     </para>
 
-    <xi:include href="./02/profile.xml" parse="xml" />
+    &lt;screen&gt;$ ls -l ~/.nix-profile/
+bin -&gt; /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-&lt;emphasis role="strong"&gt;nix-2.1.3&lt;/emphasis&gt;/bin
+[...]
+manifest.nix -&gt; /nix/store/q8b5238akq07lj9gfb3qb5ycq4dxxiwm-&lt;emphasis role="strong"&gt;env-manifest.nix&lt;/emphasis&gt;
+[...]
+share -&gt; /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-&lt;emphasis role="strong"&gt;nix-2.1.3&lt;/emphasis&gt;/share&lt;/screen&gt;
+
     <para>
      That <package>nix-2.1.3</package> derivation in the Nix store is
      Nix itself, with binaries and libraries. The process of "installing"
@@ -188,8 +198,11 @@
       More output from the installer:
     </para>
 
-    <screen><xi:include href="./02/nixpkgs-expressions.txt"
-    parse="text" /></screen>
+    <screen>downloading Nix expressions from `http://releases.nixos.org/nixpkgs/nixpkgs-14.10pre46060.a1a2851/nixexprs.tar.xz'...
+unpacking channels...
+created 2 symlinks in user environment
+modifying /home/nix/.profile...
+</screen>
 
     <para>
       Nix expressions are written in the <link 
@@ -260,7 +273,10 @@
     </para>
 
 
-    <screen><xi:include href="./02/ldd-bash.txt" parse="text" /></screen>
+    <screen>
+$ ldd /nix/store/*bash*/bin/bash
+[...]
+</screen>
 
     <para>
       Keeping the store in <filename>/nix</filename> means we can grab

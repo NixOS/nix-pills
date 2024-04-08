@@ -48,7 +48,11 @@
     <para>
       <filename>myrelease.nix</filename>:
     </para>
-    <screen><xi:include href="./16/myrelease-nix.txt" parse="text" /></screen>
+    <screen>{ system ? builtins.currentSystem }:
+
+let pkgs = import &lt;nixpkgs&gt; { inherit system; };
+...
+</screen>
     <para>
       Why is it useful? With this parameter it's very easy to select a set of packages for a particular system. For example:
     </para>
@@ -74,7 +78,14 @@
     <para>
       The <literal>config</literal> is available in the resulting repository:
     </para>
-    <screen><xi:include href="./16/config-foo-bar.txt" parse="text" /></screen>
+    <screen>$ nix repl
+nix-repl&gt; pkgs = import &lt;nixpkgs&gt; {}
+nix-repl&gt; pkgs.config
+{ }
+nix-repl&gt; pkgs = import &lt;nixpkgs&gt; { config = { foo = "bar"; }; }
+nix-repl&gt; pkgs.config
+{ foo = "bar"; }
+</screen>
     <para>
       What attributes go in <literal>config</literal> is a matter of convenience and conventions.
     </para>
@@ -97,7 +108,10 @@
     <para>
       For example you can nix-build the <literal>.nix</literal> file below:
     </para>
-    <screen><xi:include href="./16/pkgs-psmisc.txt" parse="text" /></screen>
+    <screen>{ pkgs ? import &lt;nixpkgs&gt; {} }:
+
+pkgs.psmisc
+</screen>
     <para>
       Nix is able to call the function because the pkgs parameter has a default value. This allows you to pass a different value for pkgs using the <literal>--arg</literal> option.
     </para>

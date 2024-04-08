@@ -22,7 +22,11 @@
     <para>
       Take for example <package>graphviz</package>. It has an input parameter <package>xorg</package>. If it's null, then <package>graphviz</package> will build without X support.
     </para>
-    <screen><xi:include href="./17/graphviz-override.txt" parse="text" /></screen>
+    <screen>$ nix repl
+nix-repl&gt; :l &lt;nixpkgs&gt;
+Added 4360 variables.
+nix-repl&gt; :b graphviz.override { withXorg = false; }
+</screen>
     <para>
       This will build <package>graphviz</package> without X support, it's as simple as that.
     </para>
@@ -36,7 +40,10 @@
     <para>
       ...you could do something like this:
     </para>
-    <screen><xi:include href="./17/p-graphviz-override.txt" parse="text" /></screen>
+    <screen>pkgs = import &lt;nixpkgs&gt; {};
+pkgs.graphviz = pkgs.graphviz.override { withXorg = false; };
+build(pkgs.P)
+</screen>
     <para>
       Given <literal>pkgs.P</literal> depends on <literal>pkgs.graphviz</literal>, it's easy to build <literal>P</literal> with the replaced <package>graphviz</package>. In a pure functional language it's not that easy because you can assign to variables only once.
     </para>
@@ -49,14 +56,27 @@
     <para>
       Follows the definition of fixed point in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/f224a4f1b32b3e813783d22de54e231cd8ea2448/lib/fixed-points.nix#L19">nixpkgs</link>:
     </para>
-    <screen><xi:include href="./17/fix-function.txt" parse="text" /></screen>
+    <screen>{
+  # Take a function and evaluate it with its own returned value.
+  fix =
+    f:
+    let
+      result = f result;
+    in
+    result;
+}
+</screen>
     <para>
       It's a function that accepts a function <literal>f</literal>, calls <literal>f result</literal> on the result just returned by <literal>f result</literal> and returns it. In other words it's <literal>f(f(f(....</literal>
     </para>
     <para>
       At first sight, it's an infinite loop. With lazy evaluation it isn't, because the call is done only when needed.
     </para>
-    <screen><xi:include href="./17/fix-pkgs-function.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; fix = f: let result = f result; in result
+nix-repl&gt; pkgs = self: { a = 3; b = 4; c = self.a+self.b; }
+nix-repl&gt; fix pkgs
+{ a = 3; b = 4; c = 7; }
+</screen>
     <para>
       Without the <literal>rec</literal> keyword, we were able to refer to <literal>a</literal> and <literal>b</literal> of the same set.
       <itemizedlist>
@@ -77,7 +97,12 @@
       <para>
         Given that <literal>self.a</literal> and <literal>self.b</literal> refer to the passed set and not to the literal set in the function, we're able to override both <literal>a</literal> and <literal>b</literal> and get a new value for <literal>c</literal>:
       </para>
-      <screen><xi:include href="./17/newpkgs-override-set.txt" parse="text" /></screen>
+      <screen>nix-repl&gt; overrides = { a = 1; b = 2; }
+nix-repl&gt; let newpkgs = pkgs (newpkgs // overrides); in newpkgs
+{ a = 3; b = 4; c = 3; }
+nix-repl&gt; let newpkgs = pkgs (newpkgs // overrides); in newpkgs // overrides
+{ a = 1; b = 2; c = 3; }
+</screen>
       <para>
         In the first case we computed pkgs with the overrides, in the second case we also included the overridden attributes in the result.
       </para>
@@ -95,11 +120,21 @@
     <para>
       Create a <filename>config.nix</filename> file like this somewhere:
     </para>
-    <screen><xi:include href="./17/config-nix.txt" parse="text" /></screen>
+    <screen>{
+  packageOverrides = pkgs: {
+    graphviz = pkgs.graphviz.override {
+      # disable xorg support
+      withXorg = false;
+    };
+  };
+}
+</screen>
     <para>
       Now we can build e.g. <package>asciidoc-full</package> and it will automatically use the overridden <package>graphviz</package>:
     </para>
-    <screen><xi:include href="./17/build-asciidoc-graphviz-override.txt" parse="text" /></screen>
+    <screen>nix-repl&gt; pkgs = import &lt;nixpkgs&gt; { config = import ./config.nix; }
+nix-repl&gt; :b pkgs.asciidoc-full
+</screen>
     <para>
       Note how we pass the <literal>config</literal> with <literal>packageOverrides</literal> when importing <literal>nixpkgs</literal>. Then <literal>pkgs.asciidoc-full</literal> is a derivation that has <package>graphviz</package> input (<literal>pkgs.asciidoc</literal> is the lighter version and doesn't use <package>graphviz</package> at all).
     </para>

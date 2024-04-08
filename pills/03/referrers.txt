@@ -1,6 +1,0 @@
-$ nix-store -q --referrers `which hello`
-/nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10
-/nix/store/fhvy2550cpmjgcjcx5rzz328i0kfv3z3-env-manifest.nix
-/nix/store/yzdk0xvr0b8dcwhi2nns6d75k2ha5208-env-manifest.nix
-/nix/store/mp987abm20c70pl8p31ljw1r5by4xwfw-user-environment
-/nix/store/ppr3qbq7fk2m2pa49i2z3i32cvfhsv7p-user-environment
