@@ -20,48 +20,56 @@ In summary, Nix maintains a list of GC roots. These roots can then be used to co
 
 Before we begin we first run the [nix garbage collector](https://nixos.org/manual/nix/stable/command-ref/nix-collect-garbage.html) so that we have a clean setup for our experiments:
 
-    $ nix-collect-garbage
-    finding garbage collector roots...
-    [...]
-    deleting unused links...
-    note: currently hard linking saves -0.00 MiB
-    1169 store paths deleted, 228.43 MiB freed
+```console
+$ nix-collect-garbage
+finding garbage collector roots...
+[...]
+deleting unused links...
+note: currently hard linking saves -0.00 MiB
+1169 store paths deleted, 228.43 MiB freed
+```
 
 If we run the garbage collector again it won't find anything new to delete, as we expect. After running the garbage collector, the nix store only contains paths with references from the GC roots.
 
 We now install a new program, `bsd-games`, inspect its store path, and examine its GC root. The `nix-store -q --roots` command is used to query the GC roots that refer to a given derivation. In this case, our current user environment refers to `bsd-games`:
 
-    $ nix-env -iA nixpkgs.bsdgames
-    $ readlink -f `which fortune`
-    /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17/bin/fortune
-    $ nix-store -q --roots `which fortune`
-    /nix/var/nix/profiles/default-9-link
-    $ nix-env --list-generations
-    [...]
-       9   2014-08-20 12:44:14   (current)
+```console
+$ nix-env -iA nixpkgs.bsdgames
+$ readlink -f `which fortune`
+/nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17/bin/fortune
+$ nix-store -q --roots `which fortune`
+/nix/var/nix/profiles/default-9-link
+$ nix-env --list-generations
+[...]
+   9   2014-08-20 12:44:14   (current)
+```
 
 Now we remove it and run the garbage collector, and note that `bsd-games` is still in the nix store:
 
-    $ nix-env -e bsd-games
-    uninstalling `bsd-games-2.17'
-    $ nix-collect-garbage
-    [...]
-    $ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
-    bin  share
+```console
+$ nix-env -e bsd-games
+uninstalling `bsd-games-2.17'
+$ nix-collect-garbage
+[...]
+$ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
+bin  share
+```
 
 The old generation is still in the nix store because it is a GC root. As we will see below, all profiles and their generations are automatically GC roots.
 
 Removing a GC root is simple. In our case, we delete the generation that refers to `bsd-games`, run the garbage collector, and note that `bsd-games` is no longer in the nix store:
 
-    $ rm /nix/var/nix/profiles/default-9-link
-    $ nix-env --list-generations
-    [...]
-       8   2014-07-28 10:23:24
-      10   2014-08-20 12:47:16   (current)
-    $ nix-collect-garbage
-    [...]
-    $ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
-    ls: cannot access /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17: No such file or directory
+```console
+$ rm /nix/var/nix/profiles/default-9-link
+$ nix-env --list-generations
+[...]
+   8   2014-07-28 10:23:24
+  10   2014-08-20 12:47:16   (current)
+$ nix-collect-garbage
+[...]
+$ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
+ls: cannot access /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17: No such file or directory
+```
 
 Note: `nix-env --list-generations` does not rely on any particular metadata. It is able to list generations based solely on the file names under the profiles directory.
 
@@ -73,11 +81,13 @@ Recall that building the GNU `hello` package with `nix-build` produces a `result
 
 In fact, `nix-build` automatically adds the `result` symlink as a GC root. Note that this is not the built derivation, but the symlink itself. These GC roots are added under `/nix/var/nix/gcroots/auto`.
 
-    $ ls -l /nix/var/nix/gcroots/auto/
-    total 8
-    drwxr-xr-x 2 nix nix 4096 Aug 20 10:24 ./
-    drwxr-xr-x 3 nix nix 4096 Jul 24 10:38 ../
-    lrwxrwxrwx 1 nix nix   16 Jul 31 10:51 xlgz5x2ppa0m72z5qfc78b8wlciwvgiz -> /home/nix/result/
+```console
+$ ls -l /nix/var/nix/gcroots/auto/
+total 8
+drwxr-xr-x 2 nix nix 4096 Aug 20 10:24 ./
+drwxr-xr-x 3 nix nix 4096 Jul 24 10:38 ../
+lrwxrwxrwx 1 nix nix   16 Jul 31 10:51 xlgz5x2ppa0m72z5qfc78b8wlciwvgiz -> /home/nix/result/
+```
 
 The name of the GC root symlink is not important to us at this time. What is important is that such a symlink exists and points to `/home/nix/result`. This is called an **indirect GC root**. A GC root is considered indirect if its specification is outside of `/nix/var/nix/gcroots`. In this case, this means that the target of the `result` symlink will not be garbage collected.
 
@@ -109,10 +119,12 @@ Other systems typically "forget" everything about their previous state after an 
 
 The four steps are shown below:
 
-    $ nix-channel --update
-    $ nix-env -u --always
-    $ rm /nix/var/nix/gcroots/auto/*
-    $ nix-collect-garbage -d
+```console
+$ nix-channel --update
+$ nix-env -u --always
+$ rm /nix/var/nix/gcroots/auto/*
+$ nix-collect-garbage -d
+```
 
 ## Conclusion
 

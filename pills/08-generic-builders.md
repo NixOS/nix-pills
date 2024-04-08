@@ -12,63 +12,69 @@ In the previous pill we packaged a simple .c file, which was being compiled with
 
 Let's create a builder script for GNU hello world, hello_builder.sh:
 
-    export PATH="$gnutar/bin:$gcc/bin:$gnumake/bin:$coreutils/bin:$gawk/bin:$gzip/bin:$gnugrep/bin:$gnused/bin:$bintools/bin"
-    tar -xzf $src
-    cd hello-2.12.1
-    ./configure --prefix=$out
-    make
-    make install
+```sh
+export PATH="$gnutar/bin:$gcc/bin:$gnumake/bin:$coreutils/bin:$gawk/bin:$gzip/bin:$gnugrep/bin:$gnused/bin:$bintools/bin"
+tar -xzf $src
+cd hello-2.12.1
+./configure --prefix=$out
+make
+make install
+```
 
 And the derivation hello.nix:
 
-    let
-      pkgs = import <nixpkgs> { };
-    in
-    derivation {
-      name = "hello";
-      builder = "${pkgs.bash}/bin/bash";
-      args = [ ./hello_builder.sh ];
-      inherit (pkgs)
-        gnutar
-        gzip
-        gnumake
-        gcc
-        coreutils
-        gawk
-        gnused
-        gnugrep
-        ;
-      bintools = pkgs.binutils.bintools;
-      src = ./hello-2.12.1.tar.gz;
-      system = builtins.currentSystem;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./hello_builder.sh ];
+  inherit (pkgs)
+    gnutar
+    gzip
+    gnumake
+    gcc
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    ;
+  bintools = pkgs.binutils.bintools;
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+```
 
 <div class="info">
 <h4>Nix on darwin</h4>
 
 Darwin (i.e. macOS) builds typically use `clang` rather than `gcc` for a C compiler. We can adapt this early example for darwin by using this modified version of `hello.nix`:
 
-    let
-      pkgs = import <nixpkgs> { };
-    in
-    derivation {
-      name = "hello";
-      builder = "${pkgs.bash}/bin/bash";
-      args = [ ./hello_builder.sh ];
-      inherit (pkgs)
-        gnutar
-        gzip
-        gnumake
-        coreutils
-        gawk
-        gnused
-        gnugrep
-        ;
-      gcc = pkgs.clang;
-      bintools = pkgs.clang.bintools.bintools_bin;
-      src = ./hello-2.12.1.tar.gz;
-      system = builtins.currentSystem;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./hello_builder.sh ];
+  inherit (pkgs)
+    gnutar
+    gzip
+    gnumake
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    ;
+  gcc = pkgs.clang;
+  bintools = pkgs.clang.bintools.bintools_bin;
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+```
 
 Later, we will show how Nix can automatically handle these differences. For now, please be just aware that changes similar to the above may be needed in what follows.
 
@@ -82,24 +88,26 @@ Please note the `--prefix=$out` we were talking about in the [previous pill](07-
 
 Let's create a generic `builder.sh` for autotools projects:
 
-    set -e
-    unset PATH
-    for p in $buildInputs; do
-      export PATH=$p/bin${PATH:+:}$PATH
-    done
+```sh
+set -e
+unset PATH
+for p in $buildInputs; do
+    export PATH=$p/bin${PATH:+:}$PATH
+done
 
-    tar -xf $src
+tar -xf $src
 
-    for d in *; do
-      if [ -d "$d" ]; then
+for d in *; do
+    if [ -d "$d" ]; then
         cd "$d"
         break
-      fi
-    done
+    fi
+done
 
-    ./configure --prefix=$out
-    make
-    make install
+./configure --prefix=$out
+make
+make install
+```
 
 What do we do here?
 
@@ -119,45 +127,51 @@ As you can see, there's no reference to "hello" in the builder anymore. It still
 
 Now let's rewrite `hello.nix`:
 
-    let
-      pkgs = import <nixpkgs> { };
-    in
-    derivation {
-      name = "hello";
-      builder = "${pkgs.bash}/bin/bash";
-      args = [ ./builder.sh ];
-      buildInputs = with pkgs; [
-        gnutar
-        gzip
-        gnumake
-        gcc
-        coreutils
-        gawk
-        gnused
-        gnugrep
-        binutils.bintools
-      ];
-      src = ./hello-2.12.1.tar.gz;
-      system = builtins.currentSystem;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+in
+derivation {
+  name = "hello";
+  builder = "${pkgs.bash}/bin/bash";
+  args = [ ./builder.sh ];
+  buildInputs = with pkgs; [
+    gnutar
+    gzip
+    gnumake
+    gcc
+    coreutils
+    gawk
+    gnused
+    gnugrep
+    binutils.bintools
+  ];
+  src = ./hello-2.12.1.tar.gz;
+  system = builtins.currentSystem;
+}
+```
 
 All clear, except that buildInputs. However it's easier than any black magic you are thinking of at this moment.
 
 Nix is able to convert a list to a string. It first converts the elements to strings, and then concatenates them separated by a space:
 
-    nix-repl> builtins.toString 123
-    "123"
-    nix-repl> builtins.toString [ 123 456 ]
-    "123 456"
+```console
+nix-repl> builtins.toString 123
+"123"
+nix-repl> builtins.toString [ 123 456 ]
+"123 456"
+```
 
 Recall that derivations can be converted to a string, hence:
 
-    nix-repl> :l <nixpkgs>
-    Added 3950 variables.
-    nix-repl> builtins.toString gnugrep
-    "/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14"
-    nix-repl> builtins.toString [ gnugrep gnused ]
-    "/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14 /nix/store/krgdc4sknzpw8iyk9p20lhqfd52kjmg0-gnused-4.2.2"
+```console
+nix-repl> :l <nixpkgs>
+Added 3950 variables.
+nix-repl> builtins.toString gnugrep
+"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14"
+nix-repl> builtins.toString [ gnugrep gnused ]
+"/nix/store/g5gdylclfh6d224kqh9sja290pk186xd-gnugrep-2.14 /nix/store/krgdc4sknzpw8iyk9p20lhqfd52kjmg0-gnused-4.2.2"
+```
 
 Simple! The buildInputs variable is a string with out paths separated by space, perfect for bash usage in a for loop.
 
@@ -169,27 +183,29 @@ A natural approach would be to create a function that accepts an attribute set, 
 
 Create `autotools.nix`:
 
-    pkgs: attrs:
-    let
-      defaultAttrs = {
-        builder = "${pkgs.bash}/bin/bash";
-        args = [ ./builder.sh ];
-        baseInputs = with pkgs; [
-          gnutar
-          gzip
-          gnumake
-          gcc
-          coreutils
-          gawk
-          gnused
-          gnugrep
-          binutils.bintools
-        ];
-        buildInputs = [ ];
-        system = builtins.currentSystem;
-      };
-    in
-    derivation (defaultAttrs // attrs)
+```nix
+pkgs: attrs:
+let
+  defaultAttrs = {
+    builder = "${pkgs.bash}/bin/bash";
+    args = [ ./builder.sh ];
+    baseInputs = with pkgs; [
+      gnutar
+      gzip
+      gnumake
+      gcc
+      coreutils
+      gawk
+      gnused
+      gnugrep
+      binutils.bintools
+    ];
+    buildInputs = [ ];
+    system = builtins.currentSystem;
+  };
+in
+derivation (defaultAttrs // attrs)
+```
 
 Ok now we have to remember a little about [Nix functions](05-functions-and-imports.md). The whole nix expression of this `autotools.nix` file will evaluate to a function. This function accepts a parameter `pkgs`, then returns a function which accepts a parameter `attrs`.
 
@@ -207,23 +223,27 @@ So we use `defaultAttrs` as base set, and add (or override) the attributes from 
 
 A couple of examples ought to be enough to clear out the behavior of the operator:
 
-    nix-repl> { a = "b"; } // { c = "d"; }
-    { a = "b"; c = "d"; }
-    nix-repl> { a = "b"; } // { a = "c"; }
-    { a = "c"; }
+```console
+nix-repl> { a = "b"; } // { c = "d"; }
+{ a = "b"; c = "d"; }
+nix-repl> { a = "b"; } // { a = "c"; }
+{ a = "c"; }
+```
 
 **Exercise:** Complete the new `builder.sh` by adding `$baseInputs` in the `for` loop together with `$buildInputs`. As you noticed, we passed that new variable in the derivation. Instead of merging buildInputs with the base ones, we prefer to preserve buildInputs as seen by the caller, so we keep them separated. Just a matter of choice.
 
 Then we rewrite `hello.nix` as follows:
 
-    let
-      pkgs = import <nixpkgs> { };
-      mkDerivation = import ./autotools.nix pkgs;
-    in
-    mkDerivation {
-      name = "hello";
-      src = ./hello-2.12.1.tar.gz;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "hello";
+  src = ./hello-2.12.1.tar.gz;
+}
+```
 
 Finally! We got a very simple description of a package! Below are a couple of remarks that you may find useful as you're continuing to understand the nix language:
 

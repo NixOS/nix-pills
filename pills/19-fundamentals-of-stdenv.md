@@ -10,32 +10,38 @@ The `stdenv` is not treated as a special derivation by Nix, but it's very import
 
 First of all, `stdenv` is a derivation, and it's a very simple one:
 
-    $ nix-build '<nixpkgs>' -A stdenv
-    /nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv
-    $ ls -R result/
-    result/:
-    nix-support/  setup
+```console
+$ nix-build '<nixpkgs>' -A stdenv
+/nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv
+$ ls -R result/
+result/:
+nix-support/  setup
 
-    result/nix-support:
-    propagated-user-env-packages
+result/nix-support:
+propagated-user-env-packages
+```
 
 It has just two files: `/setup` and `/nix-support/propagated-user-env-packages`. Don't worry about the latter. It's empty, in fact. The important file is `/setup`.
 
 How can this simple derivation pull in all of the toolchain and basic tools needed to compile packages? Let's look at the runtime dependencies:
 
-    $ nix-store -q --references result
-    /nix/store/3a45nb37s0ndljp68228snsqr3qsyp96-bzip2-1.0.6
-    /nix/store/a457ywa1haa0sgr9g7a1pgldrg3s798d-coreutils-8.24
-    /nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39
-    /nix/store/47sfpm2qclpqvrzijizimk4md1739b1b-gcc-wrapper-4.9.3
-    ...
+```console
+$ nix-store -q --references result
+/nix/store/3a45nb37s0ndljp68228snsqr3qsyp96-bzip2-1.0.6
+/nix/store/a457ywa1haa0sgr9g7a1pgldrg3s798d-coreutils-8.24
+/nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39
+/nix/store/47sfpm2qclpqvrzijizimk4md1739b1b-gcc-wrapper-4.9.3
+...
+```
 
 How can it be? The package must be referring to those other packages somehow. In fact, they are hardcoded in the `/setup` file:
 
-    $ head result/setup
-    export SHELL=/nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39/bin/bash
-    initialPath="/nix/store/a457ywa1haa0sgr9g7a1pgldrg3s798d-coreutils-8.24 ..."
-    defaultNativeBuildInputs="/nix/store/sgwq15xg00xnm435gjicspm048rqg9y6-patchelf-0.8 ..."
+```console
+$ head result/setup
+export SHELL=/nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39/bin/bash
+initialPath="/nix/store/a457ywa1haa0sgr9g7a1pgldrg3s798d-coreutils-8.24 ..."
+defaultNativeBuildInputs="/nix/store/sgwq15xg00xnm435gjicspm048rqg9y6-patchelf-0.8 ..."
+```
 
 ## The setup file
 
@@ -53,15 +59,17 @@ Every phase has hooks to run commands before and after the phase has been execut
 
 How to use this file? Like our old builder. To test it, we enter a fake empty derivation, source the `stdenv` `setup`, unpack the hello sources and build it:
 
-    $ nix-shell -E 'derivation { name = "fake"; builder = "fake"; system = "x86_64-linux"; }'
-    nix-shell$ unset PATH
-    nix-shell$ source /nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv/setup
-    nix-shell$ tar -xf hello-2.10.tar.gz
-    nix-shell$ cd hello-2.10
-    nix-shell$ configurePhase
-    ...
-    nix-shell$ buildPhase
-    ...
+```console
+$ nix-shell -E 'derivation { name = "fake"; builder = "fake"; system = "x86_64-linux"; }'
+nix-shell$ unset PATH
+nix-shell$ source /nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv/setup
+nix-shell$ tar -xf hello-2.10.tar.gz
+nix-shell$ cd hello-2.10
+nix-shell$ configurePhase
+...
+nix-shell$ buildPhase
+...
+```
 
 _I unset `PATH` to further show that the `stdenv` is sufficiently self-contained to build autotools packages that have no other dependencies._
 
@@ -75,50 +83,58 @@ Note how `stdenv` is a derivation but it's also an attribute set which contains 
 
 Let's write a `hello.nix` expression using this newly discovered `stdenv`:
 
-    with import <nixpkgs> { };
-    stdenv.mkDerivation {
-      name = "hello";
-      src = ./hello-2.10.tar.gz;
-    }
+```nix
+with import <nixpkgs> { };
+stdenv.mkDerivation {
+  name = "hello";
+  src = ./hello-2.10.tar.gz;
+}
+```
 
 Don't be scared by the `with` expression. It pulls the `nixpkgs` repository into scope, so we can directly use `stdenv`. It looks very similar to the hello expression in [Pill 8](08-generic-builders.md).
 
 It builds, and runs fine:
 
-    $ nix-build hello.nix
-    ...
-    /nix/store/6y0mzdarm5qxfafvn2zm9nr01d1j0a72-hello
-    $ result/bin/hello
-    Hello, world!
+```console
+$ nix-build hello.nix
+...
+/nix/store/6y0mzdarm5qxfafvn2zm9nr01d1j0a72-hello
+$ result/bin/hello
+Hello, world!
+```
 
 ## The stdenv.mkDerivation builder
 
 Let's take a look at the builder used by `mkDerivation`. You can read the code [here in nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/make-derivation.nix):
 
-    {
-      # ...
-      builder = attrs.realBuilder or shell;
-      args =
-        attrs.args or [
-          "-e"
-          (attrs.builder or ./default-builder.sh)
-        ];
-      stdenv = result;
-      # ...
-    }
+```nix
+{
+  # ...
+  builder = attrs.realBuilder or shell;
+  args =
+    attrs.args or [
+      "-e"
+      (attrs.builder or ./default-builder.sh)
+    ];
+  stdenv = result;
+  # ...
+}
+```
 
 Also take a look at our old derivation wrapper in previous pills! The builder is bash (that shell variable), the argument to the builder (bash) is `default-builder.sh`, and then we add the environment variable `$stdenv` in the derivation which is the `stdenv` derivation.
 
 You can open [default-builder.sh](https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/default-builder.sh) and see what it does:
 
-    source $stdenv/setup
-    genericBuild
+```sh
+source $stdenv/setup
+genericBuild
+```
 
 It's what we did in [Pill 10](10-developing-with-nix-shell.md) to make the derivations `nix-shell` friendly. When entering the shell, the setup file only sets up the environment without building anything. When doing `nix-build`, it actually runs the build process.
 
 To get a clear understanding of the environment variables, look at the .drv of the hello derivation:
 
-```
+```console
 $ nix derivation show $(nix-instantiate hello.nix)
 warning: you did not specify '--add-root'; the result might be removed by the garbage collector
 {

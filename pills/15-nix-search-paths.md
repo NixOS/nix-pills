@@ -22,21 +22,25 @@ For ease we will use `nix-instantiate --eval` to do our tests. I remind you, [ni
 
 It's useless from a nix view point, but I think it's useful for your own understanding. Let's use `PATH` itself as `NIX_PATH`, and try to locate `ping` (or another binary if you don't have it).
 
-    $ nix-instantiate --eval -E '<ping>'
-    error: file `ping' was not found in the Nix search path (add it using $NIX_PATH or -I)
-    $ NIX_PATH=$PATH nix-instantiate --eval -E '<ping>'
-    /bin/ping
-    $ nix-instantiate -I /bin --eval -E '<ping>'
-    /bin/ping
+```console
+$ nix-instantiate --eval -E '<ping>'
+error: file `ping' was not found in the Nix search path (add it using $NIX_PATH or -I)
+$ NIX_PATH=$PATH nix-instantiate --eval -E '<ping>'
+/bin/ping
+$ nix-instantiate -I /bin --eval -E '<ping>'
+/bin/ping
+```
 
 Great. At first attempt nix obviously said could not be found anywhere in the search path. Note that the -I option accepts a single directory. Paths added with -I take precedence over `NIX_PATH`.
 
 The `NIX_PATH` also accepts a different yet very handy syntax: "`somename=somepath`". That is, instead of searching inside a directory for a name, we specify exactly the value of that name.
 
-    $ NIX_PATH="ping=/bin/ping" nix-instantiate --eval -E '<ping>'
-    /bin/ping
-    $ NIX_PATH="ping=/bin/foo" nix-instantiate --eval -E '<ping>'
-    error: file `ping' was not found in the Nix search path (add it using $N
+```console
+$ NIX_PATH="ping=/bin/ping" nix-instantiate --eval -E '<ping>'
+/bin/ping
+$ NIX_PATH="ping=/bin/foo" nix-instantiate --eval -E '<ping>'
+error: file `ping' was not found in the Nix search path (add it using $N
+```
 
 Note in the second case how Nix checks whether the path exists or not.
 
@@ -44,10 +48,12 @@ Note in the second case how Nix checks whether the path exists or not.
 
 You are out of curiosity, right?
 
-    $ nix-instantiate --eval -E '<nixpkgs>'
-    /home/nix/.nix-defexpr/channels/nixpkgs
-    $ echo $NIX_PATH
-    nixpkgs=/home/nix/.nix-defexpr/channels/nixpkgs
+```console
+$ nix-instantiate --eval -E '<nixpkgs>'
+/home/nix/.nix-defexpr/channels/nixpkgs
+$ echo $NIX_PATH
+nixpkgs=/home/nix/.nix-defexpr/channels/nixpkgs
+```
 
 You may have a different path, depending on how you added channels etc.. Anyway that's the whole point. The `<nixpkgs>` stranger that we used in our nix expressions, is referring to a path in the filesystem specified by `NIX_PATH`.
 
@@ -59,9 +65,11 @@ You may wonder: then I can also specify a different [nixpkgs](https://github.com
 
 Let's define a path for our repository, then! Let's say all the `default.nix`, `graphviz.nix` etc. are under `/home/nix/mypkgs`:
 
-    $ export NIX_PATH=mypkgs=/home/nix/mypkgs:$NIX_PATH
-    $ nix-instantiate --eval '<mypkgs>'
-    { graphviz = <code>; graphvizCore = <code>; hello = <code>; mkDerivation = <code>; }
+```console
+$ export NIX_PATH=mypkgs=/home/nix/mypkgs:$NIX_PATH
+$ nix-instantiate --eval '<mypkgs>'
+{ graphviz = <code>; graphvizCore = <code>; hello = <code>; mkDerivation = <code>; }
+```
 
 Yes, `nix-build` also accepts paths with angular brackets. We first evaluate the whole repository (`default.nix`) and then pick the graphviz attribute.
 
@@ -77,23 +85,29 @@ So if you run `nix-env -i graphviz` inside your repository, it will install the 
 
 In order to specify an alternative to `~/.nix-defexpr` it's possible to use the -f option:
 
-    $ nix-env -f '<mypkgs>' -i graphviz
-    warning: there are multiple derivations named `graphviz'; using the first one
-    replacing old `graphviz'
-    installing `graphviz'
+```console
+$ nix-env -f '<mypkgs>' -i graphviz
+warning: there are multiple derivations named `graphviz'; using the first one
+replacing old `graphviz'
+installing `graphviz'
+```
 
 Oh why did it say there's another derivation named graphviz? Because both `graphviz` and `graphvizCore` attributes in our repository have the name "graphviz" for the derivation:
 
-    $ nix-env -f '<mypkgs>' -qaP
-    graphviz      graphviz
-    graphvizCore  graphviz
-    hello         hello
+```console
+$ nix-env -f '<mypkgs>' -qaP
+graphviz      graphviz
+graphvizCore  graphviz
+hello         hello
+```
 
 By default `nix-env` parses all derivations and uses the derivation names to interpret the command line. So in this case "graphviz" matched two derivations. Alternatively, like for `nix-build`, one can use -A to specify an attribute name instead of a derivation name:
 
-    $ nix-env -f '<mypkgs>' -i -A graphviz
-    replacing old `graphviz'
-    installing `graphviz'
+```console
+$ nix-env -f '<mypkgs>' -i -A graphviz
+replacing old `graphviz'
+installing `graphviz'
+```
 
 This form, other than being more precise, it's also faster because `nix-env` does not have to parse all the derivations.
 

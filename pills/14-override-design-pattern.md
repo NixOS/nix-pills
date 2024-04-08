@@ -12,7 +12,9 @@ In Nix, we mostly talk about **functions** that accept inputs in order to return
 
 For example, let's say we have an initial derivation `drv` and we want to transform it into a `drv` with debugging information and custom patches:
 
-    debugVersion (applyPatches [ ./patch1.patch ./patch2.patch ] drv)
+```nix
+debugVersion (applyPatches [ ./patch1.patch ./patch2.patch ] drv)
+```
 
 The final result should be the original derivation with some changes. This is both interesting and very different from other packaging approaches, which is a consequence of using a functional language to describe packages.
 
@@ -24,31 +26,39 @@ In [pill 12](12-inputs-design-pattern.md) we introduced the inputs design patter
 
 In our repository we have a set of attributes that import the expressions of the packages and pass these arguments, getting back a derivation. Let's take for example the graphviz attribute:
 
-    graphviz = import ./graphviz.nix { inherit mkDerivation gd fontconfig libjpeg bzip2; };
+```nix
+graphviz = import ./graphviz.nix { inherit mkDerivation gd fontconfig libjpeg bzip2; };
+```
 
 If we wanted to produce a derivation of graphviz with a customized gd version, we would have to repeat most of the above plus specifying an alternative gd:
 
-    {
-      mygraphviz = import ./graphviz.nix {
-        inherit
-          mkDerivation
-          fontconfig
-          libjpeg
-          bzip2
-          ;
-        gd = customgd;
-      };
-    }
+```nix
+{
+  mygraphviz = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      fontconfig
+      libjpeg
+      bzip2
+      ;
+    gd = customgd;
+  };
+}
+```
 
 That's hard to maintain. Using `callPackage` would be easier:
 
-    mygraphviz = callPackage ./graphviz.nix { gd = customgd; };
+```nix
+mygraphviz = callPackage ./graphviz.nix { gd = customgd; };
+```
 
 But we may still be diverging from the original graphviz in the repository.
 
 We would like to avoid specifying the nix expression again. Instead, we would like to reuse the original graphviz attribute in the repository and add our overrides like so:
 
-    mygraphviz = graphviz.override { gd = customgd; };
+```nix
+mygraphviz = graphviz.override { gd = customgd; };
+```
 
 The difference is obvious, as well as the advantages of this approach.
 
@@ -62,14 +72,16 @@ Let's start by first creating a function "`makeOverridable`". This function will
 
 We will put this function in a `lib.nix`:
 
-    {
-      makeOverridable =
-        f: origArgs:
-        let
-          origRes = f origArgs;
-        in
-        origRes // { override = newArgs: f (origArgs // newArgs); };
-    }
+```nix
+{
+  makeOverridable =
+    f: origArgs:
+    let
+      origRes = f origArgs;
+    in
+    origRes // { override = newArgs: f (origArgs // newArgs); };
+}
+```
 
 `makeOverridable` takes a function and a set of original arguments. It returns the original returned set, plus a new `override` attribute.
 
@@ -77,17 +89,19 @@ This `override` attribute is a function taking a set of new arguments, and retur
 
 Let's try it with `nix repl`:
 
-    $ nix repl
-    nix-repl> :l lib.nix
-    Added 1 variables.
-    nix-repl> f = { a, b }: { result = a+b; }
-    nix-repl> f { a = 3; b = 5; }
-    { result = 8; }
-    nix-repl> res = makeOverridable f { a = 3; b = 5; }
-    nix-repl> res
-    { override = «lambda»; result = 8; }
-    nix-repl> res.override { a = 10; }
-    { result = 15; }
+```console
+$ nix repl
+nix-repl> :l lib.nix
+Added 1 variables.
+nix-repl> f = { a, b }: { result = a+b; }
+nix-repl> f { a = 3; b = 5; }
+{ result = 8; }
+nix-repl> res = makeOverridable f { a = 3; b = 5; }
+nix-repl> res
+{ override = «lambda»; result = 8; }
+nix-repl> res.override { a = 10; }
+{ result = 15; }
+```
 
 Note that, as we specified above, the function `f` does not return the plain sum. Instead, it returns a set with the sum bound to the name `result`.
 
@@ -99,28 +113,32 @@ This is a good start, but we can't override again! This is because the returned 
 
 The solution is simple: the `.override` function should make the result overridable again:
 
-    rec {
-      makeOverridable =
-        f: origArgs:
-        let
-          origRes = f origArgs;
-        in
-        origRes // { override = newArgs: makeOverridable f (origArgs // newArgs); };
-    }
+```nix
+rec {
+  makeOverridable =
+    f: origArgs:
+    let
+      origRes = f origArgs;
+    in
+    origRes // { override = newArgs: makeOverridable f (origArgs // newArgs); };
+}
+```
 
 Please note the `rec` keyword. It's necessary so that we can refer to `makeOverridable` from `makeOverridable` itself.
 
 Now let's try overriding twice:
 
-    nix-repl> :l lib.nix
-    Added 1 variables.
-    nix-repl> f = { a, b }: { result = a+b; }
-    nix-repl> res = makeOverridable f { a = 3; b = 5; }
-    nix-repl> res2 = res.override { a = 10; }
-    nix-repl> res2
-    { override = «lambda»; result = 15; }
-    nix-repl> res2.override { b = 20; }
-    { override = «lambda»; result = 30; }
+```console
+nix-repl> :l lib.nix
+Added 1 variables.
+nix-repl> f = { a, b }: { result = a+b; }
+nix-repl> res = makeOverridable f { a = 3; b = 5; }
+nix-repl> res2 = res.override { a = 10; }
+nix-repl> res2
+{ override = «lambda»; result = 15; }
+nix-repl> res2.override { b = 20; }
+{ override = «lambda»; result = 30; }
+```
 
 Success! The result is 30 (as expected) because `a` is overridden to 10 in the first override, and `b` is overridden to 20 in the second.
 
@@ -132,7 +150,9 @@ The "`override`" pattern simplifies the way we customize packages starting from 
 
 We can dream of a custom, isolated `nix-shell` environment for testing graphviz with a custom gd:
 
-    debugVersion (graphviz.override { gd = customgd; })
+```nix
+debugVersion (graphviz.override { gd = customgd; })
+```
 
 Once a new version of the overridden package comes out in the repository, the customized package will make use of it automatically.
 

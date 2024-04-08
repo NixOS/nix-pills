@@ -22,7 +22,9 @@ Note: In a multi-user installation, such as the one used in NixOS, the store is 
 
 Start looking at the output of the install command:
 
-    copying Nix to /nix/store..........................
+```
+copying Nix to /nix/store..........................
+```
 
 That's the `/nix/store` we were talking about in the first article. We're copying in the necessary software to bootstrap a Nix system. You can see bash, coreutils, the C compiler toolchain, perl libraries, sqlite and Nix itself with its own tools and libnix.
 
@@ -32,7 +34,9 @@ You may have noticed that `/nix/store` can contain not only directories, but als
 
 Right after copying the store, the installation process initializes a database:
 
-    initialising Nix database...
+```
+initialising Nix database...
+```
 
 Yes, Nix also has a database. It's stored under `/nix/var/nix/db`. It is a sqlite database that keeps track of the dependencies between derivations.
 
@@ -94,10 +98,12 @@ We'll talk about `manifest.nix` more in the next article.
 
 More output from the installer:
 
-    downloading Nix expressions from `http://releases.nixos.org/nixpkgs/nixpkgs-14.10pre46060.a1a2851/nixexprs.tar.xz'...
-    unpacking channels...
-    created 2 symlinks in user environment
-    modifying /home/nix/.profile...
+```
+downloading Nix expressions from `http://releases.nixos.org/nixpkgs/nixpkgs-14.10pre46060.a1a2851/nixexprs.tar.xz'...
+unpacking channels...
+created 2 symlinks in user environment
+modifying /home/nix/.profile...
+```
 
 Nix expressions are written in the [Nix language](https://nix.dev/tutorials/nix-language) and used to describe packages and how to build them. [Nixpkgs](https://nixos.org/nixpkgs/) is the repository containing all of the expressions: <https://github.com/NixOS/nixpkgs>.
 
@@ -119,8 +125,10 @@ You can, but there's a good reason to keep using `/nix` instead of a different d
 
 You can see for yourself, don't worry if you see multiple bash derivations:
 
-    $ ldd /nix/store/*bash*/bin/bash
-    [...]
+```console
+$ ldd /nix/store/*bash*/bin/bash
+[...]
+```
 
 Keeping the store in `/nix` means we can grab the binary cache from nixos.org (just like you grab packages from debian mirrors) otherwise:
 

@@ -26,21 +26,25 @@ We have already packaged GNU `hello`. Next, we will package a graph-drawing prog
 
 First, we download `graphviz` from [gitlab](https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/2.49.3/graphviz-2.49.3.tar.gz). The `graphviz.nix` expression is straightforward:
 
-    let
-      pkgs = import <nixpkgs> { };
-      mkDerivation = import ./autotools.nix pkgs;
-    in
-    mkDerivation {
-      name = "graphviz";
-      src = ./graphviz-2.49.3.tar.gz;
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+}
+```
 
 If we build the project with `nix-build graphviz.nix`, we will get runnable binaries under `result/bin`. Notice how we reused the same `autotools.nix` of `hello.nix.`
 
 By default, `graphviz` does not compile with the ability to produce `png` files. Thus, the derivation above will build a binary supporting only the native output formats, as we see below:
 
-    $ echo 'graph test { a -- b }'|result/bin/dot -Tpng -o test.png
-    Format: "png" not recognized. Use one of: canon cmap [...]
+```console
+$ echo 'graph test { a -- b }'|result/bin/dot -Tpng -o test.png
+Format: "png" not recognized. Use one of: canon cmap [...]
+```
 
 If we want to produce a `png` file with `graphviz`, we must add it to our derivation. The place to do so is in `autotools.nix`, where we created a `buildInputs` variable that gets concatenated to `baseInputs`. This is the exact reason for this variable: to allow users of `autotools.nix` to add additional inputs from package expressions.
 
@@ -54,14 +58,16 @@ In classic POSIX systems, `pkg-config` just finds the `.pc` files of all install
 
 As an alternative, we can inform `pkg-config` about the location of libraries via the `PKG_CONFIG_PATH` environment variable. We can populate this environment variable using the same trick we used for `PATH`: automatically filling the variables from `buildInputs`. This is the relevant snippet of `setup.sh`:
 
-    for p in $baseInputs $buildInputs; do
-      if [ -d $p/bin ]; then
+```sh
+for p in $baseInputs $buildInputs; do
+    if [ -d $p/bin ]; then
         export PATH="$p/bin${PATH:+:}$PATH"
-      fi
-      if [ -d $p/lib/pkgconfig ]; then
+    fi
+    if [ -d $p/lib/pkgconfig ]; then
         export PKG_CONFIG_PATH="$p/lib/pkgconfig${PKG_CONFIG_PATH:+:}$PKG_CONFIG_PATH"
-      fi
-    done
+    fi
+done
+```
 
 Now if we add derivations to `buildInputs`, their `lib/pkgconfig` and `bin` paths are automatically added in `setup.sh`.
 
@@ -69,19 +75,21 @@ Now if we add derivations to `buildInputs`, their `lib/pkgconfig` and `bin` path
 
 Below, we finish the expression for `graphviz` with `gd` support. Note the use of the `with` expression in `buildInputs` to avoid repeating `pkgs`:
 
-    let
-      pkgs = import <nixpkgs> { };
-      mkDerivation = import ./autotools.nix pkgs;
-    in
-    mkDerivation {
-      name = "graphviz";
-      src = ./graphviz-2.49.3.tar.gz;
-      buildInputs = with pkgs; [
-        pkg-config
-        (pkgs.lib.getLib gd)
-        (pkgs.lib.getDev gd)
-      ];
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+  buildInputs = with pkgs; [
+    pkg-config
+    (pkgs.lib.getLib gd)
+    (pkgs.lib.getDev gd)
+  ];
+}
+```
 
 We add `pkg-config` to the derivation to make this tool available for the configure script. As `gd` is a package with [split outputs](https://nixos.org/manual/nixpkgs/stable/#sec-multiple-outputs-), we need to add both the library and development outputs.
 
@@ -95,35 +103,43 @@ Using this technique we are able to abstract from the file names. Instead of ref
 
 To begin, create a default.nix in the current directory:
 
-    {
-      hello = import ./hello.nix;
-      graphviz = import ./graphviz.nix;
-    }
+```nix
+{
+  hello = import ./hello.nix;
+  graphviz = import ./graphviz.nix;
+}
+```
 
 This file is ready to use with `nix repl`:
 
-    $ nix repl
-    nix-repl> :l default.nix
-    Added 2 variables.
-    nix-repl> hello
-    «derivation /nix/store/dkib02g54fpdqgpskswgp6m7bd7mgx89-hello.drv»
-    nix-repl> graphviz
-    «derivation /nix/store/zqv520v9mk13is0w980c91z7q1vkhhil-graphviz.drv»
+```console
+$ nix repl
+nix-repl> :l default.nix
+Added 2 variables.
+nix-repl> hello
+«derivation /nix/store/dkib02g54fpdqgpskswgp6m7bd7mgx89-hello.drv»
+nix-repl> graphviz
+«derivation /nix/store/zqv520v9mk13is0w980c91z7q1vkhhil-graphviz.drv»
+```
 
 With `nix-build`, we can pass the -A option to access an attribute of the set from the given `.nix` expression:
 
-    $ nix-build default.nix -A hello
-    [...]
-    $ result/bin/hello
-    Hello, world!
+```console
+$ nix-build default.nix -A hello
+[...]
+$ result/bin/hello
+Hello, world!
+```
 
 The `default.nix` file is special. When a directory contains a `default.nix` file, it is used as the implicit nix expression of the directory. This, for example, allows us to run `nix-build -A hello` without specifying `default.nix` explicitly.
 
 We can now use `nix-env` to install the package into our user environment:
 
-    $ nix-env -f . -iA graphviz
-    [...]
-    $ dot -V
+```console
+$ nix-env -f . -iA graphviz
+[...]
+$ dot -V
+```
 
 Taking a closer look at the above command, we see the following options:
 
@@ -157,20 +173,22 @@ The `./src` directory is also an input, but we wouldn't change the source from t
 
 Our goal is to make package expressions independent of the repository. To achieve this, we use functions to declare inputs for a derivation. For example, with `graphviz.nix`, we make the following changes to make the derivation independent of the repository and customizable:
 
-    { mkDerivation, lib, gdSupport ? true, gd, pkg-config }:
+```nix
+{ mkDerivation, lib, gdSupport ? true, gd, pkg-config }:
 
-    mkDerivation {
-      name = "graphviz";
-      src = ./graphviz-2.49.3.tar.gz;
-      buildInputs =
-        if gdSupport
-          then [
-              pkg-config
-              (lib.getLib gd)
-              (lib.getDev gd)
-            ]
-          else [];
-    }
+mkDerivation {
+  name = "graphviz";
+  src = ./graphviz-2.49.3.tar.gz;
+  buildInputs =
+    if gdSupport
+      then [
+        pkg-config
+        (lib.getLib gd)
+        (lib.getDev gd)
+      ]
+      else [];
+}
+```
 
 Recall that "`{...}: ...`" is the syntax for defining functions accepting an attribute set as argument; the above snippet just defines a function.
 
@@ -178,31 +196,33 @@ We made `gd` and its dependencies optional. If `gdSupport` is true (which it is 
 
 Going back to back to `default.nix`, we modify our expression to utilize the inputs pattern:
 
-    let
-      pkgs = import <nixpkgs> { };
-      mkDerivation = import ./autotools.nix pkgs;
-    in
-    with pkgs;
-    {
-      hello = import ./hello.nix { inherit mkDerivation; };
-      graphviz = import ./graphviz.nix {
-        inherit
-          mkDerivation
-          lib
-          gd
-          pkg-config
-          ;
-      };
-      graphvizCore = import ./graphviz.nix {
-        inherit
-          mkDerivation
-          lib
-          gd
-          pkg-config
-          ;
-        gdSupport = false;
-      };
-    }
+```nix
+let
+  pkgs = import <nixpkgs> { };
+  mkDerivation = import ./autotools.nix pkgs;
+in
+with pkgs;
+{
+  hello = import ./hello.nix { inherit mkDerivation; };
+  graphviz = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
+  };
+  graphvizCore = import ./graphviz.nix {
+    inherit
+      mkDerivation
+      lib
+      gd
+      pkg-config
+      ;
+    gdSupport = false;
+  };
+}
+```
 
 We factorized the import of `nixpkgs` and `mkDerivation`, and also added a variant of `graphviz` with `gd` support disabled. The result is that both `hello.nix` (left as an exercise for the reader) and `graphviz.nix` are independent of the repository and customizable by passing specific inputs.
 
