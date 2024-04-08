@@ -1,0 +1,10 @@
+[book]
+title = "Nix Pills"
+authors = ["Luca Bruno"]
+language = "en"
+multilingual = false
+src = "pills"
+
+[output.html]
+edit-url-template = "https://github.com/NixOS/nix-pills/tree/master/{path}"
+git-repository-url = "https://github.com/NixOS/nix-pills"
