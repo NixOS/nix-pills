@@ -16,3 +16,13 @@
     font-weight: bold;
     font-size: 2rem;
 }
+
+/*
+  Make prompts unselectable in console sections.
+  This relies on highlight.js applying certain classes on the prompts.
+  For more details, see https://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#stylable-scopes
+*/
+.hljs-meta.prompt_ {
+    user-select: none;
+    -webkit-user-select: none;
+}
