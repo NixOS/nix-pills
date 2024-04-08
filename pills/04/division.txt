@@ -1,5 +1,0 @@
-nix-repl> 6/ 3
-2
-
-nix-repl> builtins.div 6 3
-2

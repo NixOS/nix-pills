@@ -1,5 +1,0 @@
-nix-repl> longName = { a = 3; b = 4; }
-nix-repl> longName.a + longName.b
-7
-nix-repl> with longName; a + b
-7

@@ -1,87 +1,32 @@
-{ pkgs ? import <nixpkgs> {}, revCount, shortRev }:
-let
-  lib = pkgs.lib;
+{ pkgs ? import <nixpkgs> {} }:
 
-  sources = let
-
-      # We want nix examples, but not the top level nix to build things
-      noTopLevelNix = path: type: let
-          relPath = lib.removePrefix (toString ./. + "/") (toString path);
-        in builtins.match "[^/]*\.nix" relPath == null;
-
-      extensions = [ ".xml" ".txt" ".nix" ".bash" ];
-
-    in lib.cleanSourceWith {
-      filter = noTopLevelNix;
-      src = lib.sourceFilesBySuffices ./. extensions;
-    };
-
-  combined = pkgs.runCommand "nix-pills-combined"
-    {
-      buildInputs = [ pkgs.libxml2 ];
-      meta.description = "Nix Pills with as a single docbook file";
-      inherit revCount shortRev;
-    }
-    ''
-      cp -r ${sources} ./sources
-      chmod -R u+w ./sources
-
-      cd sources
-
-      printf "%s-%s" "$revCount" "$shortRev" > version
-      xmllint --xinclude --output "$out" ./book.xml
-    '';
-
-  toc = builtins.toFile "toc.xml"
-    ''
-      <toc role="chunk-toc">
-        <d:tocentry xmlns:d="http://docbook.org/ns/docbook" linkend="book-nix-pills"><?dbhtml filename="index.html"?>
-        </d:tocentry>
-      </toc>
-    '';
-
-  manualXsltprocOptions = toString [
-    "--param section.autolabel 1"
-    "--param section.label.includes.component.label 1"
-    "--stringparam html.stylesheet style.css"
-    "--param xref.with.number.and.title 1"
-    "--param toc.section.depth 3"
-    "--stringparam admon.style ''"
-    "--stringparam callout.graphics.extension .svg"
-    "--stringparam current.docid nix-pills"
-    "--param chunk.section.depth 0"
-    "--param chunk.first.sections 1"
-    "--param use.id.as.filename 1"
-    "--stringparam generate.toc 'book toc appendix toc'"
-    "--stringparam chunk.toc '${toc}'"
-  ];
-
-in {
-  html-split = pkgs.stdenv.mkDerivation {
+{
+  html-split = pkgs.stdenvNoCC.mkDerivation {
     name = "nix-pills";
+    src = ./.;
 
-    src = sources;
-
-    buildInputs = with pkgs; [
-      libxslt
+    nativeBuildInputs = with pkgs; [
+      mdbook
+      mdbook-linkcheck
     ];
+
+    buildPhase = ''
+      runHook preBuild
+
+      # We can't check external links inside the sandbox, but it's good to check them outside the sandbox.
+      substituteInPlace book.toml --replace-fail 'follow-web-links = true' 'follow-web-links = false'
+      mdbook build
+
+      runHook postBuild
+    '';
 
     installPhase = ''
       runHook preInstall
 
-      # Generate the HTML manual.
+      # The nix pills were originally built into this directory, and consumers of the nix pills expect to find it there. Do not change unless you also change other code that depends on this directory structure.
       dst=$out/share/doc/nix-pills
       mkdir -p "$dst"
-      xsltproc \
-        ${manualXsltprocOptions} \
-        --nonet --output "$dst/" \
-        "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/xhtml/chunk.xsl" \
-        "${combined}"
-
-      mkdir -p "$dst/images/callouts"
-      cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/images/callouts"
-
-      cp "${./style.css}" "$dst/style.css"
+      mv book/html/* "$dst"/
 
       mkdir -p "$out/nix-support"
       echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
@@ -91,13 +36,13 @@ in {
     '';
   };
 
-  epub = pkgs.stdenv.mkDerivation {
+  epub = pkgs.stdenvNoCC.mkDerivation {
     name = "nix-pills-epub";
+    src = ./.;
 
-    src = sources;
-
-    buildInputs = with pkgs; [
-      libxslt
+    nativeBuildInputs = with pkgs; [
+      mdbook-epub
+      unzip
       zip
     ];
 
@@ -107,29 +52,39 @@ in {
 
     doInstallCheck = true;
 
+    buildPhase = ''
+      runHook preBuild
+
+      mdbook-epub --standalone${pkgs.lib.optionalString (pkgs.mdbook-epub.version != "unstable-2022-12-25") " true"}
+
+      # Work around bugs in mdbook-epub.
+      mkdir nix-pills.epub-fix
+      ( cd nix-pills.epub-fix
+        unzip -q "../book/epub/Nix Pills.epub"
+        # Fix invalid ids.
+        sed -Ei 's/(id(ref)?=")([0-9])/\1p\3/g' OEBPS/content.opf
+        sed -Ei 's/(id="|href="#)([0-9])/\1fn\2/g' OEBPS/20-basic-dependencies-and-hooks.html
+        # Fix anchors.
+        sed -Ei 's~(<h[1-6])(>.+) \{#([^\}]+)\}(</h[1-6]>)~\1 id="\3"\2\4~g' OEBPS/*.html
+        # Fix broken links in body.
+        sed -Ei 's/("[0-9a-z-]+\.)md(["#])/\1html\2/g' OEBPS/*.html
+        # Remove unnecessary page breaks, the sections are short.
+        substituteInPlace OEBPS/stylesheet.css --replace-fail "page-break-before: always;" ""
+        zip -q "../book/epub/Nix Pills.epub" **/*
+      )
+
+      runHook postBuild
+    '';
+
     installPhase = ''
       runHook preInstall
 
-      # Generate the EPUB manual.
+      # The nix pills were originally built into this directory, and consumers of the nix pills expect to find it there. Do not change unless you also change other code that depends on this directory structure.
       dst=$out/share/doc/nix-pills
       mkdir -p "$dst"
-      xsltproc \
-        ${manualXsltprocOptions} \
-        --nonet --output "$dst/epub/" \
-        "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/epub3/chunk.xsl" \
-        "${combined}"
 
-      mkdir -p "$dst/epub/OEBPS/images/callouts"
-      cp -r "${pkgs.docbook-xsl-ns}/xml/xsl/docbook/images/callouts"/*.svg "$dst/epub/OEBPS/images/callouts"
-      cp "${./style.css}" "$dst/epub/OEBPS/style.css"
-
-      echo "application/epub+zip" > mimetype
       manual="$dst/nix-pills.epub"
-      zip -0Xq "$manual" mimetype
-      pushd "$dst/epub" && zip -Xr9D "$manual" *
-      popd
-
-      rm -rf "$dst/epub"
+      mv "book/epub/Nix Pills.epub" "$manual"
 
       mkdir -p "$out/nix-support"
       echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"

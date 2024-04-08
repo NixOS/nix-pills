@@ -1,7 +1,0 @@
-$ nix repl
-nix-repl> pkgs = import <nixpkgs> {}
-nix-repl> pkgs.config
-{ }
-nix-repl> pkgs = import <nixpkgs> { config = { foo = "bar"; }; }
-nix-repl> pkgs.config
-{ foo = "bar"; }

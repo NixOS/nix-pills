@@ -1,2 +1,0 @@
-nix-repl> builtins.currentSystem
-"x86_64-linux"

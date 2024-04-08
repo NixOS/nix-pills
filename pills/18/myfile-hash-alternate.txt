@@ -1,2 +1,0 @@
-$ nix-store --dump myfile|sha256sum
-2bfef67de873c54551d884fdab3055d84d573e654efa79db3c0d7b98883f9ee3

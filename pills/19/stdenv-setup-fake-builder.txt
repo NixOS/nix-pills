@@ -1,9 +1,0 @@
-$ nix-shell -E 'derivation { name = "fake"; builder = "fake"; system = "x86_64-linux"; }'
-nix-shell$ unset PATH
-nix-shell$ source /nix/store/k4jklkcag4zq4xkqhkpy156mgfm34ipn-stdenv/setup
-nix-shell$ tar -xf hello-2.10.tar.gz
-nix-shell$ cd hello-2.10
-nix-shell$ configurePhase
-...
-nix-shell$ buildPhase
-...

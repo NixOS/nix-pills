@@ -1,2 +1,0 @@
-$ strings result/bin/hello|grep gcc
-/nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19/lib:/nix/store/8jm0wksask7cpf85miyakihyfch1y21q-gcc-4.8.3/lib64

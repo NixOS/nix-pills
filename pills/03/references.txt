@@ -1,3 +1,0 @@
-$ nix-store -q --references `which hello`
-/nix/store/fg4yq8i8wd08xg3fy58l6q73cjy8hjr2-glibc-2.27
-/nix/store/58r35bqb4f3lxbnbabq718svq9i2pda3-hello-2.10
