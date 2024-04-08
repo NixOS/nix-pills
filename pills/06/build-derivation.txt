@@ -1,0 +1,7 @@
+nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
+nix-repl> :b d
+[...]
+these derivations will be built:
+  /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv
+building path(s) `/nix/store/40s0qmrfb45vlh6610rk29ym318dswdr-myname'
+error: a `mysystem' is required to build `/nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv', but I am a `x86_64-linux'

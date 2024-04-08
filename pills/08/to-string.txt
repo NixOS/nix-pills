@@ -1,0 +1,4 @@
+nix-repl> builtins.toString 123
+"123"
+nix-repl> builtins.toString [ 123 456 ]
+"123 456"

@@ -1,0 +1,187 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  version="5.0"
+  xml:id="fundamentals-of-stdenv">
+
+  <title>Fundamentals of Stdenv</title>
+
+  <para>
+    Welcome to the 19th Nix pill. In the previous <link linkend="nix-store-paths">18th</link> pill we dived into the algorithm used by Nix to compute the store paths, and also introduced fixed-output store paths.
+  </para>
+
+  <para>
+    This time we will instead look into <literal>nixpkgs</literal>, in particular one of its core derivations: <literal>stdenv</literal>.
+  </para>
+
+  <para>
+    The <literal>stdenv</literal> is not treated as a special derivation by Nix, but it's very important for the <literal>nixpkgs</literal> repository. It serves as a base for packaging software. It is used to pull in dependencies such as the GCC toolchain, GNU make, core utilities, patch and diff utilities, and so on: basic tools needed to compile a huge pile of software currently present in <literal>nixpkgs</literal>.
+  </para>
+  <section>
+    <title>What is stdenv?</title>
+
+    <para>
+      First of all, <literal>stdenv</literal> is a derivation, and it's a very simple one:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-derivation.txt" parse="text" /></screen>
+    <para>
+      It has just two files: <filename>/setup</filename> and <filename>/nix-support/propagated-user-env-packages</filename>. Don't worry about the latter. It's empty, in fact. The important file is <filename>/setup</filename>.
+    </para>
+
+    <para>
+      How can this simple derivation pull in all of the toolchain and basic tools needed to compile packages? Let's look at the runtime dependencies:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-references.txt" parse="text" /></screen>
+    <para>
+      How can it be? The package must be referring to those other packages somehow. In fact, they are hardcoded in the <filename>/setup</filename> file:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-setup-head.txt" parse="text" /></screen>
+  </section>
+  <section>
+    <title>The setup file</title>
+
+    <para>
+      Remember our generic <filename>builder.sh</filename> in <link linkend="generic-builders">Pill 8</link>? It sets up a basic <varname>PATH</varname>, unpacks the source and runs the usual <package>autotools</package> commands for us.
+    </para>
+
+    <para>
+      The <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh">stdenv setup file</link> is exactly that. It sets up several environment variables like <varname>PATH</varname> and creates some helper bash functions to build a package. I invite you to read it.
+    </para>
+
+    <para>
+      The hardcoded toolchain and utilities are used to initially fill up the environment variables so that it's more pleasant to run common commands, similar to what we did with our builder with <literal>baseInputs</literal> and <literal>buildInputs</literal>.
+    </para>
+
+    <para>
+      The build with <literal>stdenv</literal> works in phases. Phases are like <literal>unpackPhase</literal>, <literal>configurePhase</literal>, <literal>buildPhase</literal>, <literal>checkPhase</literal>, <literal>installPhase</literal>, <literal>fixupPhase</literal>. You can see the default list in the <literal>genericBuild</literal> function.
+    </para>
+
+    <para>
+      What <literal>genericBuild</literal> does is just run these phases. Default phases are just bash functions. You can easily read them.
+    </para>
+
+    <para>
+      Every phase has hooks to run commands before and after the phase has been executed.
+      Phases can be overwritten, reordered, whatever, it's just bash code.
+    </para>
+
+    <para>
+      How to use this file? Like our old builder. To test it, we enter a fake empty derivation, source the <literal>stdenv</literal> <filename>setup</filename>, unpack the hello sources and build it:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-setup-fake-builder.txt" parse="text" /></screen>
+
+    <para>
+      <emphasis role="italic">I unset <varname>PATH</varname> to further show that the <literal>stdenv</literal> is sufficiently self-contained to build autotools packages that have no other dependencies.</emphasis>
+    </para>
+
+    <para>
+      So we ran the <literal>configurePhase</literal> function and <literal>buildPhase</literal> function and they worked. These bash functions should be self-explanatory. You can read the code in the <filename>setup</filename> file.
+    </para>
+
+  </section>
+  <section>
+    <title>How the setup file is built</title>
+
+    <para>
+      Until now we worked with plain bash scripts. What about the Nix side? The <literal>nixpkgs</literal> repository offers a useful function, like we did with our old builder. It is a wrapper around the raw derivation function which pulls in the <literal>stdenv</literal> for us, and runs <literal>genericBuild</literal>. It's <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/make-derivation.nix">stdenv.mkDerivation</link>.
+    </para>
+
+    <para>
+      Note how <literal>stdenv</literal> is a derivation but it's also an attribute set which contains some other attributes, like <literal>mkDerivation</literal>. Nothing fancy here, just convenience.
+    </para>
+
+    <para>
+      Let's write a <filename>hello.nix</filename> expression using this newly discovered <literal>stdenv</literal>:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-hello.txt" parse="text" /></screen>
+
+    <para>
+      Don't be scared by the <literal>with</literal> expression. It pulls the <literal>nixpkgs</literal> repository into scope, so we can directly use <literal>stdenv</literal>. It looks very similar to the hello expression in <link linkend="generic-builders">Pill 8</link>.
+    </para>
+
+    <para>
+      It builds, and runs fine:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-hello-build.txt" parse="text" /></screen>
+
+  </section>
+  <section>
+    <title>The stdenv.mkDerivation builder</title>
+
+    <para>
+      Let's take a look at the builder used by <literal>mkDerivation</literal>. You can read the code <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/make-derivation.nix">here in nixpkgs</link>:
+    </para>
+
+    <screen><xi:include href="./19/stdenv-mkderivation.txt" parse="text" /></screen>
+
+    <para>
+      Also take a look at our old derivation wrapper in previous pills! The builder is bash (that shell variable), the argument to the builder (bash) is <filename>default-builder.sh</filename>, and then we add the environment variable <literal>$stdenv</literal> in the derivation which is the <literal>stdenv</literal> derivation.
+    </para>
+
+    <para>
+      You can open <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/default-builder.sh">default-builder.sh</link> and see what it does:
+    </para>
+
+    <screen><xi:include href="./19/default-builder.txt" parse="text" /></screen>
+
+    <para>
+      It's what we did in <link linkend="developing-with-nix-shell">Pill 10</link> to make the derivations <literal>nix-shell</literal> friendly. When entering the shell, the setup file only sets up the environment without building anything. When doing <literal>nix-build</literal>, it actually runs the build process.
+    </para>
+
+    <para>
+      To get a clear understanding of the environment variables, look at the .drv of the hello derivation:
+    </para>
+
+    <xi:include href="./19/hello-derivation.xml" />
+    <para>
+      It's so short I decided to paste it entirely above. The builder is bash, with <literal>-e default-builder.sh</literal> arguments. Then you can see the <literal>src</literal> and <literal>stdenv</literal> environment variables.
+    </para>
+
+    <para>
+      The last bit, the <literal>unpackPhase</literal> in the setup, is used to unpack the sources and enter the directory. Again, like we did in our old builder.
+    </para>
+
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>
+      The <literal>stdenv</literal> is the core of the <literal>nixpkgs</literal> repository. All packages use the <literal>stdenv.mkDerivation</literal> wrapper instead of the raw derivation. It does a bunch of operations for us and also sets up a pleasant build environment.
+    </para>
+
+    <para>
+      The overall process is simple:
+      <itemizedlist>
+        <listitem><para><command>nix-build</command></para></listitem>
+        <listitem><para><command>bash -e default-builder.sh</command></para></listitem>
+        <listitem><para><command>source $stdenv/setup</command></para></listitem>
+        <listitem><para><command>genericBuild</command></para></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      That's it. Everything you need to know about the stdenv phases is in the <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/stdenv/generic/setup.sh">setup file</link>.
+    </para>
+
+    <para>
+      Really, take your time to read that file. Don't forget that juicy docs are also available in the <link xlink:href="http://nixos.org/nixpkgs/manual/#chap-stdenv">nixpkgs manual</link>.
+    </para>
+
+  </section>
+  <section>
+    <title>Next pill...</title>
+
+    <para>
+      ...we will talk about how to add dependencies to our packages with <literal>buildInputs</literal> and <literal>propagatedBuildInputs</literal>, and influence downstream builds with <firstterm>setup hooks</firstterm> and <firstterm>env hooks</firstterm>.
+      These concepts are crucial to how <literal>nixpkgs</literal> packages are composed.
+    </para>
+
+  </section>
+</chapter>

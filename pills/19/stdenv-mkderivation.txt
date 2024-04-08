@@ -1,0 +1,11 @@
+{
+  # ...
+  builder = attrs.realBuilder or shell;
+  args =
+    attrs.args or [
+      "-e"
+      (attrs.builder or ./default-builder.sh)
+    ];
+  stdenv = result;
+  # ...
+}

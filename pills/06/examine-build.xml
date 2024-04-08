@@ -1,0 +1,25 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>$ </prompt><userinput>nix derivation show /nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-<emphasis>myname.drv</emphasis></userinput>
+<computeroutput>{
+  "/nix/store/qyfrcd53wmc0v22ymhhd5r6sz5xmdc8a-myname.drv": {
+    "outputs": {
+      "out": {
+        "path": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname"
+      }
+    },
+    "inputSrcs": [],
+    "inputDrvs": {
+      "/nix/store/hixdnzz2wp75x1jy65cysq06yl74vx7q-coreutils-8.29.drv": [
+        "out"
+      ]
+    },
+    "platform": "x86_64-linux",
+    "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+    "args": [],
+    "env": {
+      "builder": "/nix/store/qrxs7sabhqcr3j9ai0j0cp58zfnny0jz-coreutils-8.29/bin/true",
+      "name": "myname",
+      "out": "/nix/store/ly2k1vswbfmswr33hw0kf0ccilrpisnk-myname",
+      "system": "x86_64-linux"
+    }
+  }
+}</computeroutput></screen>

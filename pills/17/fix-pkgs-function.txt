@@ -1,0 +1,4 @@
+nix-repl> fix = f: let result = f result; in result
+nix-repl> pkgs = self: { a = 3; b = 4; c = self.a+self.b; }
+nix-repl> fix pkgs
+{ a = 3; b = 4; c = 7; }

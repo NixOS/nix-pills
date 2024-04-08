@@ -1,0 +1,5 @@
+$ sha256sum myout.drv
+1bdc41b9649a0d59f270a92d69ce6b5af0bc82b46cb9d9441ebc6620665f40b5  myout.drv
+$ echo -n "output:out:sha256:1bdc41b9649a0d59f270a92d69ce6b5af0bc82b46cb9d9441ebc6620665f40b5:/nix/store:foo" > myout.str
+$ nix-hash --type sha256 --truncate --base32 --flat myout.str
+hs0yi5n5nw6micqhy8l1igkbhqdkzqa1

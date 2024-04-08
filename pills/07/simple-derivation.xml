@@ -1,0 +1,6 @@
+<screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>d = derivation { name = "foo"; builder = "${bash}/bin/bash"; args = [ ./builder.sh ]; system = builtins.currentSystem; }</userinput>
+<prompt>nix-repl> </prompt><userinput>:b d</userinput>
+<computeroutput>[1 built, 0.0 MiB DL]
+
+this derivation produced the following outputs:
+  out -> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-<emphasis>foo</emphasis></computeroutput></screen>

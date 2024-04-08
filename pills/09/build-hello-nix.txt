@@ -1,0 +1,5 @@
+$ nix-build hello.nix
+[...]
+$ nix-store -q --references result
+/nix/store/94n64qy99ja0vgbkf675nyk39g9b978n-glibc-2.19
+/nix/store/md4a3zv0ipqzsybhjb8ndjhhga1dj88x-hello

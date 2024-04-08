@@ -1,0 +1,4 @@
+nix-repl> s.a-b
+"baz"
+nix-repl> s."123"
+"num"

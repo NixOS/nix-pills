@@ -1,0 +1,5 @@
+nix-repl> callPackage = set: f: f (builtins.intersectAttrs (builtins.functionArgs f) set)
+nix-repl> callPackage values add
+8
+nix-repl> with values; add { inherit a b; }
+8

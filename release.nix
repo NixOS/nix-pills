@@ -1,5 +1,5 @@
-{ nix-pills ? { outPath = ./.; }
-, nixpkgs ? { outPath = <nixpkgs>; }
+{ nix-pills ? { outPath = ./.; revCount = 1234; shortRev = "abcdef"; }
+, nixpkgs ? { outPath = <nixpkgs>; revCount = 1234; shortRev = "abcdef"; }
 , officialRelease ? false
 }:
 
@@ -8,6 +8,8 @@ let
 
   pills = import ./default.nix {
     inherit pkgs;
+
+    inherit (nix-pills) revCount shortRev;
   };
 in rec {
   inherit (pills) html-split epub;

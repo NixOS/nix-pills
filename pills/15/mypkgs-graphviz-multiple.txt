@@ -1,0 +1,4 @@
+$ nix-env -f '<mypkgs>' -i graphviz
+warning: there are multiple derivations named `graphviz'; using the first one
+replacing old `graphviz'
+installing `graphviz'

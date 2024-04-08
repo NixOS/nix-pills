@@ -1,0 +1,4 @@
+nix-repl> let a = 3; a = 8; in a
+error: attribute `a' at (string):1:12 already defined at (string):1:5
+nix-repl> let a = 3; in let a = 8; in a
+8

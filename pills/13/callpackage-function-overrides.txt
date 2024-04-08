@@ -1,0 +1,5 @@
+nix-repl> callPackage = set: f: overrides: f ((builtins.intersectAttrs (builtins.functionArgs f) set) // overrides)
+nix-repl> callPackage values add { }
+8
+nix-repl> callPackage values add { b = 12; }
+15

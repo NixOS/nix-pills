@@ -1,0 +1,2 @@
+$ nix-hash --type sha256 --truncate --base32 --flat myfile.str
+xv2iccirbrvklck36f1g7vldn5v58vck

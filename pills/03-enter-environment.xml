@@ -1,0 +1,406 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      version="5.0"
+      xml:id="enter-environment">
+
+  <title>Enter the Environment</title>
+
+  <para>
+    Welcome to the third Nix pill. In the <link
+    linkend="install-on-your-running-system">second pill</link> we
+    installed Nix on our running system. Now we can finally play with it a
+    little, these things also apply to NixOS users.
+  </para>
+
+  <section>
+    <title>Enter the environment</title>
+
+    <para>
+      <emphasis role="bold">If you're using NixOS, you can skip to the <link
+      linkend="install-something">next</link> step.</emphasis>
+    </para>
+
+    <para>
+      In the previous article we created a Nix user, so let's start by switching
+      to it with <command>su - nix</command>. If your
+      <filename>~/.profile</filename> got evaluated, then you should now be able
+      to run commands like <literal>nix-env</literal> and
+      <literal>nix-store</literal>.
+    </para>
+
+    <para>
+      If that's not the case:
+    </para>
+
+    <screen><xi:include href="./03/source-nix.txt" parse="text" /></screen>
+
+    <para>
+      To remind you, <literal>~/.nix-profile/etc</literal> points to the <literal>nix-2.1.3</literal>
+      derivation. At this point, we are in our Nix user profile.
+    </para>
+  </section>
+
+  <section xml:id="install-something">
+    <title>Install something</title>
+
+    <para>
+      Finally something practical! Installation into the Nix environment is an
+      interesting process. Let's install <literal>hello</literal>, a simple CLI
+      tool which prints <literal>Hello world</literal> and is mainly used to test compilers
+      and package installations.
+    </para>
+
+    <para>
+      Back to the installation:
+    </para>
+
+    <screen><xi:include href="./03/install-hello.txt" parse="text" /></screen>
+
+    <para>
+      Now you can run <literal>hello</literal>. Things to notice:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          We installed software as a user, and only for the Nix user.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          It created a new user environment. That's a new generation of our
+          Nix user profile.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The <link
+          xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html">nix-env</link>
+          tool manages environments, profiles and their generations.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          We installed <literal>hello</literal> by derivation name minus the version. I repeat:
+          we specified the <emphasis role="bold">derivation name</emphasis>
+          (minus the version) to install it.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      We can list generations without walking through the <filename>/nix</filename> hierarchy:
+    </para>
+
+    <screen><xi:include href="./03/list-generations.txt" parse="text" /></screen>
+
+    <para>
+      Listing installed derivations:
+    </para>
+
+    <screen><xi:include href="./03/list-installed-derivations.txt" parse="text" /></screen>
+
+    <para>
+      So, where did <literal>hello</literal> really get installed?
+      <literal>which hello</literal> is
+      <literal>~/.nix-profile/bin/hello</literal> which points to the store.
+      We can also list the derivation paths with <command>nix-env -q --out-path</command>. So
+      that's what those derivation paths are called: the
+      <emphasis role="bold">output</emphasis> of a build.
+    </para>
+  </section>
+
+  <section>
+    <title>Path merging</title>
+
+    <para>
+      At this point you probably want to run <literal>man</literal> to get some documentation.
+      Even if you
+      already have man system-wide outside of the Nix environment, you can
+      install and use it within Nix with <command>nix-env -i man-db</command>. As
+      usual, a new generation will be created, and <filename>~/.nix-profile</filename> will point to
+      it.
+    </para>
+
+    <para>
+      Let's inspect the <link
+      xlink:href="https://nixos.org/manual/nix/stable/package-management/profiles.html">profile</link>
+      a bit:
+    </para>
+
+    <screen><xi:include href="./03/ls-nix-profile.txt" parse="text" /></screen>
+
+    <para>
+      Now that's interesting. When only <literal>nix-2.1.3</literal> was installed, <filename>bin</filename> was a
+      symlink to <literal>nix-2.1.3</literal>. Now that we've actually installed some things
+      (<literal>man</literal>, <literal>hello</literal>), it's a real directory, not a symlink.
+    </para>
+
+    <screen><xi:include href="./03/ls-profile-bin.txt" parse="text" /></screen>
+
+    <para>
+      Okay, that's clearer now. <literal>nix-env</literal> merged the paths from the installed derivations.
+      <command>which man</command> points to the Nix profile, rather than the
+      system <literal>man</literal>, because <filename>~/.nix-profile/bin</filename> is at the head
+      of <varname>$PATH</varname>.
+    </para>
+  </section>
+
+  <section>
+    <title>Rolling back and switching generation</title>
+
+    <para>
+      The last command installed <literal>man</literal>. We should be at generation 3, unless
+      you changed something in the middle. Let's say we want to rollback to the
+      old generation:
+    </para>
+
+    <screen><xi:include href="./03/rollback.txt" parse="text" /></screen>
+
+    <para>
+      Now <command>nix-env -q</command> does not list <literal>man</literal> anymore.
+      <command>ls -l `which man`</command> should now be your system copy.
+    </para>
+
+    <para>
+      Enough with the rollback, let's go back to the most recent generation:
+    </para>
+
+    <screen><xi:include href="./03/generation-3.txt" parse="text" /></screen>
+
+    <para>
+      I invite you to read the manpage of <literal>nix-env</literal>. <literal>nix-env</literal> requires an operation
+      to perform, then there are common options for all operations, as well as
+      options specific to each operation.
+    </para>
+
+    <para>
+      You can of course also <link
+        xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---uninstall">
+      uninstall</link> and <link
+      xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade">upgrade</link> packages.
+    </para>
+  </section>
+
+  <section>
+    <title>Querying the store</title>
+
+    <para>
+      So far we learned how to query and manipulate the environment. But all
+      of the environment components point to the store.
+    </para>
+
+    <para>
+      To query and manipulate the store, there's the
+      <literal>nix-store</literal> command. We can do some interesting things, but we'll
+      only see some queries for now.
+    </para>
+
+    <para>
+      To show the direct runtime dependencies of <literal>hello</literal>:
+    </para>
+
+    <screen><xi:include href="./03/references.txt" parse="text" /></screen>
+
+    <para>
+      The argument to <literal>nix-store</literal> can be anything as long as it points to the
+      Nix store. It will follow symlinks.
+    </para>
+
+    <para>
+      It may not make sense to you right now, but let's print reverse
+      dependencies of <literal>hello</literal>:
+    </para>
+
+    <screen><xi:include href="./03/referrers.txt" parse="text" /></screen>
+
+    <para>
+      Was it what you expected? It turns out that our environments depend upon <literal>hello</literal>.
+      Yes, that means that the environments are in the store, and since they contain symlinks to <literal>hello</literal>,
+      therefore the environment depends upon <literal>hello</literal>.
+    </para>
+
+    <para>
+      Two environments were listed, generation 2 and generation 3, since these are the ones that had
+      <literal>hello</literal> installed in them.
+    </para>
+
+    <para>
+      The <filename>manifest.nix</filename> file contains metadata about the environment, such as
+      which derivations are installed. So that <literal>nix-env</literal> can list, upgrade
+      or remove them. And yet again, the current <filename>manifest.nix</filename> can be found at
+      <filename>~/.nix-profile/manifest.nix</filename>.
+    </para>
+  </section>
+
+  <section>
+    <title>Closures</title>
+
+    <para>
+      The closures of a derivation is a list of all its dependencies, recursively,
+      including absolutely everything necessary to use that derivation.
+    </para>
+
+    <screen><xi:include href="./03/nix-store.txt" parse="text" /></screen>
+
+    <para>
+      Copying all those derivations to the Nix store of another machine makes
+      you able to run <literal>man</literal> out of the box on that other machine. That's the
+      base of deployment using Nix, and you can already foresee the potential when
+      deploying software in the cloud (hint:
+      <literal>nix-copy-closures</literal> and
+      <literal>nix-store --export</literal>).
+    </para>
+
+    <para>
+      A nicer view of the closure:
+    </para>
+
+    <screen><xi:include href="./03/nix-store-tree.txt" parse="text" /></screen>
+
+    <para>
+      With the above command, you can find out exactly why a
+      <emphasis>runtime</emphasis> dependency, be it direct or
+      indirect, exists for a given derivation.
+    </para>
+
+    <para>
+      The same applies to environments. As an exercise, run
+      <command>nix-store -q --tree ~/.nix-profile</command>, and see that the
+      first children are direct dependencies of the user environment:
+      the installed derivations, and the <filename>manifest.nix</filename>.
+    </para>
+  </section>
+
+  <section>
+    <title>Dependency resolution</title>
+
+    <para>
+      There isn't anything like <literal>apt</literal> which solves a SAT problem in order to
+      satisfy dependencies with lower and upper bounds on versions. There's no need
+      for this because all the dependencies are static: if a derivation X depends on a derivation Y,
+      then it always depends on it. A version of X which depended on Z would be a different derivation.
+    </para>
+  </section>
+
+  <section>
+    <title>Recovering the hard way</title>
+
+    <screen><xi:include href="./03/uninstall-all.txt" parse="text" /></screen>
+
+    <para>
+      Oops, that uninstalled all derivations from the environment, including
+      Nix. That means  we can't even run <literal>nix-env</literal>, what now?
+    </para>
+
+    <para>
+      Previously we got <literal>nix-env</literal> from the environment. Environments
+      are a convenience for the user, but Nix is still there in the store!
+    </para>
+
+    <para>
+      First, pick one <literal>nix-2.1.3</literal> derivation:
+      <command>ls /nix/store/*nix-2.1.3</command>, say
+      <filename>/nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3</filename>.
+    </para>
+
+    <para>
+      The first option is to rollback:
+    </para>
+
+    <screen><xi:include href="./03/nix-env-rollback.txt" parse="text" /></screen>
+
+    <para>
+      The second option is to install Nix, thus creating a new generation:
+    </para>
+
+    <screen><xi:include href="./03/install.txt" parse="text" /></screen>
+  </section>
+
+  <section>
+    <title>Channels</title>
+
+    <para>
+      So where are we getting packages from? We said something about this already in the
+      <link linkend="install-on-your-running-system">second article</link>.
+      There's a list of channels from which we get packages, although usually we use a
+      single channel. The tool to manage channels is
+      <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-channel.html">nix-channel</link>.
+    </para>
+
+    <screen><xi:include href="./03/channel-list.txt" parse="text" /></screen>
+
+    <para>
+      If you're using NixOS, you may not see any output from the above command
+      (if you're using the default), or you may see a channel whose
+      name begins with "nixos-" instead of "nixpkgs".
+    </para>
+
+    <para>
+      That's essentially the contents of <filename>~/.nix-channels</filename>.
+    </para>
+
+    <note><para>
+      <filename>~/.nix-channels</filename> is not a symlink to the
+      nix store!
+    </para></note>
+
+    <para>
+      To update the channel run <command>nix-channel --update</command>.
+      That will download the new Nix expressions (descriptions of the packages),
+      create a new generation of the channels profile and unpack it under
+      <filename>~/.nix-defexpr/channels</filename>.
+    </para>
+
+    <para>
+      This is quite similar to <command>apt-get update</command>.
+      (See <link xlink:href="https://nixos.wiki/wiki/Cheatsheet">this table</link>
+      for a rough mapping between Ubuntu and NixOS package management.)
+    </para>
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>
+      We learned how to query the user environment and to manipulate it by
+      installing and uninstalling software. Upgrading software is also straightforward,
+      as you can read in
+      <link xlink:href="https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade">the manual</link>
+      (<command>nix-env -u</command> will upgrade all packages in the
+      environment).
+    </para>
+
+    <para>
+      Every time we change the environment, a new generation is created.
+      Switching between generations is easy and immediate.
+    </para>
+
+    <para>
+      Then we learned how to query the store. We inspected the dependencies and reverse
+      dependencies of store paths.
+    </para>
+
+    <para>
+      We saw how symlinks are used to compose paths from the Nix store, a useful
+      trick.
+    </para>
+
+    <para>
+      A quick analogy with programming languages: you have the heap with all the
+      objects, that corresponds to the Nix store. You have objects that point to other
+      objects, those correspond to derivations. This is a suggestive metaphor, but will it be the right path?
+    </para>
+  </section>
+
+  <section>
+    <title>Next pill</title>
+
+    <para>
+      ...we will learn the basics of the Nix language. The Nix language is used
+      to describe how to build derivations, and it's the basis for everything
+      else, including NixOS. Therefore it's very important to understand both the
+      syntax and the semantics of the language.
+    </para>
+  </section>
+</chapter>

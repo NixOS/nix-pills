@@ -1,0 +1,7 @@
+$ nix repl
+nix-repl> :l default.nix
+Added 2 variables.
+nix-repl> hello
+«derivation /nix/store/dkib02g54fpdqgpskswgp6m7bd7mgx89-hello.drv»
+nix-repl> graphviz
+«derivation /nix/store/zqv520v9mk13is0w980c91z7q1vkhhil-graphviz.drv»

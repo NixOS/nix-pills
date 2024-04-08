@@ -1,0 +1,9 @@
+$ rm /nix/var/nix/profiles/default-9-link
+$ nix-env --list-generations
+[...]
+   8   2014-07-28 10:23:24
+  10   2014-08-20 12:47:16   (current)
+$ nix-collect-garbage
+[...]
+$ ls /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17
+ls: cannot access /nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17: No such file or directory

@@ -1,0 +1,8 @@
+{
+  packageOverrides = pkgs: {
+    graphviz = pkgs.graphviz.override {
+      # disable xorg support
+      withXorg = false;
+    };
+  };
+}

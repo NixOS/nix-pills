@@ -1,0 +1,5 @@
+nix-repl> values = { a = 3; b = 5; c = 10; }
+nix-repl> builtins.intersectAttrs values (builtins.functionArgs add)
+{ a = true; b = false; }
+nix-repl> builtins.intersectAttrs (builtins.functionArgs add) values
+{ a = 3; b = 5; }

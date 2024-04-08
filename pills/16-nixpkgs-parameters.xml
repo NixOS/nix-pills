@@ -1,0 +1,126 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  version="5.0"
+  xml:id="nixpkgs-parameters">
+
+  <title>Nixpkgs Parameters</title>
+  <para>
+    Welcome to the 16th Nix pill. In the previous <link linkend="nix-search-paths">15th</link> pill we've realized how nix finds expressions with the angular brackets syntax, so that we finally know where <literal>&lt;nixpkgs&gt;</literal> is located on our system.
+  </para>
+  <para>
+    We can start diving into the <link xlink:href="https://github.com/NixOS/nixpkgs">nixpkgs repository</link>, through all the various tools and design patterns. Please note that also <literal>nixpkgs</literal> has its own manual, underlying the difference between the general <literal>nix</literal> language and the <literal>nixpkgs</literal> repository.
+  </para>
+  <section>
+    <title>The default.nix expression</title>
+    <para>
+      We will not start inspecting packages at the beginning, rather the general structure of <literal>nixpkgs</literal>.
+    </para>
+    <para>
+      In our custom repository we created a <filename>default.nix</filename> which composed the expressions of the various packages.
+    </para>
+    <para>
+      Also <literal>nixpkgs</literal> has its own <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/default.nix">default.nix</link>, which is the one being loaded when referring to <literal>&lt;nixpkgs&gt;</literal>. It does a simple thing: check whether the <literal>nix</literal> version is at least 1.7 (at the time of writing this blog post). Then import <link xlink:href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/top-level/all-packages.nix">pkgs/top-level/all-packages.nix</link>. From now on, we will refer to this set of packages as <emphasis role="bold">pkgs</emphasis>.
+    </para>
+    <para>
+      The <filename>all-packages.nix</filename> is then the file that composes all the packages. Note the <filename>pkgs/</filename> subdirectory, while nixos is in the <filename>nixos/</filename> subdirectory.
+    </para>
+    <para>
+      The <filename>all-packages.nix</filename> is a bit contrived. First of all, it's a function. It accepts a couple of interesting parameters:
+      <itemizedlist>
+        <listitem><para><literal>system</literal>: defaults to the current system</para></listitem>
+        <listitem><para><literal>config</literal>: defaults to null</para></listitem>
+        <listitem><para>others...</para></listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      The <emphasis role="bold">system</emphasis> parameter, as per comment in the expression, it's the system for which the packages will be built. It allows for example to install i686 packages on amd64 machines.
+    </para>
+    <para>
+      The <emphasis role="bold">config</emphasis> parameter is a simple attribute set. Packages can read some of its values and change the behavior of some derivations.
+    </para>
+  </section>
+  <section>
+    <title>The system parameter</title>
+    <para>
+      You will find this parameter in many other .nix expressions (e.g. release expressions). The reason is that, given pkgs accepts a system parameter, then whenever you want to import pkgs you also want to pass through the value of system. E.g.:
+    </para>
+    <para>
+      <filename>myrelease.nix</filename>:
+    </para>
+    <screen><xi:include href="./16/myrelease-nix.txt" parse="text" /></screen>
+    <para>
+      Why is it useful? With this parameter it's very easy to select a set of packages for a particular system. For example:
+    </para>
+    <screen>nix-build -A psmisc --argstr system i686-linux</screen>
+    <para>
+      This will build the <package>psmisc</package> derivation for i686-linux instead of x86_64-linux. This concept is very similar to multi-arch of Debian.
+    </para>
+    <para>
+      The setup for cross compiling is also in <literal>nixpkgs</literal>, however it's a little contrived to talk about it and I don't know much of it either.
+    </para>
+  </section>
+  <section>
+    <title>The config parameter</title>
+    <para>
+      I'm sure on the wiki or other manuals you've read about <filename>~/.config/nixpkgs/config.nix</filename> (previously <filename>~/.nixpkgs/config.nix</filename>) and I'm sure you've wondered whether that's hardcoded in nix. It's not, it's in <link xlink:href="https://github.com/NixOS/nixpkgs/blob/32c523914fdb8bf9cc7912b1eba023a8daaae2e8/pkgs/top-level/impure.nix#L28">nixpkgs</link>.
+    </para>
+    <para>
+      The <filename>all-packages.nix</filename> expression accepts the <literal>config</literal> parameter. If it's <literal>null</literal>, then it reads the <varname>NIXPKGS_CONFIG</varname> environment variable. If not specified, <literal>nixpkgs</literal> will pick <filename>$HOME/.config/nixpkgs/config.nix</filename>.
+    </para>
+    <para>
+      After determining <filename>config.nix</filename>, it will be imported as a nix expression, and that will be the value of <literal>config</literal> (in case it hasn't been passed as parameter to import <literal>&lt;nixpkgs&gt;</literal>).
+    </para>
+    <para>
+      The <literal>config</literal> is available in the resulting repository:
+    </para>
+    <screen><xi:include href="./16/config-foo-bar.txt" parse="text" /></screen>
+    <para>
+      What attributes go in <literal>config</literal> is a matter of convenience and conventions.
+    </para>
+    <para>
+      For example, <literal>config.allowUnfree</literal> is an attribute that forbids building packages that have an unfree license by default. The <literal>config.pulseaudio</literal> setting tells whether to build packages with <package>pulseaudio</package> support or not where applicable and when the derivation obeys to the setting.
+    </para>
+  </section>
+  <section>
+    <title>About .nix functions</title>
+    <para>
+      A <literal>.nix</literal> file contains a nix expression. Thus it can also be a function. I remind you that <command>nix-build</command> expects the expression to return a derivation. Therefore it's natural to return straight a derivation from a <literal>.nix</literal> file. However, it's also very natural for the <literal>.nix</literal> file to accept some parameters, in order to tweak the derivation being returned.
+    </para>
+    <para>
+      In this case, nix does a trick:
+      <itemizedlist>
+        <listitem><para>If the expression is a derivation, build it.</para></listitem>
+        <listitem><para>If the expression is a function, call it and build the resulting derivation.</para></listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      For example you can nix-build the <literal>.nix</literal> file below:
+    </para>
+    <screen><xi:include href="./16/pkgs-psmisc.txt" parse="text" /></screen>
+    <para>
+      Nix is able to call the function because the pkgs parameter has a default value. This allows you to pass a different value for pkgs using the <literal>--arg</literal> option.
+    </para>
+    <para>
+      Does it work if you have a function returning a function that returns a derivation? No, Nix only calls the function it encounters once.
+    </para>
+  </section>
+  <section>
+    <title>Conclusion</title>
+    <para>
+      We've unleashed the <literal>&lt;nixpkgs&gt;</literal> repository. It's a function that accepts some parameters, and returns the set of all packages. Due to laziness, only the accessed derivations will be built.
+    </para>
+    <para>
+      You can use this repository to build your own packages as we've seen in the previous pill when creating our own repository.
+    </para>
+    <para>
+      Lately I'm a little busy with the NixOS 14.11 release and other stuff, and I'm also looking toward migrating from blogger to a more coder-oriented blogging platform. So sorry for the delayed and shorter pills :)
+    </para>
+  </section>
+  <section>
+    <title>Next pill</title>
+    <para>
+      ...we will talk about overriding packages in the <literal>nixpkgs</literal> repository. What if you want to change some options of a library and let all other packages pick the new library? One possibility is to use, like described above, the <literal>config</literal> parameter when applicable. The other possibility is to override derivations.
+    </para>
+  </section>
+</chapter>

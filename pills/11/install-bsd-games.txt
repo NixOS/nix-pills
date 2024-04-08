@@ -1,0 +1,8 @@
+$ nix-env -iA nixpkgs.bsdgames
+$ readlink -f `which fortune`
+/nix/store/b3lxx3d3ggxcggvjw5n0m1ya1gcrmbyn-bsd-games-2.17/bin/fortune
+$ nix-store -q --roots `which fortune`
+/nix/var/nix/profiles/default-9-link
+$ nix-env --list-generations
+[...]
+   9   2014-08-20 12:44:14   (current)

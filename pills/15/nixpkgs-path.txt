@@ -1,0 +1,4 @@
+$ nix-instantiate --eval -E '<nixpkgs>'
+/home/nix/.nix-defexpr/channels/nixpkgs
+$ echo $NIX_PATH
+nixpkgs=/home/nix/.nix-defexpr/channels/nixpkgs

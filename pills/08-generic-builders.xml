@@ -1,0 +1,333 @@
+<chapter xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      version="5.0"
+      xml:id="generic-builders">
+
+  <title>Generic Builders</title>
+
+  <para>
+    Welcome to the 8th Nix pill. In the previous
+    <link linkend="working-derivation">7th pill</link> we successfully built a
+    derivation. We wrote a builder script that compiled a C file and installed
+    the binary under the nix store.
+  </para>
+
+  <para>
+    In this post, we will generalize the builder script, write a Nix expression
+    for <link
+    xlink:href="https://www.gnu.org/software/hello/">GNU hello world</link>
+    and create a wrapper around the derivation built-in function.
+  </para>
+
+  <section>
+    <title>Packaging GNU hello world</title>
+
+    <para>
+      In the previous pill we packaged a simple .c file, which was being
+      compiled with a raw gcc call. That's not a good example of a project. Many
+      use autotools, and since we're going to generalize our builder, it would
+      be better to do it with the most used build system.
+    </para>
+
+    <para>
+      <link xlink:href="https://www.gnu.org/software/hello/">GNU hello world</link>,
+      despite its name, is a simple yet complete project which uses autotools.
+      Fetch the latest tarball here:
+      <link xlink:href="https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz">https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz</link>.
+    </para>
+
+    <para>
+      Let's create a builder script for GNU hello world, hello_builder.sh:
+    </para>
+
+    <screen><xi:include href="./08/hello-builder.txt" parse="text" /></screen>
+
+    <para>
+      And the derivation hello.nix:
+    </para>
+
+    <screen><xi:include href="./08/hello-nix.txt" parse="text" /></screen>
+    <note><title>Nix on darwin</title>
+    <para>Darwin (i.e. macOS) builds typically use <literal>clang</literal> rather than <literal>gcc</literal> for a C compiler.
+    We can adapt this early example for darwin by using this modified version of <filename>hello.nix</filename>:
+    <screen><xi:include href="./08/hello-nix-darwin.txt" parse="text" /></screen>
+    Later, we will show how Nix can automatically handle these differences.
+    For now, please be just aware that changes similar to the above may be needed in what follows.
+    </para>
+    </note>
+
+    <para>
+      Now build it with <command>nix-build hello.nix</command> and you can
+      launch <filename>result/bin/hello</filename>. Nothing easier, but do we
+      have to create a builder.sh for each package? Do we always have to pass
+      the dependencies to the <literal>derivation</literal> function?
+    </para>
+
+    <para>
+      Please note the <command>--prefix=$out</command> we were talking about in
+      the <link linkend="working-derivation">previous pill</link>.
+    </para>
+  </section>
+
+  <section>
+    <title>A generic builder</title>
+
+    <para>
+      Let's create a generic <filename>builder.sh</filename> for autotools
+      projects:
+    </para>
+
+    <screen><xi:include href="./08/generic-builder.txt" parse="text" /></screen>
+
+    <para>
+      What do we do here?
+    </para>
+
+    <orderedlist>
+      <listitem>
+        <para>
+          Exit the build on any error with <command>set -e</command>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          First <command>unset PATH</command>, because it's initially set to a
+          non-existent path.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          We'll see this below in detail, however for each path in
+          <code>$buildInputs</code>, we append <code>bin</code> to
+          <code>PATH</code>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Unpack the source.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Find a directory where the source has been unpacked and
+          <command>cd</command> into it.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Once we're set up, compile and install.
+        </para>
+      </listitem>
+    </orderedlist>
+
+    <para>
+      As you can see, there's no reference to "hello" in the builder anymore.
+      It still makes several assumptions, but it's certainly more generic.
+    </para>
+
+    <para>
+      Now let's rewrite <filename>hello.nix</filename>:
+    </para>
+
+    <screen><xi:include href="./08/hello-nix-rev-1.txt" parse="text" /></screen>
+
+    <para>
+      All clear, except that buildInputs. However it's easier than any black
+      magic you are thinking of at this moment.
+    </para>
+
+    <para>
+      Nix is able to convert a list to a string. It first converts the elements
+      to strings, and then concatenates them separated by a space:
+    </para>
+
+    <screen><xi:include href="./08/to-string.txt" parse="text" /></screen>
+
+    <para>
+      Recall that derivations can be converted to a string, hence:
+    </para>
+
+    <screen><xi:include href="./08/to-string-nixpkgs.txt" parse="text" /></screen>
+
+    <para>
+      Simple! The buildInputs variable is a string with out paths separated by
+      space, perfect for bash usage in a for loop.
+    </para>
+  </section>
+
+  <section>
+    <title>A more convenient derivation function</title>
+
+    <para>
+      We managed to write a builder that can be used for multiple autotools
+      projects. But in the hello.nix expression we are specifying tools that
+      are common to more projects; we don't want to pass them every time.
+    </para>
+
+    <para>
+      A natural approach would be to create a function that accepts an
+      attribute set, similar to the one used by the derivation function, and
+      merge it with another attribute set containing values common to many
+      projects.
+    </para>
+
+    <para>
+      Create <filename>autotools.nix</filename>:
+    </para>
+
+    <screen><xi:include href="./08/autotools-nix.txt" parse="text" /></screen>
+
+    <para>
+      Ok now we have to remember a little about
+      <link linkend="functions-and-imports">Nix functions</link>. The whole nix
+      expression of this <filename>autotools.nix</filename> file will evaluate
+      to a function. This function accepts a parameter <code>pkgs</code>, then
+      returns a function which accepts a parameter <code>attrs</code>.
+    </para>
+
+    <para>
+      The body of the function is simple, yet at first sight it might be hard
+      to grasp:
+    </para>
+
+    <orderedlist>
+      <listitem>
+        <para>
+          First drop in the scope the magic <code>pkgs</code> attribute set.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Within a let expression we define a helper variable,
+          <code>defaultAttrs</code>, which serves as a set of common attributes
+          used in derivations.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Finally we create the derivation with that strange expression,
+          (<code>defaultAttrs // attrs</code>).
+        </para>
+      </listitem>
+    </orderedlist>
+
+    <para>
+      The
+      <link xlink:href="https://nixos.org/manual/nix/stable/expressions/language-operators.html">// operator</link>
+      is an operator between two sets. The result is the union of the two sets.
+      In case of conflicts between attribute names, the value on the right set
+      is preferred.
+    </para>
+
+    <para>
+      So we use <code>defaultAttrs</code> as base set, and add (or override) the
+      attributes from <code>attrs</code>.
+    </para>
+
+    <para>
+      A couple of examples ought to be enough to clear out the behavior of the
+      operator:
+    </para>
+
+    <screen><xi:include href="./08/set-union.txt" parse="text" /></screen>
+
+    <para>
+      <emphasis role="bold">Exercise:</emphasis>
+      Complete the new <filename>builder.sh</filename> by adding
+      <code>$baseInputs</code> in the <code>for</code> loop together with
+      <code>$buildInputs</code>. As you noticed, we passed that new variable in
+      the derivation. Instead of merging buildInputs with the base ones, we
+      prefer to preserve buildInputs as seen by the caller, so we keep them
+      separated. Just a matter of choice.
+    </para>
+
+    <para>
+      Then we rewrite <filename>hello.nix</filename> as follows:
+    </para>
+
+    <screen><xi:include href="./08/hello-nix-rev-2.txt" parse="text" /></screen>
+
+    <para>
+      Finally! We got a very simple description of a package! Below are a
+      couple of remarks that you may find useful as you're continuing to
+      understand the nix language:
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          We assigned to pkgs the import that we did in the previous expressions
+          in the "with". Don't be afraid, it's that straightforward.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The mkDerivation variable is a nice example of partial application,
+          look at it as (<code>import ./autotools.nix</code>) <code>pkgs</code>.
+          First we import the expression, then we apply the <code>pkgs</code>
+          parameter. That will give us a function that accepts the attribute
+          set <code>attrs</code>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          We create the derivation specifying only name and src. If the project
+          eventually needed other dependencies to be in PATH, then we would
+          simply add those to buildInputs (not specified in hello.nix because
+          empty).
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      Note we didn't use any other library. Special C flags may be needed to
+      find include files of other libraries at compile time, and ld flags at
+      link time.
+    </para>
+  </section>
+
+  <section>
+    <title>Conclusion</title>
+
+    <para>
+      Nix gives us the bare metal tools for creating derivations, setting up a
+      build environment and storing the result in the nix store.
+    </para>
+
+    <para>
+      Out of this pill we managed to create a generic builder for autotools
+      projects, and a function <code>mkDerivation</code> that composes by default
+      the common components used in autotools projects instead of repeating them
+      in all the packages we would write.
+    </para>
+
+    <para>
+      We are familiarizing ourselves with the way a Nix system grows up: it's
+      about creating and composing derivations with the Nix language.
+    </para>
+
+    <para>
+      <emphasis role="underline">Analogy</emphasis>: in C you create objects
+      in the heap, and then you compose them inside new objects. Pointers are
+      used to refer to other objects.
+    </para>
+
+    <para>
+      In Nix you create derivations stored in the nix store, and then you
+      compose them by creating new derivations. Store paths are used to refer
+      to other derivations.
+    </para>
+  </section>
+
+  <section>
+    <title>Next pill</title>
+
+    <para>
+      ...we will talk a little about runtime dependencies. Is the GNU hello
+      world package self-contained? What are its runtime dependencies? We only
+      specified build dependencies by means of using other derivations in the
+      "hello" derivation.
+    </para>
+  </section>
+</chapter>

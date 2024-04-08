@@ -1,0 +1,4 @@
+$ nix-env -e '*'
+uninstalling 'hello-2.10'
+uninstalling 'nix-2.1.3'
+[...]
