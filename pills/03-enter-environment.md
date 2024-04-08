@@ -1,6 +1,6 @@
 # Enter the Environment {#enter-environment}
 
-Welcome to the third Nix pill. In the [second pill](02-install-on-your-running.md) we installed Nix on our running system. Now we can finally play with it a little, these things also apply to NixOS users.
+Welcome to the third Nix pill. In the [second pill](02-install-on-your-running-system.md) we installed Nix on our running system. Now we can finally play with it a little, these things also apply to NixOS users.
 
 ## Enter the environment
 
@@ -196,7 +196,7 @@ $ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/stor
 
 ## Channels
 
-So where are we getting packages from? We said something about this already in the [second article](02-install-on-your-running.md). There's a list of channels from which we get packages, although usually we use a single channel. The tool to manage channels is [nix-channel](https://nixos.org/manual/nix/stable/command-ref/nix-channel.html).
+So where are we getting packages from? We said something about this already in the [second article](02-install-on-your-running-system.md). There's a list of channels from which we get packages, although usually we use a single channel. The tool to manage channels is [nix-channel](https://nixos.org/manual/nix/stable/command-ref/nix-channel.html).
 
 ```console
 $ nix-channel --list

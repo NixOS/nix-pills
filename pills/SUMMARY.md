@@ -2,15 +2,15 @@
 
 [Preface](00-preface.md)
 
-- [Why You Should Give it a Try](01-why-you-should-give-it-try.md)
-- [Install on Your Running System](02-install-on-your-running.md)
+- [Why You Should Give it a Try](01-why-you-should-give-it-a-try.md)
+- [Install on Your Running System](02-install-on-your-running-system.md)
 - [Enter the Environment](03-enter-environment.md)
 - [The Basics of the Language](04-basics-of-language.md)
 - [Functions and Imports](05-functions-and-imports.md)
 - [Our First Derivation](06-our-first-derivation.md)
 - [Working Derivation](07-working-derivation.md)
 - [Generic Builders](08-generic-builders.md)
-- [Automatic Runtime Dependencies](09-automatic-runtime.md)
+- [Automatic Runtime Dependencies](09-automatic-runtime-dependencies.md)
 - [Developing with `nix-shell`](10-developing-with-nix-shell.md)
 - [The Garbage Collector](11-garbage-collector.md)
 - [Package Repositories and the Inputs Design Pattern](12-inputs-design-pattern.md)

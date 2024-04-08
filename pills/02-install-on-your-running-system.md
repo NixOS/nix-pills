@@ -1,6 +1,6 @@
 # Install on Your Running System
 
-Welcome to the second Nix pill. In the [first](01-why-you-should-give-it-try.md) pill we briefly described Nix.
+Welcome to the second Nix pill. In the [first](01-why-you-should-give-it-a-try.md) pill we briefly described Nix.
 
 Now we'll install Nix on our running system and understand what changed in our system after the installation. **If you're using NixOS, Nix is already installed; you can skip to the [next](03-enter-environment.md) pill.**
 
