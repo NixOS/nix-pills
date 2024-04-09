@@ -189,7 +189,7 @@ Drop out of nix repl and write a file `simple.nix`:
 let
   pkgs = import <nixpkgs> { };
 in
-pkgs.stdenv.mkDerivation {
+derivation {
   name = "simple";
   builder = "${pkgs.bash}/bin/bash";
   args = [ ./simple_builder.sh ];
@@ -222,7 +222,7 @@ Below is a revised version of the `simple.nix` file, using the `inherit` keyword
 let
   pkgs = import <nixpkgs> { };
 in
-pkgs.stdenv.mkDerivation {
+derivation {
   name = "simple";
   builder = "${pkgs.bash}/bin/bash";
   args = [ ./simple_builder.sh ];
