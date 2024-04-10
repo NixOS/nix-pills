@@ -48,9 +48,12 @@ Nix handles runtime dependencies for us automatically. The technique it uses to 
 
 1.  Dump the derivation as a NAR. Recall that this is a serialization of the derivation output \-- meaning this works fine whether the output is a single file or a directory.
 
-2.  For each build dependency `.drv` and its relative out path, search the contents of the NAR for this out path.
+2.  For each build dependency, search the contents of the NAR for the hash part of its out path. For example:
+    * Our derivation depends on `/nix/store/sk590g7fv53m3zp0ycnxsc41snc2kdhp-gzip-1.6.drv`
+    * Its output path is `/nix/store/hcrf95x3r60kw71wgwbdybjfcq0ipkpj-gzip-1.6`.
+    * Therefore, Nix will search the NAR for `hcrf95x3r60kw71wgwbdybjfcq0ipkpj`.
 
-3.  If the path is found, then it's a runtime dependency.
+3.  If the hash is found, then it's a runtime dependency.
 
 The snippet below shows the dependencies for `hello`.
 
