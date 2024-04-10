@@ -131,7 +131,7 @@ Of course, the executable will run fine as long as everything is under the `/nix
 
 We saw some of the tools Nix provides, along with their features. In particular, we saw how Nix is able to compute runtime dependencies automatically. This is not limited to only shared libraries, but can also reference executables, scripts, Python libraries, and so forth.
 
-Approaching builds in this way makes packages self-contained, ensuring (apart from data and configuration) that copying the runtime closure onto another machine is sufficient to run the program. This enables us to run programs without installation using `nix-shell`, and forms the basis for [reliable deployment in the cloud](https://nixos.org/manual/nix/stable/introduction.html).
+Approaching builds in this way makes packages self-contained, ensuring (apart from data and configuration) that copying the runtime closure onto another machine is sufficient to run the program. This enables us to run programs without installation using `nix-shell`, and forms the basis for [reliable deployment in the cloud](https://github.com/NixOS/nixops).
 
 ## Next pill
 
