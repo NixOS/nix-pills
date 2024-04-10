@@ -7,9 +7,3 @@ Since the Nix Pills are considered a classic introduction to Nix, an effort to p
 For an up-to-date version, please visit <https://nixos.org/guides/nix-pills/>. An [EPUB version](https://nixos.org/guides/nix-pills/nix-pills.epub) is also available.
 
 If you encounter problems, please report them on the [nixos/nix-pills](https://github.com/NixOS/nix-pills/issues) issue tracker.
-
-<div class="info">
-
-Note: Commands prefixed with `#` have to be run as root, either requiring to login as root user or temporarily switching to it using `sudo` for example.
-
-</div>
