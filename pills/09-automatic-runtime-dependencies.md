@@ -46,14 +46,16 @@ We now note that Nix automatically recognized build dependencies once our `deriv
 
 Nix handles runtime dependencies for us automatically. The technique it uses to do so may seem fragile at first glance, but it works so well that the NixOS operating system is built off of it. The underlying mechanism relies on the hash of the store paths. It proceeds in three steps:
 
-1.  Dump the derivation as a NAR. Recall that this is a serialization of the derivation output \-- meaning this works fine whether the output is a single file or a directory.
+1.  Dump the derivation as a NAR. Recall that this is a serialization of the derivation output — meaning this works fine whether the output is a single file or a directory.
 
-2.  For each build dependency, search the contents of the NAR for the hash part of its out path. For example:
+2.  For each build dependency (including transitive dependencies), search the contents of the NAR for the hash part of its out path. For example:
     * Our derivation depends on `/nix/store/sk590g7fv53m3zp0ycnxsc41snc2kdhp-gzip-1.6.drv`
     * Its output path is `/nix/store/hcrf95x3r60kw71wgwbdybjfcq0ipkpj-gzip-1.6`.
     * Therefore, Nix will search the NAR for `hcrf95x3r60kw71wgwbdybjfcq0ipkpj`.
 
-3.  If the hash is found, then it's a runtime dependency.
+3.  Each hash which is found somewhere in the NAR is recorded as a runtime dependency.
+
+(For completeness: some derivations have multiple output paths. In that case, Nix will search for the hashes of all the outputs. Also, Nix will search for the hashes of source dependencies, such as our `build.sh` file. The authoritative definition is the [source code](https://github.com/NixOS/nix/blob/a268c0de7192188c7233bf83a4635198c360e270/src/libstore/build/local-derivation-goal.cc#L2220-L2227).)
 
 The snippet below shows the dependencies for `hello`.
 
