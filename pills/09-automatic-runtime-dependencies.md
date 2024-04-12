@@ -55,7 +55,7 @@ Nix handles runtime dependencies for us automatically. The technique it uses to 
 
 3.  Each hash which is found somewhere in the NAR is recorded as a runtime dependency.
 
-(For completeness: some derivations have multiple output paths. In that case, Nix will search for the hashes of all the outputs. Also, Nix will search for the hashes of source dependencies, such as our `build.sh` file. The authoritative definition is the [source code](https://github.com/NixOS/nix/blob/a268c0de7192188c7233bf83a4635198c360e270/src/libstore/build/local-derivation-goal.cc#L2220-L2227).)
+(For completeness: some derivations have multiple output paths. In that case, Nix will search for the hashes of all the referenced outputs. Also, Nix will search for the hashes of source dependencies, such as our `build.sh` file. The authoritative definition is the [source code](https://github.com/NixOS/nix/blob/a268c0de7192188c7233bf83a4635198c360e270/src/libstore/build/local-derivation-goal.cc#L2220-L2227).)
 
 The snippet below shows the dependencies for `hello`.
 
