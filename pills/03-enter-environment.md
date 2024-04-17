@@ -215,7 +215,7 @@ Note: `~/.nix-channels` is not a symlink to the nix store!
 
 To update the channel run `nix-channel --update`. That will download the new Nix expressions (descriptions of the packages), create a new generation of the channels profile and unpack it under `~/.nix-defexpr/channels`.
 
-This is quite similar to `apt-get update`. (See [this table](https://nixos.wiki/wiki/Cheatsheet) for a rough mapping between Ubuntu and NixOS package management.)
+This is quite similar to `apt-get update`. (See [this table](https://wiki.nixos.org/wiki/Cheatsheet) for a rough mapping between Ubuntu and NixOS package management.)
 
 ## Conclusion
 
