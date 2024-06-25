@@ -36,7 +36,7 @@ Now you can run `hello`. Things to notice:
 
 - It created a new user environment. That's a new generation of our Nix user profile.
 
-- The [nix-env](https://nixos.org/manual/nix/stable/command-ref/nix-env.html) tool manages environments, profiles and their generations.
+- The [nix-env](https://nixos.org/manual/nix/command-ref/nix-env.html) tool manages environments, profiles and their generations.
 
 - We installed `hello` by derivation name minus the version. I repeat: we specified the **derivation name** (minus the version) to install it.
 
@@ -62,7 +62,7 @@ So, where did `hello` really get installed? `which hello` is `~/.nix-profile/bin
 
 At this point you probably want to run `man` to get some documentation. Even if you already have man system-wide outside of the Nix environment, you can install and use it within Nix with `nix-env -i man-db`. As usual, a new generation will be created, and `~/.nix-profile` will point to it.
 
-Let's inspect the [profile](https://nixos.org/manual/nix/stable/package-management/profiles.html) a bit:
+Let's inspect the [profile](https://nixos.org/manual/nix/package-management/profiles.html) a bit:
 
 ```console
 $ ls -l ~/.nix-profile/
@@ -106,7 +106,7 @@ switching from generation 2 to 3
 
 I invite you to read the manpage of `nix-env`. `nix-env` requires an operation to perform, then there are common options for all operations, as well as options specific to each operation.
 
-You can of course also [ uninstall](https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---uninstall) and [upgrade](https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade) packages.
+You can of course also [ uninstall](https://nixos.org/manual/nix/command-ref/nix-env.html#operation---uninstall) and [upgrade](https://nixos.org/manual/nix/command-ref/nix-env.html#operation---upgrade) packages.
 
 ## Querying the store
 
@@ -196,7 +196,7 @@ $ /nix/store/ig31y9gfpp8pf3szdd7d4sf29zr7igbr-nix-2.1.3/bin/nix-env -i /nix/stor
 
 ## Channels
 
-So where are we getting packages from? We said something about this already in the [second article](02-install-on-your-running-system.md). There's a list of channels from which we get packages, although usually we use a single channel. The tool to manage channels is [nix-channel](https://nixos.org/manual/nix/stable/command-ref/nix-channel.html).
+So where are we getting packages from? We said something about this already in the [second article](02-install-on-your-running-system.md). There's a list of channels from which we get packages, although usually we use a single channel. The tool to manage channels is [nix-channel](https://nixos.org/manual/nix/command-ref/nix-channel.html).
 
 ```console
 $ nix-channel --list
@@ -219,7 +219,7 @@ This is quite similar to `apt-get update`. (See [this table](https://wiki.nixos.
 
 ## Conclusion
 
-We learned how to query the user environment and to manipulate it by installing and uninstalling software. Upgrading software is also straightforward, as you can read in [the manual](https://nixos.org/manual/nix/stable/command-ref/nix-env.html#operation---upgrade) (`nix-env -u` will upgrade all packages in the environment).
+We learned how to query the user environment and to manipulate it by installing and uninstalling software. Upgrading software is also straightforward, as you can read in [the manual](https://nixos.org/manual/nix/command-ref/nix-env.html#operation---upgrade) (`nix-env -u` will upgrade all packages in the environment).
 
 Every time we change the environment, a new generation is created. Switching between generations is easy and immediate.
 
