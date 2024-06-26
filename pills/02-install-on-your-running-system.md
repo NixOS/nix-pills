@@ -4,7 +4,7 @@ Welcome to the second Nix pill. In the [first](01-why-you-should-give-it-a-try.m
 
 Now we'll install Nix on our running system and understand what changed in our system after the installation. **If you're using NixOS, Nix is already installed; you can skip to the [next](03-enter-environment.md) pill.**
 
-For installation instructions, please refer to the Nix Reference Manual on [ Installing Nix](https://nixos.org/manual/nix/stable/installation/installing-binary.html).
+For installation instructions, please refer to the Nix Reference Manual on [ Installing Nix](https://nixos.org/manual/nix/installation/installing-binary.html).
 
 ## Installation
 
@@ -14,7 +14,7 @@ The first thing to note: derivations in the Nix store refer to other derivations
 
 <div class="info">
 
-Note: In a multi-user installation, such as the one used in NixOS, the store is owned by root and multiple users can install and build software through a Nix daemon. You can read more about multi-user installations here: <https://nixos.org/manual/nix/stable/installation/installing-binary.html#multi-user-installation>.
+Note: In a multi-user installation, such as the one used in NixOS, the store is owned by root and multiple users can install and build software through a Nix daemon. You can read more about multi-user installations here: <https://nixos.org/manual/nix/installation/installing-binary.html#multi-user-installation>.
 
 </div>
 
@@ -60,7 +60,7 @@ Important: Never change `/nix/store` manually. If you do, then it will no longer
 
 ## The first profile
 
-Next in the installation, we encounter the concept of the [profile](https://nixos.org/manual/nix/stable/package-management/profiles.html):
+Next in the installation, we encounter the concept of the [profile](https://nixos.org/manual/nix/package-management/profiles.html):
 
 <pre><code class="hljs">creating /home/nix/.nix-profile
 installing 'nix-2.1.3'
