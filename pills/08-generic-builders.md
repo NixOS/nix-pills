@@ -217,7 +217,7 @@ The body of the function is simple, yet at first sight it might be hard to grasp
 
 3.  Finally we create the derivation with that strange expression, (`defaultAttrs // attrs`).
 
-The [// operator](https://nixos.org/manual/nix/stable/expressions/language-operators.html) is an operator between two sets. The result is the union of the two sets. In case of conflicts between attribute names, the value on the right set is preferred.
+The [// operator](https://nix.dev/manual/nix/stable/language/operators.html#update) is an operator between two sets. The result is the union of the two sets. In case of conflicts between attribute names, the value on the right set is preferred.
 
 So we use `defaultAttrs` as base set, and add (or override) the attributes from `attrs`.
 

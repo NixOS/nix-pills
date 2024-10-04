@@ -6,7 +6,7 @@ Assuming you followed the previous posts, I hope you are now ready to understand
 
 ## The NIX_PATH
 
-The [NIX_PATH environment variable](https://nixos.org/manual/nix/stable/command-ref/env-common.html) is very important. It's very similar to the `PATH` environment variable. The syntax is similar, several paths are separated by a colon `:`. Nix will then search for something in those paths from left to right.
+The [NIX_PATH environment variable](https://nix.dev/manual/nix/stable/command-ref/env-common?highlight=NIX_PATH) is very important. It's very similar to the `PATH` environment variable. The syntax is similar, several paths are separated by a colon `:`. Nix will then search for something in those paths from left to right.
 
 Who uses `NIX_PATH`? The nix expressions! Yes, `NIX_PATH` is not of much use by the nix tools themselves, rather it's used when writing nix expressions.
 
@@ -16,7 +16,7 @@ In nix it's exactly the same, however the syntax is different. Instead of just t
 
 What's `NIX_PATH` good for? Nix expressions may refer to an "abstract" path such as `<nixpkgs>`, and it's possible to override it from the command line.
 
-For ease we will use `nix-instantiate --eval` to do our tests. I remind you, [nix-instantiate](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html) is used to evaluate nix expressions and generate the .drv files. Here we are not interested in building derivations, so evaluation is enough. It can be used for one-shot expressions.
+For ease we will use `nix-instantiate --eval` to do our tests. I remind you, [nix-instantiate](https://nix.dev/manual/nix/stable/command-ref/nix-instantiate) is used to evaluate nix expressions and generate the .drv files. Here we are not interested in building derivations, so evaluation is enough. It can be used for one-shot expressions.
 
 ## Fake it a little
 
@@ -59,7 +59,7 @@ You may have a different path, depending on how you added channels etc.. Anyway 
 
 You can list that directory and realize it's simply a checkout of the nixpkgs repository at a specific commit (hint: `.version-suffix`).
 
-The `NIX_PATH` variable is exported by `nix.sh`, and that's the reason why I always asked you to [source nix.sh](https://nixos.org/manual/nix/stable/installation/env-variables.html) at the beginning of my posts.
+The `NIX_PATH` variable is exported by `nix.sh`, and that's the reason why I always asked you to [source nix.sh](https://nix.dev/manual/nix/stable/installation/env-variables) at the beginning of my posts.
 
 You may wonder: then I can also specify a different [nixpkgs](https://github.com/NixOS/nixpkgs) path to, e.g., a `git checkout` of `nixpkgs`? Yes, you can and I encourage doing that. We'll talk about this in the next pill.
 
@@ -75,7 +75,7 @@ Yes, `nix-build` also accepts paths with angular brackets. We first evaluate the
 
 ## A big word about nix-env
 
-The [nix-env](https://nixos.org/manual/nix/stable/command-ref/nix-env.html) command is a little different than `nix-instantiate` and `nix-build`. Whereas `nix-instantiate` and `nix-build` require a starting nix expression, `nix-env` does not.
+The [nix-env](https://nix.dev/manual/nix/stable/command-ref/nix-env) command is a little different than `nix-instantiate` and `nix-build`. Whereas `nix-instantiate` and `nix-build` require a starting nix expression, `nix-env` does not.
 
 You may be crippled by this concept at the beginning, you may think `nix-env` uses `NIX_PATH` to find the `nixpkgs` repository. But that's not it.
 

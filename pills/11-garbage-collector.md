@@ -8,7 +8,7 @@ Today, we will stop focusing on packaging and instead look at a critical compone
 
 Programming languages with garbage collectors use the concept of a set of "garbage collector (or 'GC') roots" to keep track of "live" objects. A GC root is an object that is always considered "live" (unless explicitly removed as GC root). The garbage collection process starts from the GC roots and proceeds by recursively marking object references as "live". All other objects can be collected and deleted.
 
-Instead of objects, Nix's garbage collection operates on store paths, [with the GC roots themselves being store paths](https://nixos.org/manual/nix/stable/package-management/garbage-collector-roots.html). . This approach is much more principled than traditional package managers such as `dpkg` or `rpm`, which may leave around unused packages or dangling files.
+Instead of objects, Nix's garbage collection operates on store paths, [with the GC roots themselves being store paths](https://nix.dev/manual/nix/stable/package-management/garbage-collector-roots). . This approach is much more principled than traditional package managers such as `dpkg` or `rpm`, which may leave around unused packages or dangling files.
 
 The implementation is very simple and transparent to the user. The primary GC roots are stored under `/nix/var/nix/gcroots`. If there is a symlink to a store path, then the linked store path is a GC root.
 
@@ -18,7 +18,7 @@ In summary, Nix maintains a list of GC roots. These roots can then be used to co
 
 ## Playing with the GC
 
-Before we begin we first run the [nix garbage collector](https://nixos.org/manual/nix/stable/command-ref/nix-collect-garbage.html) so that we have a clean setup for our experiments:
+Before we begin we first run the [nix garbage collector](https://nix.dev/manual/nix/stable/command-ref/nix-collect-garbage) so that we have a clean setup for our experiments:
 
 ```console
 $ nix-collect-garbage

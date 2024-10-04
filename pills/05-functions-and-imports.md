@@ -2,7 +2,7 @@
 
 Welcome to the fifth Nix pill. In the previous [fourth pill](04-basics-of-language.md) we touched the Nix language for a moment. We introduced basic types and values of the Nix language, and basic expressions such as `if`, `with` and `let`. I invite you to re-read about these expressions and play with them in the repl.
 
-Functions help to build reusable components in a big repository like [nixpkgs](https://github.com/NixOS/nixpkgs/). The Nix manual has a [great explanation of functions](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#functions). Let's go: pill on one hand, Nix manual on the other hand.
+Functions help to build reusable components in a big repository like [nixpkgs](https://github.com/NixOS/nixpkgs/). The Nix manual has a [great explanation of functions](https://nix.dev/manual/nix/stable/language/constructs#functions). Let's go: pill on one hand, Nix manual on the other hand.
 
 I remind you how to enter the Nix environment: `source ~/.nix-profile/etc/profile.d/nix.sh`
 
@@ -211,7 +211,7 @@ Explaining:
 
 - In `test.nix` we return a function. It accepts a set, with default attributes `b`, `trueMsg` and `falseMsg`.
 
-- `builtins.trace` is a [built-in function](https://nixos.org/manual/nix/stable/expressions/builtins.html) that takes two arguments. The first is the message to display, the second is the value to return. It's usually used for debugging purposes.
+- `builtins.trace` is a [built-in function](https://nix.dev/manual/nix/stable/language/builtins) that takes two arguments. The first is the message to display, the second is the value to return. It's usually used for debugging purposes.
 
 - Then we import `test.nix`, and call the function with that set.
 
