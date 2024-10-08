@@ -122,7 +122,7 @@ In other words, you get a final .drv where every other .drv path is replaced by 
 
 Finally, the other most used kind of path is when we know beforehand an integrity hash of a file. This is usual for tarballs.
 
-A derivation can take three special attributes: `outputHashMode`, `outputHash` and `outputHashAlgo` which are well documented in the [nix manual](https://nixos.org/manual/nix/stable/expressions/advanced-attributes.html).
+A derivation can take three special attributes: `outputHashMode`, `outputHash` and `outputHashAlgo` which are well documented in the [nix manual](https://nix.dev/manual/nix/stable/language/advanced-attributes).
 
 The builder must create the out path and make sure its hash is the same as the one declared with `outputHash`.
 

@@ -163,7 +163,7 @@ The reader should notice a magic thing happening. We're defining `pkgs` in terms
 
 The "`callPackage`" pattern has simplified our repository considerably. We were able to import packages that require named arguments and call them automatically, given the set of all packages sourced from `nixpkgs`.
 
-We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, but rather act as tools for packaging. They are documented in the [Nix manual](https://nixos.org/manual/nix/stable/expressions/builtins.html).
+We've also introduced some useful builtin functions that allows us to introspect Nix functions and manipulate attributes. These builtin functions are not usually used when packaging software, but rather act as tools for packaging. They are documented in the [Nix manual](https://nix.dev/manual/nix/stable/language/builtins).
 
 Writing a repository in Nix is an evolution of writing convenient functions for combining the packages. This pill demonstrates how Nix can be a generic tool to build and deploy software, and how suitable it is to create software repositories with our own conventions.
 

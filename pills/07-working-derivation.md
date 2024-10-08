@@ -86,7 +86,7 @@ Let's inspect those environment variables printed during the build process.
 
 - `$PATH` plays the same game as `$HOME`
 
-- `$NIX_BUILD_CORES` and `$NIX_STORE` are [nix configuration options](https://nixos.org/manual/nix/stable/command-ref/conf-file.html)
+- `$NIX_BUILD_CORES` and `$NIX_STORE` are [nix configuration options](https://nix.dev/manual/nix/stable/command-ref/conf-file)
 
 - `$PWD` and `$TMP` clearly show that nix created a temporary build directory
 
@@ -204,9 +204,9 @@ Now you can build it with `nix-build simple.nix`. This will create a symlink `re
 
 nix-build does two jobs:
 
-- [ nix-instantiate ](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html): parse and evaluate `simple.nix` and return the .drv file corresponding to the parsed derivation set
+- [nix-instantiate](https://nix.dev/manual/nix/stable/command-ref/nix-instantiate): parse and evaluate `simple.nix` and return the .drv file corresponding to the parsed derivation set
 
-- [ `nix-store -r` ](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise): realise the .drv file, which actually builds it.
+- [`nix-store -r`](https://nix.dev/manual/nix/stable/command-ref/nix-store/realise): realise the .drv file, which actually builds it.
 
 Finally, it creates the symlink.
 
@@ -232,7 +232,7 @@ derivation {
 }
 ```
 
-Here we also take the opportunity to introduce the [`inherit` keyword](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#inheriting-attributes). `inherit foo;` is equivalent to `foo = foo;`. Similarly, `inherit gcc coreutils;` is equivalent to `gcc = gcc; coreutils = coreutils;`. Lastly, `inherit (pkgs) gcc coreutils;` is equivalent to `gcc = pkgs.gcc; coreutils = pkgs.coreutils;`.
+Here we also take the opportunity to introduce the [`inherit` keyword](https://nix.dev/manual/nix/stable/language/constructs#inheriting-attributes). `inherit foo;` is equivalent to `foo = foo;`. Similarly, `inherit gcc coreutils;` is equivalent to `gcc = gcc; coreutils = coreutils;`. Lastly, `inherit (pkgs) gcc coreutils;` is equivalent to `gcc = pkgs.gcc; coreutils = pkgs.coreutils;`.
 
 This syntax only makes sense inside sets. There's no magic involved, it's simply a convenience to avoid repeating the same name for both the attribute name and the value in scope.
 

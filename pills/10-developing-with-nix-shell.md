@@ -8,7 +8,7 @@ Finally, we will modify our builder to work more ergonomically with a `nix-shell
 
 ## What is `nix-shell`?
 
-The [nix-shell](https://nixos.org/manual/nix/stable/command-ref/nix-shell.html) tool drops us in a shell after setting up the environment variables necessary to hack on a derivation. It does not build the derivation; it only serves as a preparation so that we can run the build steps manually.
+The [nix-shell](https://nix.dev/manual/nix/stable/command-ref/nix-shell) tool drops us in a shell after setting up the environment variables necessary to hack on a derivation. It does not build the derivation; it only serves as a preparation so that we can run the build steps manually.
 
 Recall that in a nix environment, we don't have access to libraries or programs unless they have been installed with `nix-env`. However, installing libraries with `nix-env` is not good practice. We prefer to have isolated environments for development, which `nix-shell` provides for us.
 

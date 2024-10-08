@@ -2,7 +2,7 @@
 
 Welcome to the fourth Nix pill. In the [previous article](03-enter-environment.md) we learned about Nix environments. We installed software as a user, managed their profile, switched between generations, and queried the Nix store. Those are the very basics of system administration using Nix.
 
-The [Nix language](https://nixos.org/manual/nix/stable/expressions/expression-language.html) is used to write expressions that produce derivations. The [nix-build](https://nixos.org/manual/nix/stable/command-ref/nix-build.html) tool is used to build derivations from an expression. Even as a system administrator that wants to customize the installation, it's necessary to master Nix. Using Nix for your jobs means you get the features we saw in the previous articles for free.
+The [Nix language](https://nix.dev/manual/nix/stable/language/) is used to write expressions that produce derivations. The [nix-build](https://nix.dev/manual/nix/stable/command-ref/nix-build) tool is used to build derivations from an expression. Even as a system administrator that wants to customize the installation, it's necessary to master Nix. Using Nix for your jobs means you get the features we saw in the previous articles for free.
 
 The syntax of Nix is quite unfamiliar, so looking at existing examples may lead you to think that there's a lot of magic happening. In reality, it's mostly about writing utility functions to make things convenient.
 
@@ -22,7 +22,7 @@ Important: Values in Nix are immutable.
 
 ## Value types
 
-Nix 2.0 contains a command named `nix repl` which is a simple command line tool for playing with the Nix language. In fact, Nix is a [pure, lazy, functional language](https://nixos.org/manual/nix/stable/expressions/expression-language.html), not only a set of tools to manage derivations. The `nix repl` syntax is slightly different to Nix syntax when it comes to assigning variables, but it shouldn't be confusing so long as you bear it in mind. I prefer to start with `nix repl` before cluttering your mind with more complex expressions.
+Nix 2.0 contains a command named `nix repl` which is a simple command line tool for playing with the Nix language. In fact, Nix is a [pure, lazy, functional language](https://nix.dev/manual/nix/stable/language/), not only a set of tools to manage derivations. The `nix repl` syntax is slightly different to Nix syntax when it comes to assigning variables, but it shouldn't be confusing so long as you bear it in mind. I prefer to start with `nix repl` before cluttering your mind with more complex expressions.
 
 Launch `nix repl`. First of all, Nix supports basic arithmetic operations: `+`, `-`, `*` and `/`. (To exit `nix repl`, use the command `:q`. Help is available through the `:?` command.)
 
@@ -56,7 +56,7 @@ nix-repl> builtins.div 6 3
 
 Other operators are `||`, `&&` and `!` for booleans, and relational operators such as `!=`, `==`, `<`, `>`, `<=`, `>=`. In Nix, `<`, `>`, `<=` and `>=` are not much used. There are also other operators we will see in the course of this series.
 
-Nix has integer, floating point, string, path, boolean and null [simple](https://nixos.org/manual/nix/stable/expressions/language-values.html) types. Then there are also lists, sets and functions. These types are enough to build an operating system.
+Nix has integer, floating point, string, path, boolean and null [simple](https://nix.dev/manual/nix/stable/language/#overview) types. Then there are also lists, sets and functions. These types are enough to build an operating system.
 
 Nix is strongly typed, but it's not statically typed. That is, you cannot mix strings and integers, you must first do the conversion.
 
@@ -90,7 +90,7 @@ nix-repl> ''foo''
 
 In other languages like Python you can also use single quotes for strings (e.g. `'foo'`), but not in Nix.
 
-It's possible to [interpolate](https://nixos.org/manual/nix/stable/expressions/language-values.html) whole Nix expressions inside strings with the `${...}` syntax and only that syntax, not `$foo` or `{$foo}` or anything else.
+It's possible to [interpolate](https://nix.dev/manual/nix/stable/language/string-interpolation) whole Nix expressions inside strings with the `${...}` syntax and only that syntax, not `$foo` or `{$foo}` or anything else.
 
 ```console
 nix-repl> foo = "strval"
@@ -165,7 +165,7 @@ nix-repl> { a = 3; b = a+4; }
 error: undefined variable `a' at (string):1:10
 ```
 
-To do so, use [recursive attribute sets](https://nixos.org/manual/nix/stable/expressions/language-constructs.html#recursive-sets):
+To do so, use [recursive attribute sets](https://nix.dev/manual/nix/stable/language/constructs#recursive-sets):
 
 ```console
 nix-repl> rec { a = 3; b = a+4; }

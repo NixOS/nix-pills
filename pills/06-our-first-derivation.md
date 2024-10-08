@@ -8,7 +8,7 @@ I remind you how to enter the Nix environment: `source ~/.nix-profile/etc/profil
 
 ## The derivation function
 
-The [derivation built-in function](https://nixos.org/manual/nix/stable/expressions/derivations.html) is used to create derivations. I invite you to read the link in the Nix manual about the derivation built-in. A derivation from a Nix language view point is simply a set, with some attributes. Therefore you can pass the derivation around with variables like anything else.
+The [derivation built-in function](https://nix.dev/manual/nix/stable/language/derivations) is used to create derivations. I invite you to read the link in the Nix manual about the derivation built-in. A derivation from a Nix language view point is simply a set, with some attributes. Therefore you can pass the derivation around with variables like anything else.
 
 That's where the real power comes in.
 
@@ -291,9 +291,9 @@ Nix does not build derivations **during evaluation** of Nix expressions. In fact
 
 An important separation is made in Nix:
 
-- **Instantiate/Evaluation time**: the Nix expression is parsed, interpreted and finally returns a derivation set. During evaluation, you can refer to other derivations because Nix will create .drv files and we will know out paths beforehand. This is achieved with [nix-instantiate](https://nixos.org/manual/nix/stable/command-ref/nix-instantiate.html).
+- **Instantiate/Evaluation time**: the Nix expression is parsed, interpreted and finally returns a derivation set. During evaluation, you can refer to other derivations because Nix will create .drv files and we will know out paths beforehand. This is achieved with [nix-instantiate](https://nix.dev/manual/nix/stable/command-ref/nix-instantiate).
 
-- **Realise/Build time**: the .drv from the derivation set is built, first building .drv inputs (build dependencies). This is achieved with [nix-store -r](https://nixos.org/manual/nix/stable/command-ref/nix-store.html#operation---realise).
+- **Realise/Build time**: the .drv from the derivation set is built, first building .drv inputs (build dependencies). This is achieved with [nix-store -r](https://nix.dev/manual/nix/stable/command-ref/nix-store/realise).
 
 Think of it as of compile time and link time like with C/C++ projects. You first compile all source files to object files. Then link object files in a single executable.
 
