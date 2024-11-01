@@ -91,7 +91,7 @@ Let's create a generic `builder.sh` for autotools projects:
 ```sh
 set -e
 unset PATH
-for p in $buildInputs; do
+for p in $baseInputs $buildInputs; do
     export PATH=$p/bin${PATH:+:}$PATH
 done
 
