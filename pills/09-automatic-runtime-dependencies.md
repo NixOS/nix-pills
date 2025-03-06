@@ -114,7 +114,7 @@ $ nix-store -q --references result
 /nix/store/md4a3zv0ipqzsybhjb8ndjhhga1dj88x-hello
 ```
 
-and we see that `glibc` is a runtime dependency. This is exactly what we wanted.
+and we see that `glibc` is a runtime dependency but `gcc` is not there anymore. This is exactly what we wanted.
 
 The package is self-contained. This means that we can copy its closure onto another machine and we will be able to run it. Remember, only a very few components under the `/nix/store` are required to [run nix](02-install-on-your-running-system.md). The `hello` binary will use the exact version of `glibc` library and interpreter referred to in the binary, rather than the system one:
 
