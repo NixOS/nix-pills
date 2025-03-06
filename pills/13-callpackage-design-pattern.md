@@ -15,7 +15,7 @@ However, as with usual programming languages, there is some duplication of work:
 ...
 ```
 
-we would likely want to bundle that package derivation into a repository via an attribute set defined as something like:
+We would likely want to bundle that package derivation into a repository via an attribute set defined as something like:
 
 ```nix
 rec {
