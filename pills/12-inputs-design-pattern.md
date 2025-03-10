@@ -194,7 +194,7 @@ Recall that "`{...}: ...`" is the syntax for defining functions accepting an att
 
 We made `gd` and its dependencies optional. If `gdSupport` is true (which it is by default), we will fill `buildInputs` and `graphviz` will be built with `gd` support. Otherwise, if an attribute set is passed with `gdSupport = false;`, the build will be completed without `gd` support.
 
-Going back to back to `default.nix`, we modify our expression to utilize the inputs pattern:
+Going back to `default.nix`, we modify our expression to utilize the inputs pattern:
 
 ```nix
 let
