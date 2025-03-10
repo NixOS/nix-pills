@@ -230,7 +230,7 @@ If we wanted to build `graphviz` with a specific version of `gd`, it would suffi
 
 If we wanted to change the toolchain, we would simply pass a different `mkDerivation` function.
 
-Let's talk a closer look at the snippet and dissect the syntax:
+Let's take a closer look at the snippet and dissect the syntax:
 
 - The entire expression in `default.nix` returns an attribute set with the keys `hello`, `graphviz`, and `graphvizCore`.
 
