@@ -31,7 +31,7 @@ $ nix-instantiate -I /bin --eval -E '<ping>'
 /bin/ping
 ```
 
-Great. At first attempt nix obviously said could not be found anywhere in the search path. Note that the -I option accepts a single directory. Paths added with -I take precedence over `NIX_PATH`.
+Great. At first attempt nix obviously said could not be found anywhere in the search path. Note that the `-I` option accepts a single directory. Paths added with `-I` take precedence over `NIX_PATH`.
 
 The `NIX_PATH` also accepts a different yet very handy syntax: "`somename=somepath`". That is, instead of searching inside a directory for a name, we specify exactly the value of that name.
 
@@ -127,7 +127,7 @@ It may or may not make sense for you, or it's like that for historical reasons, 
 
 ## Conclusion
 
-The `NIX_PATH` variable is the search path used by nix when using the angular brackets syntax. It's possible to refer to "abstract" paths inside nix expressions and define the "concrete" path by means of `NIX_PATH`, or the usual -I flag in nix tools.
+The `NIX_PATH` variable is the search path used by nix when using the angular brackets syntax. It's possible to refer to "abstract" paths inside nix expressions and define the "concrete" path by means of `NIX_PATH`, or the usual `-I` flag in nix tools.
 
 We've also explained some of the uncommon `nix-env` behaviors for newcomers. The `nix-env` tool does not use `NIX_PATH` to search for packages, but rather for `~/.nix-defexpr`. Beware of that!
 
