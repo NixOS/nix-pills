@@ -16,7 +16,7 @@ We won't use [shebang](https://en.m.wikipedia.org/wiki/Shebang_(Unix)) in `build
 
 We also won't use `/usr/bin/env`, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find `bash` anyway.
 
-In summary, we want the builder to be bash, and give it `builder.sh` as an argument. Turns out the `derivation` function accepts an optional `args` attribute which is used to pass arguments to the builder executable.
+In summary, we want the builder to be `bash`, and give it `builder.sh` as an argument. Turns out the "derivation" function accepts an optional `args` attribute which is used to pass arguments to the builder executable.
 
 First of all, let's write our `builder.sh` in the current directory:
 
