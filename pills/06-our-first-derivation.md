@@ -214,7 +214,7 @@ nix-repl> builtins.toString coreutils
 "/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"
 ```
 
-Apart from the nixpkgs stuff, just think we added to the scope a series of variables. One of them is coreutils. It is the derivation of the coreutils package you all know of from other Linux distributions. It contains basic binaries for GNU/Linux systems (you may have multiple derivations of coreutils in the nix store, no worries):
+Don't worry about the nixpkgs stuff for now, just know that we added a series of variables to the current scope. One of them is coreutils. It is the derivation of the coreutils package you all know of from other Linux distributions. It contains basic binaries for GNU/Linux systems (you may have multiple derivations of coreutils in the nix store, no worries):
 
 ```console
 $ ls /nix/store/*coreutils*/bin
