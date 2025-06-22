@@ -14,7 +14,7 @@ What's the easiest way to run a sequence of commands for building something? A b
 
 We won't use [shebang](https://en.m.wikipedia.org/wiki/Shebang_(Unix)) in `builder.sh`, because at the time we are writing it we do not know the path to bash in the nix store. Yes, even bash is in the nix store, everything is there.
 
-We also won't use `/usr/bin/env`, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find bash anyway.
+We also won't use `/usr/bin/env`, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find `bash` anyway.
 
 In summary, we want the builder to be bash, and give it `builder.sh` as an argument. Turns out the `derivation` function accepts an optional `args` attribute which is used to pass arguments to the builder executable.
 
