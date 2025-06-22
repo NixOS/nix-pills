@@ -12,7 +12,7 @@ I remind you how to enter the Nix environment: `source ~/.nix-profile/etc/profil
 
 What's the easiest way to run a sequence of commands for building something? A bash script. We'll write a custom bash script and use it as our builder. Given a `builder.sh`, we want the derivation to run `bash builder.sh`.
 
-We won't use [shebang](https://en.m.wikipedia.org/wiki/Shebang_(Unix)) in `builder.sh`, because at the time we are writing it we do not know the path to bash in the nix store. Yes, even bash is in the nix store, everything is there.
+We won't use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) in `builder.sh`, because at the time we are writing it we do not know the path to bash in the nix store. Yes, even bash is in the nix store, everything is there.
 
 We also won't use `/usr/bin/env`, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find `bash` anyway.
 
