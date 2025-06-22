@@ -146,7 +146,7 @@ We've installed Nix on our system, fully isolated and owned by the `nix` user as
 
 We learned some new concepts like profiles and channels. In particular, with profiles we're able to manage multiple generations of a composition of packages, while with channels we're able to download binaries from `nixos.org`.
 
-The installation put everything under `/nix`, and some symlinks in the Nix user home. That's because every user is able to install and use software in her own environment.
+The installation put everything under `/nix`, and some symlinks in the Nix user home. That's because every user is able to install and use software in their own environment.
 
 I hope I left nothing uncovered so that you think there's some kind of magic going on behind the scenes. It's all about putting components in the store and symlinking these components together.
 
