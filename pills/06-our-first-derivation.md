@@ -221,7 +221,7 @@ $ ls /nix/store/*coreutils*/bin
 [...]
 ```
 
-I remind you, inside strings it's possible to interpolate Nix expressions with `${...}`:
+A reminder that it is possible to interpolate Nix expressions with `${...}` inside strings:
 
 ```console
 nix-repl> "${d}"
