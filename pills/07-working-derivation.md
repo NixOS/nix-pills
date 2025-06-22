@@ -10,13 +10,13 @@ I remind you how to enter the Nix environment: `source ~/.nix-profile/etc/profil
 
 ## Using a script as a builder
 
-What's the easiest way to run a sequence of commands for building something? A bash script. We write a custom bash script, and we want it to be our builder. Given a `builder.sh`, we want the derivation to run `bash builder.sh`.
+What's the easiest way to run a sequence of commands for building something? A bash script. We'll write a custom bash script and use it as our builder. Given a `builder.sh`, we want the derivation to run `bash builder.sh`.
 
-We don't use hash bangs in `builder.sh`, because at the time we are writing it we do not know the path to bash in the nix store. Yes, even bash is in the nix store, everything is there.
+We won't use [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) in `builder.sh`, because at the time we are writing it we do not know the path to bash in the nix store. Yes, even bash is in the nix store, everything is there.
 
-We don't even use /usr/bin/env, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find bash anyway.
+We also won't use `/usr/bin/env`, because then we lose the cool stateless property of Nix. Not to mention that `PATH` gets cleared when building, so it wouldn't find `bash` anyway.
 
-In summary, we want the builder to be bash, and pass it an argument, `builder.sh`. Turns out the `derivation` function accepts an optional `args` attribute which is used to pass arguments to the builder executable.
+In summary, we want the builder to be `bash`, and give it `builder.sh` as an argument. Turns out the "derivation" function accepts an optional `args` attribute which is used to pass arguments to the builder executable.
 
 First of all, let's write our `builder.sh` in the current directory:
 
