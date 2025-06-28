@@ -141,6 +141,8 @@ Given that `builder.sh` is a plain file, it has no .drv associated with it. The 
 Start off by writing a simple C program called `simple.c`:
 
 ```c
+#include <stdio.h>
+
 void main() {
     puts("Simple!");
 }
