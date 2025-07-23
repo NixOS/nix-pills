@@ -15,12 +15,14 @@ Recall that in a nix environment, we don't have access to libraries or programs 
 We can call `nix-shell` on any Nix expression which returns a derivation, but the resulting `bash` shell's `PATH` does not have the utilities we want:
 
 ```console
-$ nix-shell hello.nix
+$ nix-shell --pure hello.nix
 [nix-shell]$ make
 bash: make: command not found
 [nix-shell]$ echo $baseInputs
 /nix/store/jff4a6zqi0yrladx3kwy4v6844s3swpc-gnutar-1.27.1 [...]
 ```
+
+(`--pure` asks `nix-shell` to remove most environment variables before running the shell. Without adding it, `make` might work, but it will be taken from your environment, so it might have a different behavior during build.)
 
 This shell is rather useless. It would be reasonable to expect that the GNU `hello` build inputs are available in `PATH`, including GNU `make`, but this is not the case.
 
@@ -154,7 +156,7 @@ mkDerivation {
 Now back to nix-shell:
 
 ```console
-$ nix-shell hello.nix
+$ nix-shell --pure hello.nix
 [nix-shell]$ source $setup
 [nix-shell]$
 ```
