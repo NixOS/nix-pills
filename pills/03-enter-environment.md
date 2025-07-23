@@ -23,7 +23,7 @@ Finally something practical! Installation into the Nix environment is an interes
 Back to the installation:
 
 ```console
-$ nix-env -i hello
+$ nix-env -iA nixos.hello
 installing 'hello-2.10'
 [...]
 building '/nix/store/0vqw0ssmh6y5zj48yg34gc6macr883xk-user-environment.drv'...
