@@ -1,5 +1,0 @@
-$ ls -l /nix/var/nix/gcroots/auto/
-total 8
-drwxr-xr-x 2 nix nix 4096 Aug 20 10:24 ./
-drwxr-xr-x 3 nix nix 4096 Jul 24 10:38 ../
-lrwxrwxrwx 1 nix nix   16 Jul 31 10:51 xlgz5x2ppa0m72z5qfc78b8wlciwvgiz -> /home/nix/result/

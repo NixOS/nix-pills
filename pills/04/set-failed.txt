@@ -1,2 +1,0 @@
-nix-repl> { a = 3; b = a+4; }
-error: undefined variable `a' at (string):1:10

@@ -1,5 +1,0 @@
-nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
-nix-repl> builtins.isAttrs d
-true
-nix-repl> builtins.attrNames d
-[ "all" "builder" "drvAttrs" "drvPath" "name" "out" "outPath" "outputName" "system" "type" ]

@@ -1,6 +1,0 @@
-$ nix-store -q --references result
-/nix/store/3a45nb37s0ndljp68228snsqr3qsyp96-bzip2-1.0.6
-/nix/store/a457ywa1haa0sgr9g7a1pgldrg3s798d-coreutils-8.24
-/nix/store/zmd4jk4db5lgxb8l93mhkvr3x92g2sx2-bash-4.3-p39
-/nix/store/47sfpm2qclpqvrzijizimk4md1739b1b-gcc-wrapper-4.9.3
-...

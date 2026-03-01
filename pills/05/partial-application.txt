@@ -1,5 +1,0 @@
-nix-repl> foo = mul 3
-nix-repl> foo 4
-12
-nix-repl> foo 5
-15

@@ -1,2 +1,0 @@
-$ nix-env --rollback
-switching from generation 3 to 2

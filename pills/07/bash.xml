@@ -1,5 +1,0 @@
-<screen xmlns="http://docbook.org/ns/docbook"><prompt>nix-repl> </prompt><userinput>:l &lt;nixpkgs></userinput>
-<computeroutput>Added 3950 variables.</computeroutput>
-<prompt>nix-repl> </prompt><userinput>"${bash}"</userinput>
-<computeroutput>"/nix/store/ihmkc7z2wqk3bbipfnlh0yjrlfkkgnv6-<emphasis>bash-4.2-p45</emphasis>"</computeroutput>
-</screen>

@@ -1,2 +1,0 @@
-nix-repl> (d == d.out)
-true

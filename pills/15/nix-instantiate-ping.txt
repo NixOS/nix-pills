@@ -1,6 +1,0 @@
-$ nix-instantiate --eval -E '<ping>'
-error: file `ping' was not found in the Nix search path (add it using $NIX_PATH or -I)
-$ NIX_PATH=$PATH nix-instantiate --eval -E '<ping>'
-/bin/ping
-$ nix-instantiate -I /bin --eval -E '<ping>'
-/bin/ping

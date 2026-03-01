@@ -1,2 +1,0 @@
-nix-repl> { type = "derivation"; }
-«derivation ???»

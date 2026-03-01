@@ -1,5 +1,0 @@
-nix-repl> a = import ./a.nix
-nix-repl> b = import ./b.nix
-nix-repl> mul = import ./mul.nix
-nix-repl> mul a b
-12

@@ -1,4 +1,0 @@
-$ nix-env -f '<mypkgs>' -qaP
-graphviz      graphviz
-graphvizCore  graphviz
-hello         hello

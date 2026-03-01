@@ -1,7 +1,0 @@
-nix-repl> foo = "strval"
-nix-repl> "$foo"
-"$foo"
-nix-repl> "${foo}"
-"strval"
-nix-repl> "${2+3}"
-error: cannot coerce an integer to a string, at (string):1:2

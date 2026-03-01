@@ -1,4 +1,0 @@
-$ export NIX_PATH=mypkgs=/home/nix/mypkgs:$NIX_PATH
-$ nix-instantiate --eval '<mypkgs>'
-{ graphviz = <code>; graphvizCore = <code>; hello = <code>; mkDerivation = <code>; }
-

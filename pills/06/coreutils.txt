@@ -1,6 +1,0 @@
-nix-repl> :l <nixpkgs>
-Added 3950 variables.
-nix-repl> coreutils
-«derivation /nix/store/1zcs1y4n27lqs0gw4v038i303pb89rw6-coreutils-8.21.drv»
-nix-repl> builtins.toString coreutils
-"/nix/store/8w4cbiy7wqvaqsnsnb3zvabq1cp2zhyz-coreutils-8.21"

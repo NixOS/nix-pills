@@ -1,86 +1,104 @@
-{ pkgs ? import <nixpkgs> {}, revCount, shortRev }:
-let
-  lib = pkgs.lib;
+{ pkgs ? import <nixpkgs> {} }:
 
-  sources = let
+{
+  html-split = pkgs.stdenvNoCC.mkDerivation {
+    name = "nix-pills";
+    src = ./.;
 
-      # We want nix examples, but not the top level nix to build things
-      noTopLevelNix = path: type: let
-          relPath = lib.removePrefix (toString ./. + "/") (toString path);
-        in builtins.match "[^/]*\.nix" relPath == null;
+    nativeBuildInputs = with pkgs; [
+      mdbook
+      mdbook-linkcheck
+    ];
 
-      extensions = [ ".xml" ".txt" ".nix" ".bash" ];
+    buildPhase = ''
+      runHook preBuild
 
-    in lib.cleanSourceWith {
-      filter = noTopLevelNix;
-      src = lib.sourceFilesBySuffices ./. extensions;
-    };
+      # We can't check external links inside the sandbox, but it's good to check them outside the sandbox.
+      substituteInPlace book.toml --replace-fail 'follow-web-links = true' 'follow-web-links = false'
+      mdbook build
 
-  combined = pkgs.runCommand "nix-pills-combined"
-    {
-      buildInputs = [ pkgs.libxml2 ];
-      meta.description = "Nix Pills with as a single docbook file";
-      inherit revCount shortRev;
-    }
-    ''
-      cp -r ${sources} ./sources
-      chmod -R u+w ./sources
-
-      cd sources
-
-      printf "%s-%s" "$revCount" "$shortRev" > version
-      xmllint --xinclude --output $out ./book.xml
+      runHook postBuild
     '';
 
-  toc = builtins.toFile "toc.xml"
-    ''
-      <toc role="chunk-toc">
-        <d:tocentry xmlns:d="http://docbook.org/ns/docbook" linkend="book-nix-pills"><?dbhtml filename="index.html"?>
-        </d:tocentry>
-      </toc>
+    installPhase = ''
+      runHook preInstall
+
+      # The nix pills were originally built into this directory, and consumers of the nix pills expect to find it there. Do not change unless you also change other code that depends on this directory structure.
+      dst=$out/share/doc/nix-pills
+      mkdir -p "$dst"
+      mv book/html/* "$dst"/
+
+      mkdir -p "$out/nix-support"
+      echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
+      echo "doc nix-pills $dst" >> "$out/nix-support/hydra-build-products"
+
+      runHook postInstall
+    '';
+  };
+
+  epub = pkgs.stdenvNoCC.mkDerivation {
+    name = "nix-pills-epub";
+    src = ./.;
+
+    nativeBuildInputs = with pkgs; [
+      mdbook-epub
+      unzip
+      zip
+    ];
+
+    installCheckInputs = with pkgs; [
+      epubcheck
+    ];
+
+    doInstallCheck = true;
+
+    buildPhase = ''
+      runHook preBuild
+
+      mdbook-epub --standalone${pkgs.lib.optionalString (pkgs.mdbook-epub.version != "unstable-2022-12-25") " true"}
+
+      # Work around bugs in mdbook-epub.
+      mkdir nix-pills.epub-fix
+      ( cd nix-pills.epub-fix
+        unzip -q "../book/epub/Nix Pills.epub"
+        # Fix invalid ids.
+        sed -Ei 's/(id(ref)?=")([0-9])/\1p\3/g' OEBPS/content.opf
+        sed -Ei 's/(id="|href="#)([0-9])/\1fn\2/g' OEBPS/20-basic-dependencies-and-hooks.html
+        # Fix anchors.
+        sed -Ei 's~(<h[1-6])(>.+) \{#([^\}]+)\}(</h[1-6]>)~\1 id="\3"\2\4~g' OEBPS/*.html
+        # Fix broken links in body.
+        sed -Ei 's/("[0-9a-z-]+\.)md(["#])/\1html\2/g' OEBPS/*.html
+        # Remove unnecessary page breaks, the sections are short.
+        substituteInPlace OEBPS/stylesheet.css --replace-fail "page-break-before: always;" ""
+        zip -q "../book/epub/Nix Pills.epub" **/*
+      )
+
+      runHook postBuild
     '';
 
-  manualXsltprocOptions = toString [
-    "--param section.autolabel 1"
-    "--param section.label.includes.component.label 1"
-    "--stringparam html.stylesheet style.css"
-    "--param xref.with.number.and.title 1"
-    "--param toc.section.depth 3"
-    "--stringparam admon.style ''"
-    "--stringparam callout.graphics.extension .svg"
-    "--stringparam current.docid nix-pills"
-    "--param chunk.section.depth 0"
-    "--param chunk.first.sections 1"
-    "--param use.id.as.filename 1"
-    "--stringparam generate.toc 'book toc appendix toc'"
-    "--stringparam chunk.toc ${toc}"
-  ];
+    installPhase = ''
+      runHook preInstall
 
-in pkgs.stdenv.mkDerivation {
-  name = "nix-pills";
+      # The nix pills were originally built into this directory, and consumers of the nix pills expect to find it there. Do not change unless you also change other code that depends on this directory structure.
+      dst=$out/share/doc/nix-pills
+      mkdir -p "$dst"
 
-  src = sources;
-  buildInputs = with pkgs; [ jing libxslt ];
+      manual="$dst/nix-pills.epub"
+      mv "book/epub/Nix Pills.epub" "$manual"
 
-  installPhase = ''
-    jing ${pkgs.docbook5}/xml/rng/docbook/docbook.rng $combined
+      mkdir -p "$out/nix-support"
+      echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
+      echo "doc-epub nix-pills $manual" >> "$out/nix-support/hydra-build-products"
 
-    # Generate the HTML manual.
-    dst=$out/share/doc/nix-pills
-    mkdir -p $dst
-    xsltproc \
-      ${manualXsltprocOptions} \
-      --nonet --output $dst/ \
-      ${pkgs.docbook5_xsl}/xml/xsl/docbook/xhtml/chunk.xsl \
-      ${combined}
+      runHook postInstall
+    '';
 
-    mkdir -p $dst/images
-    cp -r ${pkgs.docbook5_xsl}/xml/xsl/docbook/images/callouts $dst/images/callouts
+    installCheckPhase = ''
+      runHook preInstallCheck
 
-    cp ${./style.css} $dst/style.css
+      epubcheck "$manual"
 
-    mkdir -p $out/nix-support
-    echo "nix-build out $out" >> $out/nix-support/hydra-build-products
-    echo "doc nix-pills $dst" >> $out/nix-support/hydra-build-products
-  '';
+      runHook postInstallCheck
+    '';
+  };
 }

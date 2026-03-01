@@ -1,3 +1,0 @@
-nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = "mysystem"; }
-nix-repl> d
-«derivation /nix/store/z3hhlxbckx4g3n9sw91nnvlkjvyw754p-myname.drv»

@@ -1,2 +1,0 @@
-$ nix-env -G 3
-switching from generation 2 to 3

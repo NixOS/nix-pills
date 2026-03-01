@@ -1,2 +1,0 @@
-nix-repl> 6/3
-/home/nix/6/3

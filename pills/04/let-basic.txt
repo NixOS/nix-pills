@@ -1,2 +1,0 @@
-nix-repl> let a = "foo"; in a
-"foo"

@@ -1,3 +1,0 @@
-$ nix-env -f . -iA graphviz
-[...]
-$ dot -V

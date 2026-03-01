@@ -1,2 +1,0 @@
-nix-repl> mul = { a, b, ... }: a*b
-nix-repl> mul { a = 3; b = 4; c = 2; }

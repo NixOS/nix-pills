@@ -1,3 +1,0 @@
-
-$ ldd /nix/store/*bash*/bin/bash
-[...]

@@ -1,5 +1,0 @@
-$ nix-shell hello.nix
-[nix-shell]$ make
-bash: make: command not found
-[nix-shell]$ echo $baseInputs
-/nix/store/jff4a6zqi0yrladx3kwy4v6844s3swpc-gnutar-1.27.1 [...]

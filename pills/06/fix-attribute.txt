@@ -1,4 +1,0 @@
-nix-repl> d = derivation { name = "myname"; builder = "mybuilder"; system = builtins.currentSystem; }
-nix-repl> :b d
-[...]
-build error: invalid file name `mybuilder'
