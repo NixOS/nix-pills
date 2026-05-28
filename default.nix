@@ -7,7 +7,8 @@
 
     nativeBuildInputs = with pkgs; [
       mdbook
-      mdbook-linkcheck
+      cacert
+      mdbook-linkcheck2
     ];
 
     buildPhase = ''
@@ -26,7 +27,7 @@
       # The nix pills were originally built into this directory, and consumers of the nix pills expect to find it there. Do not change unless you also change other code that depends on this directory structure.
       dst=$out/share/doc/nix-pills
       mkdir -p "$dst"
-      mv book/html/* "$dst"/
+      mv book/* "$dst"/
 
       mkdir -p "$out/nix-support"
       echo "nix-build out $out" >> "$out/nix-support/hydra-build-products"
