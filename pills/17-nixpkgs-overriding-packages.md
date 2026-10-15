@@ -100,7 +100,7 @@ Create a `config.nix` file like this somewhere:
 
 ```nix
 {
-    packageOverrides = pkgs: {
+  packageOverrides = pkgs: {
     graphviz = pkgs.graphviz.override {
       # disable xorg support
       withXorg = false;
