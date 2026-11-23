@@ -51,6 +51,13 @@ this derivation produced the following outputs:
   out -> /nix/store/gczb4qrag22harvv693wwnflqy7lx5pb-foo
 ```
 
+The `drvPath` attribute gives the path of the .drv file. We will need it later to inspect the derivation:
+
+```console
+nix-repl> d.drvPath
+"/nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv"
+```
+
 We did it! The contents of `/nix/store/w024zci0x1hh1wj6gjq0jagkc1sgrf5r-foo` is really foo. We've built our first derivation.
 
 Note that we used `./builder.sh` and not `"./builder.sh"`. This way, it is parsed as a path, and Nix performs some magic which we will cover later. Try using the string version and you will find that it cannot find `builder.sh`. This is because it tries to find it relative to the temporary build directory.
@@ -98,7 +105,7 @@ In terms of autotools, `$out` will be the `--prefix` path. Yes, not the make `DE
 
 ## The .drv contents
 
-We added something else to the derivation this time: the args attribute. Let's see how this changed the .drv compared to the previous pill:
+We added something else to the derivation this time: the args attribute. Let's see how this changed the .drv compared to the previous pill, using the `d.drvPath` we printed earlier in `nix repl`:
 
 ```console
 $ nix derivation show /nix/store/i76pr1cz0za3i9r6xq518bqqvd2raspw-foo.drv
